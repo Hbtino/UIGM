@@ -801,7 +801,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <!-- Chart Configuration -->
-   // BAGIAN JAVASCRIPT UNTUK CHART - Lengkapi file index.php dengan script ini
+   // BAGIAN JAVASCRIPT UNTUK CHART -
 
 <script>
     // Data dari controller
