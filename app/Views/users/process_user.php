@@ -1,119 +1,88 @@
 <?php
-// process_user.php
 header('Content-Type: application/json');
-header('Access-Control-Allow-Origin: *');
 
-// Enable error reporting
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "capaian_kinerja";
 
-// Koneksi ke database
-$host = '127.0.0.1';
-$dbname = 'capaian_kinerja';
-$username = 'root';
-$password = '';
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    echo json_encode(["success" => false, "message" => "Koneksi database gagal"]);
+    exit;
+}
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+$action = $_POST['action'] ?? '';
 
-    // Get POST data
-    $action = $_POST['action'] ?? '';
-    $userId = $_POST['userId'] ?? '';
+if ($action === 'add') {
+    $nama = $_POST['nama'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $pass = $_POST['password'] ?? '';
+    $role = $_POST['role'] ?? 'mahasiswa';
 
-    if ($action === 'add') {
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-        $role = $_POST['role'] ?? '';
-
-        // Validation
-        if (empty($name) || empty($email) || empty($password) || empty($role)) {
-            echo json_encode(['success' => false, 'message' => 'Semua field harus diisi']);
-            exit;
-        }
-
-        if (strlen($password) < 6) {
-            echo json_encode(['success' => false, 'message' => 'Password minimal 6 karakter']);
-            exit;
-        }
-
-        // Check if email exists
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ?");
-        $stmt->execute([$email]);
-        if ($stmt->fetch()) {
-            echo json_encode(['success' => false, 'message' => 'Email sudah terdaftar']);
-            exit;
-        }
-
-        // Insert new user
-        $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-        $stmt = $pdo->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
-        
-        if ($stmt->execute([$name, $email, $passwordHash, $role])) {
-            echo json_encode(['success' => true, 'message' => 'User berhasil ditambahkan']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Gagal menambahkan user']);
-        }
-
-    } elseif ($action === 'edit') {
-        $name = trim($_POST['name'] ?? '');
-        $email = trim($_POST['email'] ?? '');
-        $role = $_POST['role'] ?? '';
-        $password = $_POST['password'] ?? '';
-
-        // Validation
-        if (empty($name) || empty($email) || empty($role)) {
-            echo json_encode(['success' => false, 'message' => 'Field nama, email, dan role harus diisi']);
-            exit;
-        }
-
-        // Check if email exists for other users
-        $stmt = $pdo->prepare("SELECT id FROM users WHERE email = ? AND id != ?");
-        $stmt->execute([$email, $userId]);
-        if ($stmt->fetch()) {
-            echo json_encode(['success' => false, 'message' => 'Email sudah terdaftar']);
-            exit;
-        }
-
-        // Update user
-        if (!empty($password)) {
-            if (strlen($password) < 6) {
-                echo json_encode(['success' => false, 'message' => 'Password minimal 6 karakter']);
-                exit;
-            }
-            $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?, password = ?, role = ? WHERE id = ?");
-            $success = $stmt->execute([$name, $email, $passwordHash, $role, $userId]);
-        } else {
-            $stmt = $pdo->prepare("UPDATE users SET name = ?, email = ?, role = ? WHERE id = ?");
-            $success = $stmt->execute([$name, $email, $role, $userId]);
-        }
-
-        if ($success) {
-            echo json_encode(['success' => true, 'message' => 'User berhasil diperbarui']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Gagal memperbarui user']);
-        }
-
-    } elseif ($action === 'delete') {
-        if (empty($userId)) {
-            echo json_encode(['success' => false, 'message' => 'User ID tidak valid']);
-            exit;
-        }
-
-        $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
-        if ($stmt->execute([$userId])) {
-            echo json_encode(['success' => true, 'message' => 'User berhasil dihapus']);
-        } else {
-            echo json_encode(['success' => false, 'message' => 'Gagal menghapus user']);
-        }
-
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Aksi tidak valid']);
+    if (empty($nama) || empty($email) || empty($pass)) {
+        echo json_encode(["success" => false, "message" => "Data tidak lengkap"]);
+        exit;
     }
 
-} catch(PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
+    $hashed = password_hash($pass, PASSWORD_BCRYPT);
+    $stmt = $conn->prepare("INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $nama, $email, $hashed, $role);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "User berhasil ditambahkan"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Gagal menambah user (email mungkin sudah ada)"]);
+    }
+    $stmt->close();
+
+} elseif ($action === 'update') {
+    $id = $_POST['id'] ?? '';
+    $nama = $_POST['nama'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $pass = $_POST['password'] ?? '';
+    $role = $_POST['role'] ?? '';
+
+    if (empty($id) || empty($nama) || empty($email)) {
+        echo json_encode(["success" => false, "message" => "Data tidak lengkap"]);
+        exit;
+    }
+
+    if (!empty($pass)) {
+        $hashed = password_hash($pass, PASSWORD_BCRYPT);
+        $stmt = $conn->prepare("UPDATE users SET name=?, email=?, password=?, role=? WHERE id=?");
+        $stmt->bind_param("ssssi", $nama, $email, $hashed, $role, $id);
+    } else {
+        $stmt = $conn->prepare("UPDATE users SET name=?, email=?, role=? WHERE id=?");
+        $stmt->bind_param("sssi", $nama, $email, $role, $id);
+    }
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "User berhasil diperbarui"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Gagal memperbarui user"]);
+    }
+    $stmt->close();
+
+} elseif ($action === 'delete') {
+    $id = $_POST['id'] ?? '';
+    if (empty($id)) {
+        echo json_encode(["success" => false, "message" => "ID user tidak ditemukan"]);
+        exit;
+    }
+
+    $stmt = $conn->prepare("DELETE FROM users WHERE id=?");
+    $stmt->bind_param("i", $id);
+
+    if ($stmt->execute()) {
+        echo json_encode(["success" => true, "message" => "User berhasil dihapus"]);
+    } else {
+        echo json_encode(["success" => false, "message" => "Gagal menghapus user"]);
+    }
+    $stmt->close();
+
+} else {
+    echo json_encode(["success" => false, "message" => "Aksi tidak valid"]);
 }
-?>
+
+$conn->close();

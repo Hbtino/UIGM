@@ -509,6 +509,7 @@
                 margin-left: 0;
             }
         }
+        
     </style>
 </head>
 <body>
@@ -541,7 +542,7 @@
                 <div class="nav-section-title">Kriteria SDGs</div>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/pengaturan-infrastruktur') ?>" class="nav-link <?= $page === 'pengaturan-infrastruktur' ? 'active' : '' ?>">
+                        <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link"><?= $page === 'pengaturan-infrastruktur' ? 'active' : '' ?>">
                             <i class="fas fa-building"></i>
                             <span>Pengaturan & Infrastruktur</span>
                         </a>

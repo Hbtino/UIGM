@@ -154,9 +154,10 @@ class Dashboard extends BaseController
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role')
         ];
-        return view('dashboard/pengaturan_infrastruktur', $data);
+       // Redirect ke halaman CRUD kriteria
+return redirect()->to('/setting-infrastructure');
     }
-    
+        
     public function energiIklim()
     {
         $session = session();
