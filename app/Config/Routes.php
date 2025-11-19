@@ -42,7 +42,10 @@ $routes->group('dashboard', function($routes) {
     $routes->get('pendidikan-penelitian', 'Dashboard::pendidikanPenelitian');
 });
 
-$routes->get('laporan', 'Dashboard::laporan');
+$routes->get('laporan', 'LaporanController::index', ['filter' => 'auth']);
+$routes->get('dashboard/laporan', 'LaporanController::index', ['filter' => 'auth']);
+$routes->get('laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth']);
+$routes->get('dashboard/laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth']);
 $routes->get('pengaturan', 'Dashboard::pengaturan');
 
 $routes->group('setting-infrastructure', ['filter' => 'auth'], function($routes) {
@@ -52,6 +55,17 @@ $routes->group('setting-infrastructure', ['filter' => 'auth'], function($routes)
     $routes->get('edit/(:num)', 'SettingInfrastructureController::edit/$1');
     $routes->post('update/(:num)', 'SettingInfrastructureController::update/$1');
     $routes->get('delete/(:num)', 'SettingInfrastructureController::delete/$1');
+    $routes->get('verify/(:num)', 'SettingInfrastructureController::verify/$1');
+    $routes->post('process-verification/(:num)', 'SettingInfrastructureController::processVerification/$1');
+    $routes->get('download/(:num)', 'SettingInfrastructureController::download/$1');
+    
+    // Revision Request Routes
+    $routes->get('request-revision/(:num)', 'SettingInfrastructureController::requestRevision/$1');
+    $routes->post('submit-revision-request/(:num)', 'SettingInfrastructureController::submitRevisionRequest/$1');
+    $routes->get('revisions', 'SettingInfrastructureController::revisionList');
+    $routes->get('review-revision/(:num)', 'SettingInfrastructureController::reviewRevision/$1');
+    $routes->post('process-revision-review/(:num)', 'SettingInfrastructureController::processRevisionReview/$1');
+    $routes->get('my-revisions', 'SettingInfrastructureController::myRevisions');
 });
 
 // 2. ENERGY & CLIMATE CHANGE
@@ -62,19 +76,20 @@ $routes->group('energy-climate', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'EnergyClimateController::edit/$1');
     $routes->post('update/(:num)', 'EnergyClimateController::update/$1');
     $routes->get('delete/(:num)', 'EnergyClimateController::delete/$1');
+    $routes->get('verify/(:num)', 'EnergyClimateController::verify/$1');
+    $routes->post('process-verification/(:num)', 'EnergyClimateController::processVerification/$1');
+    $routes->get('download/(:num)', 'EnergyClimateController::download/$1');
+    
+    // Revision Request Routes
+    $routes->get('request-revision/(:num)', 'EnergyClimateController::requestRevision/$1');
+    $routes->post('submit-revision-request/(:num)', 'EnergyClimateController::submitRevisionRequest/$1');
+    $routes->get('revisions', 'EnergyClimateController::revisionList');
+    $routes->get('review-revision/(:num)', 'EnergyClimateController::reviewRevision/$1');
+    $routes->post('process-revision-review/(:num)', 'EnergyClimateController::processRevisionReview/$1');
+    $routes->get('my-revisions', 'EnergyClimateController::myRevisions');
 });
 
-// 3. WASTE MANAGEMENT
-$routes->group('waste-management', ['filter' => 'auth'], function($routes) {
-    $routes->get('/', 'WasteManagementController::index');
-    $routes->get('create', 'WasteManagementController::create');
-    $routes->post('store', 'WasteManagementController::store');
-    $routes->get('edit/(:num)', 'WasteManagementController::edit/$1');
-    $routes->post('update/(:num)', 'WasteManagementController::update/$1');
-    $routes->get('delete/(:num)', 'WasteManagementController::delete/$1');
-});
-
-// 4. WATER MANAGEMENT
+// 3. WATER MANAGEMENT
 $routes->group('water-management', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'WaterManagementController::index');
     $routes->get('create', 'WaterManagementController::create');
@@ -82,7 +97,41 @@ $routes->group('water-management', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'WaterManagementController::edit/$1');
     $routes->post('update/(:num)', 'WaterManagementController::update/$1');
     $routes->get('delete/(:num)', 'WaterManagementController::delete/$1');
+    $routes->get('verify/(:num)', 'WaterManagementController::verify/$1');
+    $routes->post('process-verification/(:num)', 'WaterManagementController::processVerification/$1');
+    $routes->get('download/(:num)', 'WaterManagementController::download/$1');
+    
+    // Revision Request Routes
+    $routes->get('request-revision/(:num)', 'WaterManagementController::requestRevision/$1');
+    $routes->post('submit-revision-request/(:num)', 'WaterManagementController::submitRevisionRequest/$1');
+    $routes->get('revisions', 'WaterManagementController::revisionList');
+    $routes->get('review-revision/(:num)', 'WaterManagementController::reviewRevision/$1');
+    $routes->post('process-revision-review/(:num)', 'WaterManagementController::processRevisionReview/$1');
+    $routes->get('my-revisions', 'WaterManagementController::myRevisions');
 });
+
+// 4. WASTE MANAGEMENT
+$routes->group('waste-management', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'WasteManagementController::index');
+    $routes->get('create', 'WasteManagementController::create');
+    $routes->post('store', 'WasteManagementController::store');
+    $routes->get('edit/(:num)', 'WasteManagementController::edit/$1');
+    $routes->post('update/(:num)', 'WasteManagementController::update/$1');
+    $routes->get('delete/(:num)', 'WasteManagementController::delete/$1');
+    $routes->get('verify/(:num)', 'WasteManagementController::verify/$1');
+    $routes->post('process-verification/(:num)', 'WasteManagementController::processVerification/$1');
+    $routes->get('download/(:num)', 'WasteManagementController::download/$1');
+    
+    // Revision Request Routes
+    $routes->get('request-revision/(:num)', 'WasteManagementController::requestRevision/$1');
+    $routes->post('submit-revision-request/(:num)', 'WasteManagementController::submitRevisionRequest/$1');
+    $routes->get('revisions', 'WasteManagementController::revisionList');
+    $routes->get('review-revision/(:num)', 'WasteManagementController::reviewRevision/$1');
+    $routes->post('process-revision-review/(:num)', 'WasteManagementController::processRevisionReview/$1');
+    $routes->get('my-revisions', 'WasteManagementController::myRevisions');
+});
+
+
 
 // 5. TRANSPORTATION
 $routes->group('transportation', ['filter' => 'auth'], function($routes) {
@@ -92,9 +141,20 @@ $routes->group('transportation', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'TransportationController::edit/$1');
     $routes->post('update/(:num)', 'TransportationController::update/$1');
     $routes->get('delete/(:num)', 'TransportationController::delete/$1');
+    $routes->get('verify/(:num)', 'TransportationController::verify/$1');
+    $routes->post('process-verification/(:num)', 'TransportationController::processVerification/$1');
+    $routes->get('download/(:num)', 'TransportationController::download/$1');
+    
+    // Revision Request Routes
+    $routes->get('request-revision/(:num)', 'TransportationController::requestRevision/$1');
+    $routes->post('submit-revision-request/(:num)', 'TransportationController::submitRevisionRequest/$1');
+    $routes->get('revisions', 'TransportationController::revisionList');
+    $routes->get('review-revision/(:num)', 'TransportationController::reviewRevision/$1');
+    $routes->post('process-revision-review/(:num)', 'TransportationController::processRevisionReview/$1');
+    $routes->get('my-revisions', 'TransportationController::myRevisions');
 });
 
-// 6. EDUCATION & RESEARCH
+// 5. EDUCATION & RESEARCH
 $routes->group('education-research', ['filter' => 'auth'], function($routes) {
     $routes->get('/', 'EducationResearchController::index');
     $routes->get('create', 'EducationResearchController::create');
@@ -102,6 +162,17 @@ $routes->group('education-research', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'EducationResearchController::edit/$1');
     $routes->post('update/(:num)', 'EducationResearchController::update/$1');
     $routes->get('delete/(:num)', 'EducationResearchController::delete/$1');
+    $routes->get('verify/(:num)', 'EducationResearchController::verify/$1');
+    $routes->post('process-verification/(:num)', 'EducationResearchController::processVerification/$1');
+    $routes->get('download/(:num)', 'EducationResearchController::download/$1');
+    
+    // Revision Request Routes
+    $routes->get('request-revision/(:num)', 'EducationResearchController::requestRevision/$1');
+    $routes->post('submit-revision-request/(:num)', 'EducationResearchController::submitRevisionRequest/$1');
+    $routes->get('revisions', 'EducationResearchController::revisionList');
+    $routes->get('review-revision/(:num)', 'EducationResearchController::reviewRevision/$1');
+    $routes->post('process-revision-review/(:num)', 'EducationResearchController::processRevisionReview/$1');
+    $routes->get('my-revisions', 'EducationResearchController::myRevisions');
 });
 
 // ============================================
@@ -113,6 +184,10 @@ $routes->group('users', ['filter' => 'auth'], function($routes) {
     $routes->get('edit/(:num)', 'UserController::edit/$1');
     $routes->post('update/(:num)', 'UserController::update/$1');
     $routes->get('delete/(:num)', 'UserController::delete/$1');
+    $routes->get('pending-approvals', 'UserController::pendingApprovals');
+    $routes->get('approve/(:num)', 'UserController::approve/$1');
+    $routes->post('reject/(:num)', 'UserController::reject/$1');
+    $routes->get('pending-count', 'UserController::getPendingCount');
 });
 
 // ============================================
@@ -153,3 +228,24 @@ $routes->group('admin', ['filter' => 'auth'], function($routes) {
 });
 $routes->get('/users/create', 'UserController::create');
 $routes->post('/users/store', 'UserController::store');
+
+// ============================================
+// TEST ROUTES (Remove in production)
+// ============================================
+$routes->get('test/notifications', 'TestNotification::testPasswordRequests');
+
+// ============================================
+// SETTINGS ROUTES
+// ============================================
+
+$routes->group('settings', ['filter' => 'auth'], function($routes) {
+    $routes->get('/', 'SettingsController::index');
+    $routes->post('update-profile', 'SettingsController::updateProfile');
+    $routes->post('upload-photo', 'SettingsController::uploadPhoto');
+    $routes->post('delete-photo', 'SettingsController::deletePhoto');
+    $routes->post('request-password-change', 'SettingsController::requestPasswordChange');
+    $routes->get('pending-password-requests', 'SettingsController::getPendingPasswordRequests');
+    $routes->get('password-requests', 'SettingsController::passwordRequests');
+    $routes->post('process-password-request/(:num)', 'SettingsController::processPasswordRequest/$1');
+    $routes->get('check-password-change-status', 'SettingsController::checkPasswordChangeStatus');
+});

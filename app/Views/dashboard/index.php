@@ -155,6 +155,56 @@
             font-size: 14px;
         }
         
+        /* Submenu Collapse Styling */
+        .collapse .nav-link {
+            padding: 12px 20px 12px 15px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .collapse .nav-link:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.08);
+            padding-left: 20px;
+        }
+        
+        .collapse .nav-link.active {
+            color: white;
+            background-color: rgba(76, 175, 80, 0.15);
+        }
+        
+        .collapse .nav-link i {
+            font-size: 14px;
+            width: 20px;
+        }
+        
+        /* Chevron icon animation */
+        .nav-link[data-bs-toggle="collapse"] .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        
+        /* Force white color for collapse toggle links */
+        .nav-link[data-bs-toggle="collapse"],
+        .nav-link[data-bs-toggle="collapse"]:focus,
+        .nav-link[data-bs-toggle="collapse"]:active,
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"],
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="false"] {
+            color: rgba(255,255,255,0.8) !important;
+        }
+        
+        .nav-link[data-bs-toggle="collapse"]:hover {
+            color: white !important;
+        }
+        
+        .nav-link[data-bs-toggle="collapse"] span,
+        .nav-link[data-bs-toggle="collapse"] i {
+            color: inherit;
+        }
+        
         .sidebar-footer {
             padding: 20px;
             margin-top: auto;
@@ -236,6 +286,58 @@
             font-weight: 700;
             font-size: 18px;
             box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Bell Notification */
+        .notification-bell {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .notification-bell .fa-bell {
+            transition: all 0.3s ease;
+        }
+        
+        .notification-bell .fa-bell:hover {
+            color: #667eea !important;
+            transform: scale(1.1);
+        }
+        
+        .notification-bell .badge {
+            font-size: 0.65rem;
+            padding: 0.25em 0.5em;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+        }
+        
+        .dropdown-menu {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border: none;
+            border-radius: 10px;
+        }
+        
+        .dropdown-item {
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-item:hover {
+            background-color: #f8f9fa;
+            padding-left: 25px;
+        }
+        
+        .dropdown-header {
+            font-weight: 700;
+            color: #1e3c72;
+            font-size: 13px;
         }
         
         /* Stats Grid */
@@ -542,27 +644,27 @@
                 <div class="nav-section-title">Kriteria SDGs</div>
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link"><?= $page === 'pengaturan-infrastruktur' ? 'active' : '' ?>">
+                        <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link"><?= $page === 'pengaturan-infrastruktur' ? 'active' : '' ?>
                             <i class="fas fa-building"></i>
                             <span>Pengaturan & Infrastruktur</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/energi-iklim') ?>" class="nav-link <?= $page === 'energi-iklim' ? 'active' : '' ?>">
+                        <a href="<?= base_url('energy-climate') ?>" class="nav-link <?= $page === 'energi-iklim' ? 'active' : '' ?>">
                             <i class="fas fa-bolt"></i>
                             <span>Energi & Perubahan Iklim</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/limbah') ?>" class="nav-link <?= $page === 'limbah' ? 'active' : '' ?>">
-                            <i class="fas fa-recycle"></i>
-                            <span>Pengelolaan Limbah</span>
+                        <a href="<?= base_url('water-management') ?>" class="nav-link <?= $page === 'air' ? 'active' : '' ?>">
+                            <i class="fas fa-tint"></i>
+                            <span>Pengelolaan Air</span>
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/air') ?>" class="nav-link <?= $page === 'air' ? 'active' : '' ?>">
-                            <i class="fas fa-tint"></i>
-                            <span>Pengelolaan Air</span>
+                        <a href="<?= base_url('waste-management') ?>" class="nav-link <?= $page === 'limbah' ? 'active' : '' ?>">
+                            <i class="fas fa-recycle"></i>
+                            <span>Pengelolaan Limbah</span>
                         </a>
                     </li>
                     <li class="nav-item">
@@ -572,7 +674,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/pendidikan-penelitian') ?>" class="nav-link <?= $page === 'pendidikan-penelitian' ? 'active' : '' ?>">
+                        <a href="<?= base_url('education-research') ?>" class="nav-link <?= $page === 'pendidikan-penelitian' ? 'active' : '' ?>">
                             <i class="fas fa-graduation-cap"></i>
                             <span>Pendidikan & Penelitian</span>
                         </a>
@@ -591,14 +693,40 @@
                         </a>
                     </li>
                     <?php endif; ?>
+                    
+                    <!-- Laporan Menu with Submenu -->
+                    <?php if (in_array($user_role, ['admin', 'dosen', 'kaprodi'])): ?>
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/laporan') ?>" class="nav-link <?= $page === 'laporan' ? 'active' : '' ?>">
+                        <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#laporanSubmenu" aria-expanded="false">
                             <i class="fas fa-file-alt"></i>
                             <span>Laporan</span>
+                            <i class="fas fa-chevron-down ms-auto" style="font-size: 12px;"></i>
                         </a>
+                        <div class="collapse" id="laporanSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <?php if (in_array($user_role, ['admin', 'dosen'])): ?>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('dashboard/laporan') ?>" class="nav-link <?= $page === 'laporan' ? 'active' : '' ?>">
+                                        <i class="fas fa-user-tie"></i>
+                                        <span>Laporan Dosen</span>
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                                <?php if (in_array($user_role, ['admin', 'kaprodi'])): ?>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('laporan/kaprodi') ?>" class="nav-link <?= $page === 'laporan_kaprodi' ? 'active' : '' ?>">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <span>Laporan Kaprodi</span>
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
                     </li>
+                    <?php endif; ?>
+                    
                     <li class="nav-item">
-                        <a href="<?= base_url('dashboard/pengaturan') ?>" class="nav-link <?= $page === 'pengaturan' ? 'active' : '' ?>">
+                        <a href="<?= base_url('settings') ?>" class="nav-link <?= $page === 'pengaturan' ? 'active' : '' ?>">
                             <i class="fas fa-cog"></i>
                             <span>Pengaturan</span>
                         </a>
@@ -627,12 +755,53 @@
                 <p>Renstra TMKB Polban 2024-2028 | UI GreenMetric</p>
             </div>
             <div class="user-info">
+                <div class="notification-bell" style="position: relative; margin-right: 20px;">
+                    <a href="#" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: #333; text-decoration: none; position: relative;">
+                        <i class="fas fa-bell" style="font-size: 1.5rem;"></i>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge" style="display: none; font-size: 0.7rem;">
+                            0
+                        </span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 320px;">
+                        <li><h6 class="dropdown-header">Notifikasi</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li id="notification-content">
+                            <a class="dropdown-item text-center text-muted" href="#">Tidak ada notifikasi</a>
+                        </li>
+                    </ul>
+                </div>
                 <div class="user-details">
                     <div class="name"><?= isset($user_name) ? esc($user_name) : 'Admin' ?></div>
                     <div class="role"><?= isset($user_role) ? esc($user_role) : 'User' ?></div>
                 </div>
-                <div class="user-avatar">
-                    <?= isset($user_name) ? strtoupper(substr($user_name, 0, 1)) : 'A' ?>
+                <div class="dropdown">
+                    <div class="user-avatar" id="userProfileDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer; overflow: hidden;">
+                        <?php if(!empty($profile_photo) && file_exists(FCPATH . 'uploads/profiles/' . $profile_photo)): ?>
+                            <img src="<?= base_url('uploads/profiles/' . $profile_photo) ?>" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
+                        <?php else: ?>
+                            <?= isset($user_name) ? strtoupper(substr($user_name, 0, 1)) : 'A' ?>
+                        <?php endif; ?>
+                    </div>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userProfileDropdown" style="min-width: 250px;">
+                        <li><h6 class="dropdown-header">Profil Saya</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="<?= base_url('settings') ?>">
+                                <i class="fas fa-user-edit"></i> Edit Profil & Username
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item" href="<?= base_url('settings') ?>">
+                                <i class="fas fa-key"></i> Ganti Password
+                            </a>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item text-danger" href="<?= base_url('logout') ?>">
+                                <i class="fas fa-sign-out-alt"></i> Keluar
+                            </a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -796,6 +965,98 @@
                 </div>
             </div>
         </div>
+        <!-- Footer -->
+        <footer style="background: #001f3f; color: white; padding: 40px 30px 20px; border-radius: 15px; margin-top: 40px;">
+            <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-bottom: 30px;">
+                <!-- Further Information -->
+                <div>
+                    <h4 style="color: #4CAF50; margin-bottom: 20px; font-size: 18px; font-weight: 700;">
+                        <i class="fas fa-info-circle"></i> Further Information
+                    </h4>
+                    <div style="line-height: 1.8; color: rgba(255,255,255,0.9);">
+                        <p style="margin-bottom: 15px;">
+                            <i class="fas fa-map-marker-alt" style="color: #4CAF50; margin-right: 10px;"></i>
+                            Jl. Gegerkalong Hilir, Ciwaruga, Kec. Parongpong,<br>
+                            <span style="margin-left: 28px;">Kabupaten Bandung Barat, Jawa Barat</span><br>
+                            <span style="margin-left: 28px;">Kode Pos 40559 | Kotak Pos Bandung 1234</span>
+                        </p>
+                        <p style="margin-bottom: 15px;">
+                            <i class="fas fa-phone" style="color: #4CAF50; margin-right: 10px;"></i>
+                            022 - 2013789 | 022 - 2015721
+                        </p>
+                        <p style="margin-bottom: 15px;">
+                            <i class="fas fa-envelope" style="color: #4CAF50; margin-right: 10px;"></i>
+                            polban@polban.ac.id
+                        </p>
+                        <div style="margin-top: 20px;">
+                            <a href="https://www.facebook.com/polbanofficial/?locale=id_ID" target="_blank" style="display: inline-block; width: 35px; height: 35px; background: #3b5998; border-radius: 50%; text-align: center; line-height: 35px; margin-right: 10px; color: white; text-decoration: none; transition: transform 0.3s;">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://www.instagram.com/politekniknegeribandung/?hl=id" target="_blank" style="display: inline-block; width: 35px; height: 35px; background: #E1306C; border-radius: 50%; text-align: center; line-height: 35px; margin-right: 10px; color: white; text-decoration: none; transition: transform 0.3s;">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.youtube.com/c/POLBANOFFICIAL" target="_blank" style="display: inline-block; width: 35px; height: 35px; background: #FF0000; border-radius: 50%; text-align: center; line-height: 35px; color: white; text-decoration: none; transition: transform 0.3s;">
+                                <i class="fab fa-youtube"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Logo Section -->
+                <div style="text-align: center;">
+                    <div style="background: white; padding: 30px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                        <?php if(file_exists(FCPATH . 'assets/images/logo-polban.png')): ?>
+                            <img src="<?= base_url('assets/images/logo-polban.png') ?>" alt="Logo Polban" style="height: 120px; width: auto;">
+                        <?php else: ?>
+                            <!-- Placeholder Logo SVG -->
+                            <svg width="120" height="120" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Background -->
+                                <rect width="200" height="200" fill="#1e3c72"/>
+                                
+                                <!-- Orange stripes (3 diagonal lines) -->
+                                <g transform="rotate(-30 100 100)">
+                                    <rect x="20" y="30" width="160" height="25" fill="#FF8C42" rx="2"/>
+                                    <rect x="20" y="70" width="160" height="25" fill="#FF8C42" rx="2"/>
+                                    <rect x="20" y="110" width="160" height="25" fill="#FF8C42" rx="2"/>
+                                </g>
+                                
+                                <!-- Blue hexagon base -->
+                                <polygon points="100,160 40,130 40,70 100,40 160,70 160,130" fill="#3949AB" opacity="0.9"/>
+                                
+                                <!-- Black circle -->
+                                <circle cx="100" cy="100" r="35" fill="#000000"/>
+                                
+                                <!-- POLBAN text -->
+                                <text x="100" y="190" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#3949AB" text-anchor="middle">POLBAN</text>
+                            </svg>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Google Maps Location -->
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; margin-top: 30px;">
+                <h4 style="color: #4CAF50; margin-bottom: 20px; font-size: 18px; font-weight: 700; text-align: center;">
+                    <i class="fas fa-map-marked-alt"></i> Lokasi Kampus
+                </h4>
+                <div style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                    <iframe 
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.995657389184!2d107.57449931477394!3d-6.871856995024841!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e6f3a4b6c4a5%3A0x301576d14feb770!2sPoliteknik%20Negeri%20Bandung!5e0!3m2!1sid!2sid!4v1732000000000!5m2!1sid!2sid" 
+                        width="100%" 
+                        height="350" 
+                        style="border:0;" 
+                        allowfullscreen="" 
+                        loading="lazy" 
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+            
+            <!-- Copyright -->
+            <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; margin-top: 30px; text-align: center; color: rgba(255,255,255,0.7); font-size: 14px;">
+                <p style="margin: 0;">© 2025 - UI GreenMetric. Member of <a href="https://ireg-observatory.org" target="_blank" style="color: #4CAF50; text-decoration: none;">IREG Observatory</a>.</p>
+            </div>
+        </footer>
     </div>
     
     <!-- Bootstrap JS -->
@@ -1045,4 +1306,169 @@
         a.click();
         document.body.removeChild(a);
     }
+    
+    <?php if(isset($user_role) && $user_role == 'admin'): ?>
+    // Bell Notification System for Admin - User Approvals & Password Requests
+    function checkPendingApprovals() {
+        console.log('=== Checking Pending Approvals ===');
+        console.log('Base URL:', '<?= base_url() ?>');
+        
+        // Fetch user approvals
+        fetch('<?= base_url('users/pending-count') ?>')
+            .then(response => {
+                console.log('User approvals response status:', response.status);
+                return response.json();
+            })
+            .then(userApprovals => {
+                console.log('User Approvals Data:', userApprovals);
+                
+                // Fetch password requests
+                return fetch('<?= base_url('settings/pending-password-requests') ?>')
+                    .then(response => {
+                        console.log('Password requests response status:', response.status);
+                        return response.json();
+                    })
+                    .then(passwordRequests => {
+                        console.log('Password Requests Data:', passwordRequests);
+                        console.log('Password Requests Type:', typeof passwordRequests);
+                        console.log('Password Requests Keys:', Object.keys(passwordRequests));
+                        console.log('Has success?', passwordRequests.hasOwnProperty('success'));
+                        console.log('Success value:', passwordRequests.success);
+                        console.log('Has requests?', passwordRequests.hasOwnProperty('requests'));
+                        console.log('Requests value:', passwordRequests.requests);
+                        console.log('Requests length:', passwordRequests.requests ? passwordRequests.requests.length : 'undefined');
+                        
+                        const badge = document.getElementById('notification-badge');
+                        const content = document.getElementById('notification-content');
+                        
+                        if (!badge || !content) {
+                            console.error('Badge or content element not found!');
+                            return;
+                        }
+                        
+                        let userCount = userApprovals.count || 0;
+                        let passwordCount = 0;
+                        
+                        if (passwordRequests && passwordRequests.success && passwordRequests.requests) {
+                            passwordCount = passwordRequests.requests.length;
+                        }
+                        
+                        console.log('User Count:', userCount);
+                        console.log('Password Count:', passwordCount);
+                        
+                        let totalCount = userCount + passwordCount;
+                        console.log('Total Count:', totalCount);
+                        
+                        let notificationHTML = '';
+                        
+                        if (userCount > 0) {
+                            notificationHTML += `
+                                <a class="dropdown-item" href="<?= base_url('users/pending-approvals') ?>">
+                                    <i class="fas fa-user-clock text-warning"></i> 
+                                    ${userCount} user menunggu persetujuan
+                                </a>
+                            `;
+                        }
+                        
+                        if (passwordCount > 0) {
+                            notificationHTML += `
+                                <a class="dropdown-item" href="<?= base_url('settings/password-requests') ?>">
+                                    <i class="fas fa-key text-info"></i> 
+                                    ${passwordCount} request ganti password
+                                </a>
+                            `;
+                        }
+                        
+                        if (totalCount > 0) {
+                            badge.textContent = totalCount;
+                            badge.style.display = 'inline-block';
+                            content.innerHTML = notificationHTML;
+                            console.log('✓ Notification badge updated with count:', totalCount);
+                        } else {
+                            badge.style.display = 'none';
+                            content.innerHTML = '<a class="dropdown-item text-center text-muted" href="#">Tidak ada notifikasi</a>';
+                            console.log('✓ No notifications');
+                        }
+                    });
+            })
+            .catch(error => {
+                console.error('❌ Error fetching notifications:', error);
+                const badge = document.getElementById('notification-badge');
+                const content = document.getElementById('notification-content');
+                if (badge && content) {
+                    badge.style.display = 'none';
+                    content.innerHTML = '<a class="dropdown-item text-center text-danger" href="#">Error loading notifications</a>';
+                }
+            });
+    }
+
+    // Check immediately on page load
+    console.log('Initializing notification system...');
+    checkPendingApprovals();
+
+    // Check every 30 seconds
+    setInterval(checkPendingApprovals, 30000);
+    console.log('Notification check interval set to 30 seconds');
+    <?php else: ?>
+    // Bell Notification System for Non-Admin - Password Change Status
+    function checkPasswordChangeStatus() {
+        // Check if notification has been read
+        const notificationRead = localStorage.getItem('password_change_notification_read');
+        
+        if (notificationRead === 'true') {
+            const badge = document.getElementById('notification-badge');
+            const content = document.getElementById('notification-content');
+            badge.style.display = 'none';
+            content.innerHTML = '<div class="dropdown-item text-center text-muted" style="cursor: default;">Tidak ada notifikasi</div>';
+            return;
+        }
+        
+        fetch('<?= base_url('settings/check-password-change-status') ?>')
+            .then(response => response.json())
+            .then(data => {
+                const badge = document.getElementById('notification-badge');
+                const content = document.getElementById('notification-content');
+                
+                if (data.has_notification) {
+                    badge.textContent = '1';
+                    badge.style.display = 'inline-block';
+                    content.innerHTML = `
+                        <div class="dropdown-item" style="cursor: default; background: #d4edda; border-left: 4px solid #28a745;">
+                            <i class="fas fa-check-circle text-success"></i> 
+                            ${data.message}
+                        </div>
+                    `;
+                } else {
+                    badge.style.display = 'none';
+                    content.innerHTML = '<div class="dropdown-item text-center text-muted" style="cursor: default;">Tidak ada notifikasi</div>';
+                }
+            })
+            .catch(error => console.error('Error checking password status:', error));
+    }
+    
+    // Mark notification as read when dropdown is opened
+    const notificationDropdown = document.getElementById('notificationDropdown');
+    if (notificationDropdown) {
+        notificationDropdown.addEventListener('click', function() {
+            // Mark as read after a short delay (when dropdown is shown)
+            setTimeout(function() {
+                localStorage.setItem('password_change_notification_read', 'true');
+            }, 500);
+        });
+        
+        // Hide notification when dropdown is closed
+        notificationDropdown.addEventListener('hidden.bs.dropdown', function() {
+            const badge = document.getElementById('notification-badge');
+            const content = document.getElementById('notification-content');
+            badge.style.display = 'none';
+            content.innerHTML = '<div class="dropdown-item text-center text-muted" style="cursor: default;">Tidak ada notifikasi</div>';
+        });
+    }
+
+    // Check immediately on page load
+    checkPasswordChangeStatus();
+
+    // Check every 30 seconds
+    setInterval(checkPasswordChangeStatus, 30000);
+    <?php endif; ?>
 </script>

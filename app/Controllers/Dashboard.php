@@ -18,6 +18,10 @@ class Dashboard extends BaseController
             return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu');
         }
 
+        // Get user data including profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
         $data = [
             'title' => 'Dashboard - Kampus Berkelanjutan Polban',
             'page' => 'dashboard',
@@ -26,7 +30,8 @@ class Dashboard extends BaseController
             'sdgsData' => $this->getSDGsData(),
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role'),
-            'user_email' => $session->get('email')
+            'user_email' => $session->get('email'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
         
         return view('dashboard/index', $data);
@@ -165,14 +170,8 @@ return redirect()->to('/setting-infrastructure');
             return redirect()->to('/login');
         }
 
-        $data = [
-            'title' => 'Energi & Perubahan Iklim',
-            'page' => 'energi-iklim',
-            'chartData' => $this->getDetailChartData('EC'),
-            'user_name' => $session->get('name'),
-            'user_role' => $session->get('role')
-        ];
-        return view('dashboard/energi_iklim', $data);
+        // Redirect ke halaman CRUD Energy Climate
+        return redirect()->to('/energy-climate');
     }
     
     public function limbah()
@@ -182,14 +181,8 @@ return redirect()->to('/setting-infrastructure');
             return redirect()->to('/login');
         }
 
-        $data = [
-            'title' => 'Pengelolaan Limbah',
-            'page' => 'limbah',
-            'chartData' => $this->getDetailChartData('WS'),
-            'user_name' => $session->get('name'),
-            'user_role' => $session->get('role')
-        ];
-        return view('dashboard/limbah', $data);
+        // Redirect ke halaman CRUD Waste Management
+        return redirect()->to('/waste-management');
     }
     
     public function air()
@@ -199,14 +192,8 @@ return redirect()->to('/setting-infrastructure');
             return redirect()->to('/login');
         }
 
-        $data = [
-            'title' => 'Pengelolaan Air',
-            'page' => 'air',
-            'chartData' => $this->getDetailChartData('WR'),
-            'user_name' => $session->get('name'),
-            'user_role' => $session->get('role')
-        ];
-        return view('dashboard/air', $data);
+        // Redirect ke halaman CRUD Water Management
+        return redirect()->to('/water-management');
     }
     
     public function transportasi()
@@ -216,14 +203,8 @@ return redirect()->to('/setting-infrastructure');
             return redirect()->to('/login');
         }
 
-        $data = [
-            'title' => 'Transportasi',
-            'page' => 'transportasi',
-            'chartData' => $this->getDetailChartData('TR'),
-            'user_name' => $session->get('name'),
-            'user_role' => $session->get('role')
-        ];
-        return view('dashboard/transportasi', $data);
+        // Redirect ke halaman CRUD Transportation
+        return redirect()->to('/transportation');
     }
     
     public function pendidikanPenelitian()
@@ -233,14 +214,8 @@ return redirect()->to('/setting-infrastructure');
             return redirect()->to('/login');
         }
 
-        $data = [
-            'title' => 'Pendidikan & Penelitian',
-            'page' => 'pendidikan-penelitian',
-            'chartData' => $this->getDetailChartData('ED'),
-            'user_name' => $session->get('name'),
-            'user_role' => $session->get('role')
-        ];
-        return view('dashboard/pendidikan_penelitian', $data);
+        // Redirect ke halaman CRUD Education Research
+        return redirect()->to('/education-research');
     }
     
     public function laporan()

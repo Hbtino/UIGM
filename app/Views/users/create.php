@@ -172,8 +172,52 @@
             <input type="password" name="password" required>
 
             <label>Role</label>
-            <select name="role" required>
+            <select name="role" id="role" required>
               <option value="">-- Pilih Role --</option>
               <option value="admin">Admin</option>
               <option value="dosen">Dosen</option>
-              <option
+              <option value="kaprodi">Kaprodi</option>
+              <option value="mahasiswa">Mahasiswa</option>
+            </select>
+
+            <div id="jurusan-field" style="display:none;">
+              <label>Jurusan</label>
+              <select name="jurusan" id="jurusan">
+                <option value="">-- Pilih Jurusan --</option>
+                <option value="Jurusan Teknik Sipil">Jurusan Teknik Sipil</option>
+                <option value="Jurusan Teknik Mesin">Jurusan Teknik Mesin</option>
+                <option value="Jurusan Teknik Refrigerasi dan Tata Udara">Jurusan Teknik Refrigerasi dan Tata Udara</option>
+                <option value="Jurusan Teknik Konversi Energi">Jurusan Teknik Konversi Energi</option>
+                <option value="Jurusan Teknik Elektro">Jurusan Teknik Elektro</option>
+                <option value="Jurusan Teknik Kimia">Jurusan Teknik Kimia</option>
+                <option value="Jurusan Teknik Komputer dan Informatika">Jurusan Teknik Komputer dan Informatika</option>
+              </select>
+            </div>
+
+            <div class="actions">
+              <a href="<?= base_url('users') ?>" class="btn btn-cancel">Batal</a>
+              <button type="submit" class="btn btn-save">Simpan</button>
+            </div>
+          </form>
+
+          <script>
+            document.getElementById('role').addEventListener('change', function() {
+              const jurusanField = document.getElementById('jurusan-field');
+              const jurusanSelect = document.getElementById('jurusan');
+              
+              if (this.value === 'kaprodi' || this.value === 'dosen' || this.value === 'mahasiswa') {
+                jurusanField.style.display = 'block';
+                jurusanSelect.required = true;
+              } else {
+                jurusanField.style.display = 'none';
+                jurusanSelect.required = false;
+                jurusanSelect.value = '';
+              }
+            });
+          </script>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

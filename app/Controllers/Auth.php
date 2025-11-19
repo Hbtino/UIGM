@@ -23,11 +23,32 @@ class Auth extends Controller
         $user = $userModel->where('email', $email)->first();
 
         if ($user) {
+            // Admin and Reviewer can ALWAYS login (bypass approval check)
+            $bypassRoles = ['admin', 'reviewer'];
+            
+            // Check approval status ONLY for non-admin/reviewer users
+            if (!in_array($user['role'], $bypassRoles)) {
+                if (isset($user['approval_status'])) {
+                    if ($user['approval_status'] == 'pending') {
+                        $session->setFlashdata('warning', 'Akun Anda masih menunggu persetujuan admin. Silakan hubungi administrator.');
+                        return redirect()->to('/login');
+                    }
+                    
+                    if ($user['approval_status'] == 'rejected') {
+                        $reason = $user['rejection_reason'] ? ': ' . $user['rejection_reason'] : '';
+                        $session->setFlashdata('error', 'Akun Anda ditolak oleh admin' . $reason);
+                        return redirect()->to('/login');
+                    }
+                }
+            }
+            
             if (password_verify($password, $user['password'])) {
                 $sessionData = [
                     'user_id' => $user['id'],
+                    'user_name' => $user['name'],
                     'name' => $user['name'],
                     'email' => $user['email'],
+                    'user_role' => $user['role'],
                     'role' => $user['role'],
                     'logged_in' => true
                 ];
@@ -48,53 +69,63 @@ class Auth extends Controller
         session()->destroy();
         return redirect()->to('/login');
     }
-  public function register()
-{
-    helper(['form']);
+    public function register()
+    {
+        helper(['form']);
 
-    if ($this->request->getMethod() === 'post') {
-        $rules = [
-            'name' => 'required|min_length[3]',
-            'email' => 'required|valid_email|is_unique[users.email]',
-            'password' => 'required|min_length[6]',
-            'role' => 'required'
-        ];
+        if ($this->request->getMethod() === 'post') {
+            $rules = [
+                'name' => 'required|min_length[3]',
+                'email' => 'required|valid_email|is_unique[users.email]',
+                'password' => 'required|min_length[6]',
+                'role' => 'required'
+            ];
 
-        if (!$this->validate($rules)) {
-            return view('auth/register', [
-                "validation" => $this->validator
+            if (!$this->validate($rules)) {
+                return view('auth/register', [
+                    "validation" => $this->validator
+                ]);
+            }
+
+            $userModel = new \App\Models\UserModel();
+            $userModel->save([
+                'name' => $this->request->getVar('name'),
+                'email' => $this->request->getVar('email'),
+                'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
+                'role' => $this->request->getVar('role'),
+                'approval_status' => 'pending' // Set as pending by default
             ]);
+
+            return redirect()->to('/login')->with('info', 'Registrasi berhasil! Akun Anda menunggu persetujuan admin. Anda akan dapat login setelah admin menyetujui akun Anda.');
         }
 
-        $userModel = new \App\Models\UserModel();
-        $userModel->save([
-            'name' => $this->request->getVar('name'),
-            'email' => $this->request->getVar('email'),
-            'password' => password_hash($this->request->getVar('password'), PASSWORD_DEFAULT),
-            'role' => $this->request->getVar('role'),
-        ]);
-
-        return redirect()->to('/login')->with('success', 'Registrasi berhasil, silakan login.');
+        return view('auth/register');
     }
 
-    return view('auth/register');
-}
 
+    public function registerProcess()
+    {
+        $userModel = new UserModel();
 
-public function registerProcess()
-{
-    $userModel = new UserModel();
+        // Validasi password confirmation
+        $password = $this->request->getPost('password');
+        $passwordConfirm = $this->request->getPost('password_confirm');
 
-    $data = [
-        'name'     => $this->request->getPost('name'),
-        'email'    => $this->request->getPost('email'),
-        'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-        'role'     => $this->request->getPost('role')
-    ];
+        if ($password !== $passwordConfirm) {
+            return redirect()->back()->withInput()->with('error', 'Password dan konfirmasi password tidak cocok!');
+        }
 
-    $userModel->save($data);
+        $data = [
+            'name'     => $this->request->getPost('name'),
+            'email'    => $this->request->getPost('email'),
+            'password' => password_hash($password, PASSWORD_DEFAULT),
+            'role'     => 'mahasiswa', // Default role untuk registrasi baru
+            'approval_status' => 'pending'
+        ];
 
-    return redirect()->to('/login')->with('success', 'Registrasi berhasil, silakan login');
-}
+        $userModel->save($data);
+
+        return redirect()->to('/login')->with('info', 'Registrasi berhasil! Akun Anda menunggu persetujuan admin.');
+    }
 
 }

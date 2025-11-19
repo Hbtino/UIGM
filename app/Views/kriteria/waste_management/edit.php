@@ -1,278 +1,223 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?></title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f8f9fa;
-        }
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 280px;
-            background: linear-gradient(180deg, #2d7a4f 0%, #1d5a3a 100%);
-            padding: 20px;
-            overflow-y: auto;
-        }
-        .sidebar h4 {
-            color: white;
-            margin-bottom: 30px;
-            font-weight: 700;
-        }
-        .nav-link {
-            color: rgba(255,255,255,0.8);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-        .nav-link:hover, .nav-link.active {
-            background: rgba(255,255,255,0.15);
-            color: white;
-        }
-        .main-content {
-            margin-left: 280px;
-            padding: 30px;
-        }
-        .card {
-            border: none;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-        }
-        .form-label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            padding: 10px 15px;
-        }
-        .form-control:focus, .form-select:focus {
-            border-color: #2d7a4f;
-            box-shadow: 0 0 0 0.2rem rgba(45, 122, 79, 0.15);
-        }
-        .section-title {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2d7a4f;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #2d7a4f;
-        }
-    </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <h4><i class="fas fa-leaf"></i> POLBAN</h4>
-        <a href="<?= base_url('dashboard') ?>" class="nav-link">
-            <i class="fas fa-home"></i> Dashboard
-        </a>
-        <hr style="border-color: rgba(255,255,255,0.2)">
-        <small style="color: rgba(255,255,255,0.5); padding-left: 15px;">KRITERIA SDGs</small>
-        <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link active">
-            <i class="fas fa-building"></i> Setting & Infrastructure
-        </a>
-        <a href="<?= base_url('logout') ?>" class="nav-link" style="margin-top: 20px;">
-            <i class="fas fa-sign-out-alt"></i> Keluar
+<?= $this->extend('layouts/main') ?>
+<?= $this->section('content') ?>
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800"><?= $title ?></h1>
+        <a href="<?= base_url('waste-management') ?>" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Kembali
         </a>
     </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
-        <div class="mb-4">
-            <h3><i class="fas fa-edit text-warning"></i> Edit Data Setting & Infrastructure</h3>
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="<?= base_url('dashboard') ?>">Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="<?= base_url('setting-infrastructure') ?>">Setting & Infrastructure</a></li>
-                    <li class="breadcrumb-item active">Edit Data</li>
-                </ol>
-            </nav>
+    <?php if (session()->getFlashdata('errors')): ?>
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <ul class="mb-0">
+                <?php foreach (session()->getFlashdata('errors') as $error): ?>
+                    <li><?= $error ?></li>
+                <?php endforeach; ?>
+            </ul>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
         </div>
+    <?php endif; ?>
 
-        <?php if(session()->getFlashdata('errors')): ?>
-            <div class="alert alert-danger alert-dismissible fade show">
-                <strong><i class="fas fa-exclamation-triangle"></i> Kesalahan Input!</strong>
-                <ul class="mb-0 mt-2">
-                    <?php foreach(session()->getFlashdata('errors') as $error): ?>
-                        <li><?= $error ?></li>
-                    <?php endforeach; ?>
-                </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        <?php endif; ?>
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Form Edit Data</h6>
+        </div>
+        <div class="card-body">
+            <form action="<?= base_url('waste-management/update/' . $WasteManagement['id']) ?>" method="post" enctype="multipart/form-data">
+                <?= csrf_field() ?>
 
-        <form action="<?= base_url('setting-infrastructure/update/'.$data_item['id']) ?>" method="POST">
-            <?= csrf_field() ?>
-            
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-calendar"></i> Informasi Dasar
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Tahun <span class="text-danger">*</span></label>
-                            <input type="number" name="tahun" class="form-control" 
-                                   value="<?= old('tahun', $data_item['tahun']) ?>" 
-                                   required min="2020" max="2030">
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Capaian (%) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" name="capaian_persen" class="form-control" 
-                                   value="<?= old('capaian_persen', $data_item['capaian_persen']) ?>" 
-                                   required min="0" max="100">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="tahun">Tahun <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="tahun" name="tahun" 
+                                   value="<?= old('tahun', $WasteManagement['tahun']) ?>" required>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-map"></i> Data Lahan & Area
+                <h5 class="mt-4 mb-3">Data Konsumsi Energi</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="total_konsumsi_listrik">Total Konsumsi Listrik (kWh) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="total_konsumsi_listrik" 
+                                   name="total_konsumsi_listrik" value="<?= old('total_konsumsi_listrik', $WasteManagement['total_konsumsi_listrik']) ?>" required>
+                        </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Luas Ruang Terbuka (m²) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" name="luas_ruang_terbuka" class="form-control" 
-                                   value="<?= old('luas_ruang_terbuka', $data_item['luas_ruang_terbuka']) ?>" required>
-                        </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Luas Total Kampus (m²) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" name="luas_total" class="form-control" 
-                                   value="<?= old('luas_total', $data_item['luas_total']) ?>" required>
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Vegetasi Hutan (m²)</label>
-                            <input type="number" step="0.01" name="vegetasi_hutan" class="form-control" 
-                                   value="<?= old('vegetasi_hutan', $data_item['vegetasi_hutan']) ?>">
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Area Tanaman (m²)</label>
-                            <input type="number" step="0.01" name="area_tanaman" class="form-control" 
-                                   value="<?= old('area_tanaman', $data_item['area_tanaman']) ?>">
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Area Resapan Air (m²)</label>
-                            <input type="number" step="0.01" name="area_resapan" class="form-control" 
-                                   value="<?= old('area_resapan', $data_item['area_resapan']) ?>">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="konsumsi_energi_terbarukan">Konsumsi Energi Terbarukan (kWh) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="konsumsi_energi_terbarukan" 
+                                   name="konsumsi_energi_terbarukan" value="<?= old('konsumsi_energi_terbarukan', $WasteManagement['konsumsi_energi_terbarukan']) ?>" required>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-money-bill"></i> Anggaran & Pemeliharaan
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Persentase Anggaran Keberlanjutan (%)</label>
-                            <input type="number" step="0.01" name="persentase_anggaran" class="form-control" 
-                                   value="<?= old('persentase_anggaran', $data_item['persentase_anggaran']) ?>">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label>Persentase Energi Terbarukan (Auto-calculated)</label>
+                            <input type="text" class="form-control bg-light" id="preview_persentase" readonly>
                         </div>
-                        
-                        <div class="col-md-6 mb-3">
-                            <label class="form-label">Persentase Pemeliharaan Gedung (%)</label>
-                            <input type="number" step="0.01" name="persentase_pemeliharaan" class="form-control" 
-                                   value="<?= old('persentase_pemeliharaan', $data_item['persentase_pemeliharaan']) ?>">
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="total_listrik_per_orang">Total Listrik per Orang (kWh) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="total_listrik_per_orang" 
+                                   name="total_listrik_per_orang" value="<?= old('total_listrik_per_orang', $WasteManagement['total_listrik_per_orang']) ?>" required>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-hospital"></i> Fasilitas Kampus
+                <h5 class="mt-4 mb-3">Infrastruktur & Fasilitas</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="peralatan_hemat_energi">Jumlah Peralatan Hemat Energi <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="peralatan_hemat_energi" 
+                                   name="peralatan_hemat_energi" value="<?= old('peralatan_hemat_energi', $WasteManagement['peralatan_hemat_energi']) ?>" required>
+                        </div>
                     </div>
-                    
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Fasilitas Disabilitas</label>
-                            <select name="fasilitas_disabilitas" class="form-select">
-                                <option value="">-- Pilih --</option>
-                                <option value="Ada" <?= old('fasilitas_disabilitas', $data_item['fasilitas_disabilitas']) == 'Ada' ? 'selected' : '' ?>>Ada</option>
-                                <option value="Sebagian" <?= old('fasilitas_disabilitas', $data_item['fasilitas_disabilitas']) == 'Sebagian' ? 'selected' : '' ?>>Sebagian</option>
-                                <option value="Tidak Ada" <?= old('fasilitas_disabilitas', $data_item['fasilitas_disabilitas']) == 'Tidak Ada' ? 'selected' : '' ?>>Tidak Ada</option>
-                            </select>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="bangunan_cerdas">Jumlah Bangunan Cerdas <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="bangunan_cerdas" 
+                                   name="bangunan_cerdas" value="<?= old('bangunan_cerdas', $WasteManagement['bangunan_cerdas']) ?>" required>
                         </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Fasilitas Keamanan</label>
-                            <select name="fasilitas_keamanan" class="form-select">
-                                <option value="">-- Pilih --</option>
-                                <option value="Ada" <?= old('fasilitas_keamanan', $data_item['fasilitas_keamanan']) == 'Ada' ? 'selected' : '' ?>>Ada</option>
-                                <option value="Sebagian" <?= old('fasilitas_keamanan', $data_item['fasilitas_keamanan']) == 'Sebagian' ? 'selected' : '' ?>>Sebagian</option>
-                                <option value="Tidak Ada" <?= old('fasilitas_keamanan', $data_item['fasilitas_keamanan']) == 'Tidak Ada' ? 'selected' : '' ?>>Tidak Ada</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-md-4 mb-3">
-                            <label class="form-label">Asuransi Kesehatan</label>
-                            <select name="asuransi_kesehatan" class="form-select">
-                                <option value="">-- Pilih --</option>
-                                <option value="Ada" <?= old('asuransi_kesehatan', $data_item['asuransi_kesehatan']) == 'Ada' ? 'selected' : '' ?>>Ada</option>
-                                <option value="Tidak Ada" <?= old('asuransi_kesehatan', $data_item['asuransi_kesehatan']) == 'Tidak Ada' ? 'selected' : '' ?>>Tidak Ada</option>
-                            </select>
-                        </div>
-                        
-                        <div class="col-12 mb-3">
-                            <label class="form-label">Konservasi Flora & Fauna</label>
-                            <textarea name="konservasi_flora_fauna" class="form-control" rows="3"><?= old('konservasi_flora_fauna', $data_item['konservasi_flora_fauna']) ?></textarea>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="jumlah_energi_terbarukan">Jumlah Sumber Energi Terbarukan <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="jumlah_energi_terbarukan" 
+                                   name="jumlah_energi_terbarukan" value="<?= old('jumlah_energi_terbarukan', $WasteManagement['jumlah_energi_terbarukan']) ?>" required>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
-                    <div class="section-title">
-                        <i class="fas fa-sticky-note"></i> Keterangan
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="bangunan_ramah_lingkungan">Jumlah Bangunan Ramah Lingkungan <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="bangunan_ramah_lingkungan" 
+                                   name="bangunan_ramah_lingkungan" value="<?= old('bangunan_ramah_lingkungan', $WasteManagement['bangunan_ramah_lingkungan']) ?>" required>
+                        </div>
                     </div>
-                    
-                    <div class="mb-3">
-                        <label class="form-label">Keterangan Tambahan</label>
-                        <textarea name="keterangan" class="form-control" rows="4"><?= old('keterangan', $data_item['keterangan']) ?></textarea>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label for="jejak_karbon_per_orang">Jejak Karbon per Orang (ton CO2) <span class="text-danger">*</span></label>
+                            <input type="number" step="0.01" class="form-control" id="jejak_karbon_per_orang" 
+                                   name="jejak_karbon_per_orang" value="<?= old('jejak_karbon_per_orang', $WasteManagement['jejak_karbon_per_orang']) ?>" required>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-warning px-4">
-                    <i class="fas fa-save"></i> Update Data
-                </button>
-                <a href="<?= base_url('setting-infrastructure') ?>" class="btn btn-secondary px-4">
-                    <i class="fas fa-arrow-left"></i> Kembali
-                </a>
-            </div>
-        </form>
+                <h5 class="mt-4 mb-3">Program & Inisiatif</h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="program_pengurangan_emisi" 
+                                       name="program_pengurangan_emisi" value="1" 
+                                       <?= old('program_pengurangan_emisi', $WasteManagement['program_pengurangan_emisi']) ? 'checked' : '' ?>>
+                                <label class="custom-control-label" for="program_pengurangan_emisi">
+                                    Program Pengurangan Emisi
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="program_inovatif_energi" 
+                                       name="program_inovatif_energi" value="1" 
+                                       <?= old('program_inovatif_energi', $WasteManagement['program_inovatif_energi']) ? 'checked' : '' ?>>
+                                <label class="custom-control-label" for="program_inovatif_energi">
+                                    Program Inovatif Energi
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="program_dampak_iklim" 
+                                       name="program_dampak_iklim" value="1" 
+                                       <?= old('program_dampak_iklim', $WasteManagement['program_dampak_iklim']) ? 'checked' : '' ?>>
+                                <label class="custom-control-label" for="program_dampak_iklim">
+                                    Program Dampak Iklim
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label>Capaian Persen (Auto-calculated)</label>
+                            <input type="text" class="form-control bg-light" id="preview_capaian" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="keterangan">Keterangan</label>
+                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3"><?= old('keterangan', $WasteManagement['keterangan']) ?></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="bukti_pendukung">Bukti Pendukung</label>
+                    <?php if ($WasteManagement['bukti_pendukung']): ?>
+                        <p class="text-muted">File saat ini: <?= $WasteManagement['bukti_pendukung'] ?></p>
+                    <?php endif; ?>
+                    <input type="file" class="form-control-file" id="bukti_pendukung" name="bukti_pendukung">
+                    <small class="form-text text-muted">Format: PDF, JPG, PNG, XLSX, XLS. Max: 2MB. Kosongkan jika tidak ingin mengubah file.</small>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Update
+                    </button>
+                    <a href="<?= base_url('waste-management') ?>" class="btn btn-secondary">
+                        <i class="fas fa-times"></i> Batal
+                    </a>
+                </div>
+            </form>
+        </div>
     </div>
+</div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+<script>
+function calculatePercentages() {
+    const total = parseFloat(document.getElementById('total_konsumsi_listrik').value) || 0;
+    const terbarukan = parseFloat(document.getElementById('konsumsi_energi_terbarukan').value) || 0;
+    
+    let persentase = 0;
+    if (total > 0) {
+        persentase = (terbarukan / total) * 100;
+    }
+    
+    document.getElementById('preview_persentase').value = persentase.toFixed(2) + '%';
+    
+    const programEmisi = document.getElementById('program_pengurangan_emisi').checked ? 20 : 0;
+    const programInovatif = document.getElementById('program_inovatif_energi').checked ? 15 : 0;
+    const programIklim = document.getElementById('program_dampak_iklim').checked ? 15 : 0;
+    
+    const capaian = (persentase * 0.5) + programEmisi + programInovatif + programIklim;
+    document.getElementById('preview_capaian').value = capaian.toFixed(2) + '%';
+}
+
+document.getElementById('total_konsumsi_listrik').addEventListener('input', calculatePercentages);
+document.getElementById('konsumsi_energi_terbarukan').addEventListener('input', calculatePercentages);
+document.getElementById('program_pengurangan_emisi').addEventListener('change', calculatePercentages);
+document.getElementById('program_inovatif_energi').addEventListener('change', calculatePercentages);
+document.getElementById('program_dampak_iklim').addEventListener('change', calculatePercentages);
+
+calculatePercentages();
+</script>
+<?= $this->endSection() ?>
+

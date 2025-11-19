@@ -1,0 +1,126 @@
+<?= $this->extend('layouts/main') ?>
+<?= $this->section('content') ?>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h4 class="mb-0">Data Transportasi & Mobilitas Berkelanjutan (KR-TR-001)</h4>
+                <div class="btn-group">
+                    <?php if (in_array(session()->get('role'), ['admin', 'kaprodi'])): ?>
+                        <a href="/transportation/create" class="btn btn-light">+ Tambah Data</a>
+                    <?php endif ?>
+                    <?php if (in_array(session()->get('role'), ['admin', 'reviewer'])): ?>
+                        <a href="/transportation/revisions" class="btn btn-warning">Permintaan Revisi</a>
+                    <?php endif ?>
+                    <a href="/transportation/my-revisions" class="btn btn-info">Revisi Saya</a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No</th>
+                                <th>Tahun</th>
+                                <th>Total Perjalanan</th>
+                                <th>Ramah Lingkungan</th>
+                                <th>Persentase</th>
+                                <th>Status</th>
+                                <th>Bukti</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($data_tr)): ?>
+                                <tr>
+                                    <td colspan="8" class="text-center">Belum ada data</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php $no = 1; foreach ($data_tr as $item): ?>
+                                    <tr>
+                                        <td><?= $no++ ?></td>
+                                        <td><?= $item['tahun'] ?></td>
+                                        <td><?= number_format($item['total_perjalanan']) ?></td>
+                                        <td><?= number_format($item['perjalanan_ramah_lingkungan']) ?></td>
+                                        <td>
+                                            <strong><?= $item['capaian_persen'] ?>%</strong>
+                                        </td>
+                                        <td>
+                                            <?php
+                                            $badgeClass = [
+                                                'pending' => 'bg-warning',
+                                                'approved' => 'bg-success',
+                                                'rejected' => 'bg-danger'
+                                            ];
+                                            $statusText = [
+                                                'pending' => 'Menunggu',
+                                                'approved' => 'Disetujui',
+                                                'rejected' => 'Ditolak'
+                                            ];
+                                            ?>
+                                            <span class="badge <?= $badgeClass[$item['status_verifikasi']] ?>">
+                                                <?= $statusText[$item['status_verifikasi']] ?>
+                                            </span>
+                                            <?php if ($item['catatan_verifikasi']): ?>
+                                                <br><small class="text-muted"><?= esc($item['catatan_verifikasi']) ?></small>
+                                            <?php endif ?>
+                                        </td>
+                                        <td>
+                                            <?php if ($item['bukti_pendukung']): ?>
+                                                <a href="/transportation/download/<?= $item['id'] ?>" class="btn btn-sm btn-info">
+                                                    Download
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">-</span>
+                                            <?php endif ?>
+                                        </td>
+                                        <td>
+                                            <div class="btn-group" role="group">
+                                                <?php if (in_array(session()->get('role'), ['admin', 'reviewer']) && $item['status_verifikasi'] == 'pending'): ?>
+                                                    <a href="/transportation/verify/<?= $item['id'] ?>" class="btn btn-sm btn-primary" title="Verifikasi">
+                                                        Verifikasi
+                                                    </a>
+                                                <?php endif ?>
+                                                
+                                                <?php if ($item['status_verifikasi'] != 'approved' || session()->get('role') == 'admin'): ?>
+                                                    <a href="/transportation/edit/<?= $item['id'] ?>" class="btn btn-sm btn-warning" title="Edit">
+                                                        Edit
+                                                    </a>
+                                                <?php elseif ($item['status_verifikasi'] == 'approved'): ?>
+                                                    <a href="/transportation/request-revision/<?= $item['id'] ?>" class="btn btn-sm btn-warning" title="Request Revisi">
+                                                        Request Revisi
+                                                    </a>
+                                                <?php endif ?>
+                                                
+                                                <?php if (session()->get('role') == 'admin'): ?>
+                                                    <a href="/transportation/delete/<?= $item['id'] ?>" 
+                                                       class="btn btn-sm btn-danger" 
+                                                       onclick="return confirm('Yakin ingin menghapus data tahun <?= $item['tahun'] ?>?')"
+                                                       title="Hapus">
+                                                        Hapus
+                                                    </a>
+                                                <?php endif ?>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach ?>
+                            <?php endif ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="mt-4">
+                    <h5>Keterangan Status:</h5>
+                    <ul>
+                        <li><span class="badge bg-warning">Menunggu</span> - Data menunggu verifikasi dari admin/reviewer</li>
+                        <li><span class="badge bg-success">Disetujui</span> - Data telah diverifikasi dan disetujui</li>
+                        <li><span class="badge bg-danger">Ditolak</span> - Data ditolak, perlu perbaikan</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?= $this->endSection() ?>
