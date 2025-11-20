@@ -22,8 +22,8 @@
     <?php endif; ?>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Edit Data</h6>
+        <div class="card-header py-3 text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);">
+            <h6 class="m-0 font-weight-bold">Form Edit Data</h6>
         </div>
         <div class="card-body">
             <form action="<?= base_url('education-research/update/' . $EducationResearch['id']) ?>" method="post" enctype="multipart/form-data">

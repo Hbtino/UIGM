@@ -31,8 +31,8 @@
     <?php endif; ?>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Form Tambah Data</h6>
+        <div class="card-header py-3 text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);">
+            <h6 class="m-0 font-weight-bold">Form Tambah Data</h6>
         </div>
         <div class="card-body">
             <form action="<?= base_url('waste-management/store') ?>" method="post" enctype="multipart/form-data">

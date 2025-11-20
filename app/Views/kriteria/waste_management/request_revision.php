@@ -9,7 +9,7 @@
     </div>
 
     <div class="card shadow mb-4">
-        <div class="card-header py-3 bg-warning text-dark">
+        <div class="card-header py-3 text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);">
             <h6 class="m-0 font-weight-bold">Request Revisi - Tahun <?= $WasteManagement['tahun'] ?></h6>
         </div>
         <div class="card-body">

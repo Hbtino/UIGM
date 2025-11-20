@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
+            <div class="card-header text-white d-flex" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);" justify-content-between align-items-center">
                 <h4 class="mb-0">Daftar Permintaan Revisi Transportation</h4>
                 <a href="/transportation" class="btn btn-light btn-sm">Kembali ke Data</a>
             </div>

@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-10 mx-auto">
         <div class="card">
-            <div class="card-header bg-primary text-white">
+            <div class="card-header  text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%) !important;">
                 <h4 class="mb-0">Tambah Data Transportasi & Mobilitas Berkelanjutan</h4>
             </div>
             <div class="card-body">
@@ -179,3 +179,4 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <?= $this->endSection() ?>
+

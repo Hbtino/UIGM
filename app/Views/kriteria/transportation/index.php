@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-12">
         <div class="card">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="card-header  text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%) !important;">
                 <h4 class="mb-0"><?= $title ?></h4>
                 <?php if (in_array(session()->get('role'), ['admin', 'kaprodi'])): ?>
                     <a href="<?= base_url('transportation/create') ?>" class="btn btn-light btn-sm">
@@ -110,19 +110,17 @@
             <?php if (in_array(session()->get('role'), ['admin', 'reviewer'])): ?>
                 <div class="row">
                     <div class="col-md-6 mb-2">
-                        <a href="<?= base_url('transportation/revisions') ?>" class="btn btn-info btn-block">
+                        <a href="<?= base_url('transportation/revisions') ?>" class="btn btn-block text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);">
                             <i class="fas fa-list"></i> Lihat Permintaan Revisi
                         </a>
                     </div>
                     <div class="col-md-6 mb-2">
-                        <a href="<?= base_url('transportation/my-revisions') ?>" class="btn btn-secondary btn-block">
-                            <i class="fas fa-user"></i> Revisi Saya
+                        <a href="<?= base_url('transportation/my-revisions') ?>" class="btn btn-block text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);"><i class="fas fa-user"></i> Revisi Saya
                         </a>
                     </div>
                 </div>
             <?php else: ?>
-                <a href="<?= base_url('transportation/my-revisions') ?>" class="btn btn-secondary btn-block">
-                    <i class="fas fa-user"></i> Revisi Saya
+                <a href="<?= base_url('transportation/my-revisions') ?>" class="btn btn-block text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);"><i class="fas fa-user"></i> Revisi Saya
                 </a>
             <?php endif; ?>
         </div>
@@ -130,4 +128,5 @@
 </div>
 
 <?= $this->endSection() ?>
+
 

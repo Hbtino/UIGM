@@ -4,7 +4,7 @@
 <div class="row">
     <div class="col-md-10 mx-auto">
         <div class="card">
-            <div class="card-header bg-warning">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);">
                 <h4 class="mb-0">Edit Data Setting & Infrastructure</h4>
             </div>
             <div class="card-body">
