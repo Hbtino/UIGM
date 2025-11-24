@@ -121,7 +121,7 @@
         }
 
         .btn-login {
-            
+
             color: #149823ff;
             border: none;
             padding: 10px 30px;
@@ -313,6 +313,30 @@
             color: #7f8c8d;
             font-size: 18px;
             line-height: 1.8;
+        }
+
+        /* News Card Styles */
+        .card {
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15) !important;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .card-text {
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         /* Placeholder untuk konten yang akan ditambahkan */
@@ -573,12 +597,60 @@
             <div class="section-content">
                 <p>Bagian ini berisi berita-berita terbaru tentang GreenMetric Polban.</p>
 
-                <!-- Placeholder untuk konten berita -->
-                <div class="content-placeholder">
-                    <i class="fas fa-newspaper"></i>
-                    <p>Konten Berita akan ditambahkan di sini</p>
-                    <small class="text-muted">Anda dapat menambahkan artikel, card berita, atau carousel</small>
-                </div>
+                <?php if (!empty($news)): ?>
+                    <div class="row g-4 mt-4">
+                        <?php foreach ($news as $item): ?>
+                            <div class="col-md-4">
+                                <a href="<?= base_url('news/' . $item['slug']) ?>" class="text-decoration-none">
+                                    <div class="card h-100 shadow-sm" style="transition: transform 0.3s; cursor: pointer;">
+                                        <?php if (!empty($item['image'])): ?>
+                                            <img src="<?= base_url('uploads/news/' . $item['image']) ?>"
+                                                class="card-img-top"
+                                                alt="<?= esc($item['title']) ?>"
+                                                style="height: 200px; object-fit: cover;">
+                                        <?php else: ?>
+                                            <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                                                style="height: 200px;">
+                                                <i class="fas fa-newspaper fa-3x text-white"></i>
+                                            </div>
+                                        <?php endif; ?>
+
+                                        <div class="card-body">
+                                            <h5 class="card-title" style="color: #2c3e50;">
+                                                <?= esc($item['title']) ?>
+                                            </h5>
+                                            <p class="card-text text-muted">
+                                                <?= esc(substr(strip_tags($item['excerpt'] ?? $item['content']), 0, 100)) ?>...
+                                            </p>
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <small class="text-muted">
+                                                    <i class="fas fa-calendar"></i>
+                                                    <?= date('d M Y', strtotime($item['published_at'] ?? $item['created_at'])) ?>
+                                                </small>
+                                                <span class="badge" style="background-color: #149823ff;">
+                                                    <?= esc($item['category'] ?? 'Berita') ?>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                    
+                    <!-- Tombol Lihat Semua Berita -->
+                    <div class="text-center mt-5">
+                        <a href="<?= base_url('news') ?>" class="btn btn-lg" style="background: linear-gradient(135deg, #149823ff, #0b5804ff); color: white; padding: 15px 40px; border-radius: 30px; font-weight: 600; box-shadow: 0 5px 15px rgba(20, 152, 35, 0.3); transition: all 0.3s;">
+                            <i class="fas fa-newspaper"></i> Lihat Semua Berita
+                        </a>
+                    </div>
+                <?php else: ?>
+                    <div class="content-placeholder">
+                        <i class="fas fa-newspaper"></i>
+                        <p>Belum ada berita yang dipublikasikan</p>
+                        <small class="text-muted">Berita akan muncul di sini setelah dipublikasikan oleh admin</small>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>

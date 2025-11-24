@@ -31,8 +31,8 @@ $routes->get('/dashboard', 'DashboardController::index');
 // ============================================
 
 // Dashboard Routes - Kampus Berkelanjutan
-$routes->group('dashboard', function($routes) {
-    
+$routes->group('dashboard', function ($routes) {
+
     $routes->get('/', 'Dashboard::index');
     $routes->get('pengaturan-infrastruktur', 'Dashboard::pengaturanInfrastruktur');
     $routes->get('energi-iklim', 'Dashboard::energiIklim');
@@ -48,7 +48,7 @@ $routes->get('laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth
 $routes->get('dashboard/laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth']);
 $routes->get('pengaturan', 'Dashboard::pengaturan');
 
-$routes->group('setting-infrastructure', ['filter' => 'auth'], function($routes) {
+$routes->group('setting-infrastructure', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'SettingInfrastructureController::index');
     $routes->get('create', 'SettingInfrastructureController::create');
     $routes->post('store', 'SettingInfrastructureController::store');
@@ -58,7 +58,7 @@ $routes->group('setting-infrastructure', ['filter' => 'auth'], function($routes)
     $routes->get('verify/(:num)', 'SettingInfrastructureController::verify/$1');
     $routes->post('process-verification/(:num)', 'SettingInfrastructureController::processVerification/$1');
     $routes->get('download/(:num)', 'SettingInfrastructureController::download/$1');
-    
+
     // Revision Request Routes
     $routes->get('request-revision/(:num)', 'SettingInfrastructureController::requestRevision/$1');
     $routes->post('submit-revision-request/(:num)', 'SettingInfrastructureController::submitRevisionRequest/$1');
@@ -69,7 +69,7 @@ $routes->group('setting-infrastructure', ['filter' => 'auth'], function($routes)
 });
 
 // 2. ENERGY & CLIMATE CHANGE
-$routes->group('energy-climate', ['filter' => 'auth'], function($routes) {
+$routes->group('energy-climate', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'EnergyClimateController::index');
     $routes->get('create', 'EnergyClimateController::create');
     $routes->post('store', 'EnergyClimateController::store');
@@ -79,7 +79,7 @@ $routes->group('energy-climate', ['filter' => 'auth'], function($routes) {
     $routes->get('verify/(:num)', 'EnergyClimateController::verify/$1');
     $routes->post('process-verification/(:num)', 'EnergyClimateController::processVerification/$1');
     $routes->get('download/(:num)', 'EnergyClimateController::download/$1');
-    
+
     // Revision Request Routes
     $routes->get('request-revision/(:num)', 'EnergyClimateController::requestRevision/$1');
     $routes->post('submit-revision-request/(:num)', 'EnergyClimateController::submitRevisionRequest/$1');
@@ -90,7 +90,7 @@ $routes->group('energy-climate', ['filter' => 'auth'], function($routes) {
 });
 
 // 3. WATER MANAGEMENT
-$routes->group('water-management', ['filter' => 'auth'], function($routes) {
+$routes->group('water-management', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'WaterManagementController::index');
     $routes->get('create', 'WaterManagementController::create');
     $routes->post('store', 'WaterManagementController::store');
@@ -100,7 +100,7 @@ $routes->group('water-management', ['filter' => 'auth'], function($routes) {
     $routes->get('verify/(:num)', 'WaterManagementController::verify/$1');
     $routes->post('process-verification/(:num)', 'WaterManagementController::processVerification/$1');
     $routes->get('download/(:num)', 'WaterManagementController::download/$1');
-    
+
     // Revision Request Routes
     $routes->get('request-revision/(:num)', 'WaterManagementController::requestRevision/$1');
     $routes->post('submit-revision-request/(:num)', 'WaterManagementController::submitRevisionRequest/$1');
@@ -111,7 +111,7 @@ $routes->group('water-management', ['filter' => 'auth'], function($routes) {
 });
 
 // 4. WASTE MANAGEMENT
-$routes->group('waste-management', ['filter' => 'auth'], function($routes) {
+$routes->group('waste-management', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'WasteManagementController::index');
     $routes->get('create', 'WasteManagementController::create');
     $routes->post('store', 'WasteManagementController::store');
@@ -121,7 +121,7 @@ $routes->group('waste-management', ['filter' => 'auth'], function($routes) {
     $routes->get('verify/(:num)', 'WasteManagementController::verify/$1');
     $routes->post('process-verification/(:num)', 'WasteManagementController::processVerification/$1');
     $routes->get('download/(:num)', 'WasteManagementController::download/$1');
-    
+
     // Revision Request Routes
     $routes->get('request-revision/(:num)', 'WasteManagementController::requestRevision/$1');
     $routes->post('submit-revision-request/(:num)', 'WasteManagementController::submitRevisionRequest/$1');
@@ -134,7 +134,7 @@ $routes->group('waste-management', ['filter' => 'auth'], function($routes) {
 
 
 // 5. TRANSPORTATION
-$routes->group('transportation', ['filter' => 'auth'], function($routes) {
+$routes->group('transportation', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'TransportationController::index');
     $routes->get('create', 'TransportationController::create');
     $routes->post('store', 'TransportationController::store');
@@ -144,7 +144,7 @@ $routes->group('transportation', ['filter' => 'auth'], function($routes) {
     $routes->get('verify/(:num)', 'TransportationController::verify/$1');
     $routes->post('process-verification/(:num)', 'TransportationController::processVerification/$1');
     $routes->get('download/(:num)', 'TransportationController::download/$1');
-    
+
     // Revision Request Routes
     $routes->get('request-revision/(:num)', 'TransportationController::requestRevision/$1');
     $routes->post('submit-revision-request/(:num)', 'TransportationController::submitRevisionRequest/$1');
@@ -155,7 +155,7 @@ $routes->group('transportation', ['filter' => 'auth'], function($routes) {
 });
 
 // 5. EDUCATION & RESEARCH
-$routes->group('education-research', ['filter' => 'auth'], function($routes) {
+$routes->group('education-research', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'EducationResearchController::index');
     $routes->get('create', 'EducationResearchController::create');
     $routes->post('store', 'EducationResearchController::store');
@@ -165,7 +165,7 @@ $routes->group('education-research', ['filter' => 'auth'], function($routes) {
     $routes->get('verify/(:num)', 'EducationResearchController::verify/$1');
     $routes->post('process-verification/(:num)', 'EducationResearchController::processVerification/$1');
     $routes->get('download/(:num)', 'EducationResearchController::download/$1');
-    
+
     // Revision Request Routes
     $routes->get('request-revision/(:num)', 'EducationResearchController::requestRevision/$1');
     $routes->post('submit-revision-request/(:num)', 'EducationResearchController::submitRevisionRequest/$1');
@@ -179,7 +179,7 @@ $routes->group('education-research', ['filter' => 'auth'], function($routes) {
 // USER MANAGEMENT ROUTES (Admin Only)
 // ============================================
 
-$routes->group('users', ['filter' => 'auth'], function($routes) {
+$routes->group('users', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'UserController::index');
     $routes->get('edit/(:num)', 'UserController::edit/$1');
     $routes->post('update/(:num)', 'UserController::update/$1');
@@ -194,7 +194,7 @@ $routes->group('users', ['filter' => 'auth'], function($routes) {
 // CAPAIAN ROUTES (Dosen/Kaprodi)
 // ============================================
 
-$routes->group('capaian', ['filter' => 'auth'], function($routes) {
+$routes->group('capaian', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'CapaianController::index');
     $routes->get('create', 'CapaianController::create');
     $routes->post('store', 'CapaianController::store');
@@ -207,15 +207,15 @@ $routes->group('capaian', ['filter' => 'auth'], function($routes) {
 // GREENMETRIC & OTHER MODULES
 // ============================================
 
-$routes->group('greenmetric', ['filter' => 'auth'], function($routes) {
+$routes->group('greenmetric', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Greenmetric::index');
 });
 
-$routes->group('activity', ['filter' => 'auth'], function($routes) {
+$routes->group('activity', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Activity::index');
 });
 
-$routes->group('performance', ['filter' => 'auth'], function($routes) {
+$routes->group('performance', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Performance::index');
 });
 
@@ -223,7 +223,7 @@ $routes->group('performance', ['filter' => 'auth'], function($routes) {
 // ADMIN PANEL
 // ============================================
 
-$routes->group('admin', ['filter' => 'auth'], function($routes) {
+$routes->group('admin', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'Admin::index');
 });
 $routes->get('/users/create', 'UserController::create');
@@ -233,12 +233,52 @@ $routes->post('/users/store', 'UserController::store');
 // TEST ROUTES (Remove in production)
 // ============================================
 $routes->get('test/notifications', 'TestNotification::testPasswordRequests');
+$routes->get('test-menu', 'TestMenu::index');
+$routes->get('fix-duplicate-menus', 'FixDuplicateMenus::index');
+$routes->get('fix-duplicate-menus/delete/(:num)', 'FixDuplicateMenus::delete/$1');
+$routes->get('fix-duplicate-menus/auto-fix', 'FixDuplicateMenus::autoFix');
+
+// ============================================
+// CMS ROUTES (Admin Only)
+// ============================================
+
+// Menu Management - URL Pendek
+$routes->get('menus', 'CmsController::menus', ['filter' => 'auth']);
+$routes->get('menus/create', 'CmsController::createMenu', ['filter' => 'auth']);
+$routes->post('menus/store', 'CmsController::storeMenu', ['filter' => 'auth']);
+$routes->get('menus/edit/(:num)', 'CmsController::editMenu/$1', ['filter' => 'auth']);
+$routes->post('menus/update/(:num)', 'CmsController::updateMenu/$1', ['filter' => 'auth']);
+$routes->get('menus/delete/(:num)', 'CmsController::deleteMenu/$1', ['filter' => 'auth']);
+
+// News Management - URL Pendek
+$routes->get('news-admin', 'CmsController::news', ['filter' => 'auth']);
+$routes->get('news-admin/create', 'CmsController::createNews', ['filter' => 'auth']);
+$routes->post('news-admin/store', 'CmsController::storeNews', ['filter' => 'auth']);
+$routes->get('news-admin/edit/(:num)', 'CmsController::editNews/$1', ['filter' => 'auth']);
+$routes->post('news-admin/update/(:num)', 'CmsController::updateNews/$1', ['filter' => 'auth']);
+$routes->get('news-admin/delete/(:num)', 'CmsController::deleteNews/$1', ['filter' => 'auth']);
+
+// Content Management - URL Pendek
+$routes->get('contents', 'CmsController::contents', ['filter' => 'auth']);
+$routes->get('contents/edit/(:segment)/(:segment)', 'CmsController::editContent/$1/$2', ['filter' => 'auth']);
+$routes->post('contents/update/(:num)', 'CmsController::updateContent/$1', ['filter' => 'auth']);
+
+// Landing Page Content Management
+$routes->get('landing-contents', 'CmsController::landingContents', ['filter' => 'auth']);
+$routes->get('landing-contents/edit/(:segment)', 'CmsController::editLandingContent/$1', ['filter' => 'auth']);
+$routes->post('landing-contents/update/(:segment)', 'CmsController::updateLandingContent/$1', ['filter' => 'auth']);
+
+// ============================================
+// PUBLIC NEWS ROUTES (No Auth Required)
+// ============================================
+$routes->get('news', 'News::index');
+$routes->get('news/(:segment)', 'News::detail/$1');
 
 // ============================================
 // SETTINGS ROUTES
 // ============================================
 
-$routes->group('settings', ['filter' => 'auth'], function($routes) {
+$routes->group('settings', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'SettingsController::index');
     $routes->post('update-profile', 'SettingsController::updateProfile');
     $routes->post('upload-photo', 'SettingsController::uploadPhoto');
