@@ -27,12 +27,17 @@ class SettingInfrastructureController extends BaseController
             return redirect()->to('/login');
         }
         
+        // Get user data for profile photo
+        $user = $this->userModel->find($session->get('user_id'));
+        
         $data = [
             'title' => 'Setting & Infrastructure - Data Capaian',
-            'page' => 'pengaturan-infrastruktur',
+            'page' => 'setting-infrastructure',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengaturan & Infrastruktur',
             'settingInfrastructure' => $this->model->orderBy('tahun', 'DESC')->findAll(),
             'user_name' => $session->get('name'),
-            'user_role' => $session->get('role')
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
         
         return view('kriteria/setting_infrastructure/index', $data);

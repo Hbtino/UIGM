@@ -20,13 +20,26 @@ class EducationResearchController extends BaseController
     }
 
     /**
-     * Display list of all energy climate data
+     * Display list of all education research data
      */
     public function index()
     {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
         $data = [
-            'title' => 'Energy & Climate Change',
+            'title' => 'Education & Research - Data Capaian',
+            'page' => 'education-research',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pendidikan & Penelitian',
             'EducationResearch' => $this->model->getAllWithUsers(),
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('kriteria/education_research/index', $data);

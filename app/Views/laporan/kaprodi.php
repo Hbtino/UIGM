@@ -139,6 +139,16 @@
             <h1><i class="fas fa-file-alt"></i> Laporan Program Studi - UI GreenMetric</h1>
             <p>Form Pelaporan Kontribusi Program Studi untuk UI GreenMetric World University Ranking</p>
             <p><strong>Periode: <?= $laporan_data['periode'] ?></strong></p>
+            <?php if (isset($last_saved) && $last_saved): ?>
+                <div class="alert alert-info mt-3" style="font-size: 14px;">
+                    <i class="fas fa-info-circle"></i> 
+                    <strong>Laporan terakhir disimpan:</strong> 
+                    <?php
+                        $date = new DateTime($last_saved);
+                        echo $date->format('d F Y, H:i:s');
+                    ?>
+                </div>
+            <?php endif; ?>
         </div>
 
         <!-- Section 0: Pendahuluan -->
@@ -172,17 +182,42 @@
                     <?php endif; ?>
                 </td>
             </tr>
+            <?php if ($user_role === 'admin'): ?>
+            <tr>
+                <td><strong>Pilih Kaprodi (Admin)</strong></td>
+                <td>
+                    <select class="form-input" name="kaprodi_id" id="kaprodi_select">
+                        <option value="">-- Pilih Kaprodi --</option>
+                        <?php if (isset($prodi_list) && is_array($prodi_list)): ?>
+                            <?php 
+                            // Get list of kaprodi users
+                            $userModel = new \App\Models\UserModel();
+                            $kaprodiUsers = $userModel->where('role', 'kaprodi')->findAll();
+                            foreach ($kaprodiUsers as $kaprodi): 
+                            ?>
+                                <option value="<?= esc($kaprodi['id']) ?>" <?= ($kaprodi['id'] == $user_id) ? 'selected' : '' ?>>
+                                    <?= esc($kaprodi['name']) ?> (<?= esc($kaprodi['email']) ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </select>
+                    <small style="color: #666; display: block; margin-top: 5px;">
+                        <i class="fas fa-info-circle"></i> Admin dapat membuat laporan atas nama kaprodi yang dipilih
+                    </small>
+                </td>
+            </tr>
+            <?php endif; ?>
             <tr>
                 <td><strong>Nama Lengkap Kaprodi dan Gelar</strong></td>
-                <td><input type="text" class="form-input" placeholder="Contoh: Dr. Ahmad Budiman, S.T., M.T."></td>
+                <td><input type="text" id="kaprodi_name" class="form-input" placeholder="Contoh: Dr. Ahmad Budiman, S.T., M.T." value="<?= isset($saved_data['kaprodi_name']) ? esc($saved_data['kaprodi_name']) : '' ?>"></td>
             </tr>
             <tr>
                 <td><strong>Jurusan</strong></td>
-                <td><input type="text" class="form-input" placeholder="Masukkan jurusan"></td>
+                <td><input type="text" id="jurusan" class="form-input" placeholder="Masukkan jurusan" value="<?= isset($saved_data['jurusan']) ? esc($saved_data['jurusan']) : '' ?>"></td>
             </tr>
             <tr>
                 <td><strong>Tanggal Laporan</strong></td>
-                <td><input type="date" class="form-input"></td>
+                <td><input type="date" id="tanggal_laporan" class="form-input" value="<?= isset($saved_data['tanggal_laporan']) ? esc($saved_data['tanggal_laporan']) : date('Y-m-d') ?>"></td>
             </tr>
         </table>
 
@@ -516,15 +551,186 @@
 
         <!-- Action Buttons -->
         <div class="text-center mt-4">
-            <button class="btn btn-success btn-lg" style="padding: 12px 40px;">
+            <a href="<?= base_url('laporan/riwayat-kaprodi') ?>" class="btn btn-info btn-lg" style="padding: 12px 40px;">
+                <i class="fas fa-history"></i> Lihat Riwayat
+            </a>
+            <button id="btnSave" class="btn btn-success btn-lg" style="padding: 12px 40px;">
                 <i class="fas fa-save"></i> Simpan Laporan
             </button>
-            <button class="btn btn-primary btn-lg ms-2" style="padding: 12px 40px;">
+            <a href="<?= base_url('laporan/export-kaprodi-pdf') ?>" class="btn btn-primary btn-lg ms-2" style="padding: 12px 40px;">
                 <i class="fas fa-file-pdf"></i> Export PDF
-            </button>
+            </a>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Load saved data when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            <?php if (isset($saved_data) && $saved_data): ?>
+                const savedData = <?= json_encode($saved_data) ?>;
+                
+                // Load SI data
+                if (savedData.si) {
+                    const siData = JSON.parse(savedData.si);
+                    let siIndex = 0;
+                    document.querySelectorAll('table').forEach(table => {
+                        const subtitle = table.previousElementSibling;
+                        if (subtitle && subtitle.textContent.includes('SI (Setting')) {
+                            table.querySelectorAll('tbody tr').forEach(row => {
+                                if (siData[siIndex]) {
+                                    const textareas = row.querySelectorAll('textarea');
+                                    if (textareas.length >= 2) {
+                                        textareas[0].value = siData[siIndex].kegiatan || '';
+                                        textareas[1].value = siData[siIndex].bukti || '';
+                                    }
+                                    siIndex++;
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                // Load EC data
+                if (savedData.ec) {
+                    const ecData = JSON.parse(savedData.ec);
+                    let ecIndex = 0;
+                    document.querySelectorAll('table').forEach(table => {
+                        const subtitle = table.previousElementSibling;
+                        if (subtitle && subtitle.textContent.includes('EC (Energy')) {
+                            table.querySelectorAll('tbody tr').forEach(row => {
+                                if (ecData[ecIndex]) {
+                                    const textareas = row.querySelectorAll('textarea');
+                                    if (textareas.length >= 2) {
+                                        textareas[0].value = ecData[ecIndex].kegiatan || '';
+                                        textareas[1].value = ecData[ecIndex].bukti || '';
+                                    }
+                                    ecIndex++;
+                                }
+                            });
+                        }
+                    });
+                }
+                
+                // Load WS data
+                if (savedData.ws) {
+                    const wsData = JSON.parse(savedData.ws);
+                    let wsIndex = 0;
+                    document.querySelectorAll('table').forEach(table => {
+                        const subtitle = table.previousElementSibling;
+                        if (subtitle && subtitle.textContent.includes('WS (Waste')) {
+                            table.querySelectorAll('tbody tr').forEach(row => {
+                                if (wsData[wsIndex]) {
+                                    const textareas = row.querySelectorAll('textarea');
+                                    if (textareas.length >= 2) {
+                                        textareas[0].value = wsData[wsIndex].kegiatan || '';
+                                        textareas[1].value = wsData[wsIndex].bukti || '';
+                                    }
+                                    wsIndex++;
+                                }
+                            });
+                        }
+                    });
+                }
+            <?php endif; ?>
+        });
+        
+        document.getElementById('btnSave').addEventListener('click', function() {
+            const formData = new FormData();
+            
+            // Info Prodi
+            formData.append('user_id', <?= $user_id ?>);
+            formData.append('user_name', '<?= esc($user_name) ?>');
+            
+            // Check if admin selected different kaprodi
+            const kaprodiSelect = document.getElementById('kaprodi_select');
+            if (kaprodiSelect && kaprodiSelect.value) {
+                formData.append('selected_kaprodi_id', kaprodiSelect.value);
+                // Get selected kaprodi name
+                const selectedOption = kaprodiSelect.options[kaprodiSelect.selectedIndex];
+                formData.append('user_name', selectedOption.text.split(' (')[0]); // Get name without email
+            }
+            
+            formData.append('prodi_id', <?= $user_prodi_id ?>);
+            formData.append('prodi_name', document.querySelector('input[value="<?= esc($prodi_name) ?>"]')?.value || '<?= esc($prodi_name) ?>');
+            formData.append('kaprodi_name', document.getElementById('kaprodi_name').value);
+            formData.append('jurusan', document.getElementById('jurusan').value);
+            formData.append('tanggal_laporan', document.getElementById('tanggal_laporan').value);
+            
+            // SI Data
+            const siData = [];
+            document.querySelectorAll('table').forEach(table => {
+                const subtitle = table.previousElementSibling;
+                if (subtitle && subtitle.textContent.includes('SI (Setting')) {
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        const textareas = row.querySelectorAll('textarea');
+                        if (textareas.length >= 2) {
+                            siData.push({
+                                kegiatan: textareas[0].value,
+                                bukti: textareas[1].value
+                            });
+                        }
+                    });
+                }
+            });
+            formData.append('si', JSON.stringify(siData));
+            
+            // EC Data
+            const ecData = [];
+            document.querySelectorAll('table').forEach(table => {
+                const subtitle = table.previousElementSibling;
+                if (subtitle && subtitle.textContent.includes('EC (Energy')) {
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        const textareas = row.querySelectorAll('textarea');
+                        if (textareas.length >= 2) {
+                            ecData.push({
+                                kegiatan: textareas[0].value,
+                                bukti: textareas[1].value
+                            });
+                        }
+                    });
+                }
+            });
+            formData.append('ec', JSON.stringify(ecData));
+            
+            // WS Data
+            const wsData = [];
+            document.querySelectorAll('table').forEach(table => {
+                const subtitle = table.previousElementSibling;
+                if (subtitle && subtitle.textContent.includes('WS (Waste')) {
+                    table.querySelectorAll('tbody tr').forEach(row => {
+                        const textareas = row.querySelectorAll('textarea');
+                        if (textareas.length >= 2) {
+                            wsData.push({
+                                kegiatan: textareas[0].value,
+                                bukti: textareas[1].value
+                            });
+                        }
+                    });
+                }
+            });
+            formData.append('ws', JSON.stringify(wsData));
+            
+            // Send data
+            fetch('<?= base_url('laporan/save-kaprodi') ?>', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Laporan berhasil disimpan!');
+                    // Reload page to show updated timestamp
+                    window.location.reload();
+                } else {
+                    alert('Gagal menyimpan laporan: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menyimpan laporan');
+            });
+        });
+    </script>
 </body>
 </html>

@@ -368,47 +368,9 @@
             padding: 50px 0 20px;
         }
 
-        .footer h4 {
-            color: #149823ff;
-            font-size: 24px;
-            margin-bottom: 20px;
-            font-weight: bold;
-        }
-
-        .footer p {
-            color: #bdc3c7;
-            line-height: 1.8;
-        }
-
-        .contact-info {
-            list-style: none;
-            padding: 0;
-        }
-
-        .contact-info li {
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #bdc3c7;
-            transition: all 0.3s;
-        }
-
-        .contact-info li:hover {
-            color: #149823ff;
-            padding-left: 5px;
-        }
-
-        .contact-info i {
-            color: #149823ff;
-            font-size: 18px;
-        }
-
         .footer-bottom {
             text-align: center;
-            padding-top: 30px;
-            margin-top: 40px;
-            border-top: 1px solid #34495e;
+            padding: 30px 0;
             color: #95a5a6;
         }
 
@@ -440,6 +402,11 @@
         .scroll-top:hover {
             transform: translateY(-5px) scale(1.1);
             box-shadow: 0 5px 20px rgba(12, 222, 103, 0.4);
+        }
+
+        /* Social Media Hover Effects */
+        .social-media a:hover {
+            transform: scale(1.1) translateY(-3px);
         }
 
         /* Mobile Responsive */
@@ -550,26 +517,51 @@
     <!-- Section Deskripsi -->
     <section id="deskripsi" class="content-section">
         <div class="container">
-            <h2 class="section-title">Deskripsi</h2>
-            <div class="section-content">
-                <p>Bagian ini berisi deskripsi lengkap tentang program GreenMetric Polban.</p>
+            <?php if (isset($contents['deskripsi'])): ?>
+                <h2 class="section-title"><?= esc($contents['deskripsi']['title'] ?? 'Deskripsi') ?></h2>
+                <div class="section-content">
+                    <?php if (!empty($contents['deskripsi']['subtitle'])): ?>
+                        <p class="lead"><?= esc($contents['deskripsi']['subtitle']) ?></p>
+                    <?php endif; ?>
 
-                <!-- Placeholder untuk konten deskripsi -->
-                <div class="row g-4 align-items-center">
-                    <div class="col-md-6">
-                        <img src="gambar-kampus.jpg" class="img-fluid rounded shadow" alt="Kampus Polban">
-                    </div>
-                    <div class="col-md-6">
-                        <h3>Tentang GreenMetric Polban</h3>
-                        <p>GreenMetric adalah program pemeringkatan universitas yang fokus pada pengelolaan kampus hijau dan berkelanjutan.</p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check-circle text-success me-2"></i> Kampus Hijau</li>
-                            <li><i class="fas fa-check-circle text-success me-2"></i> Energi Terbarukan</li>
-                            <li><i class="fas fa-check-circle text-success me-2"></i> Pengelolaan Limbah</li>
-                        </ul>
+                    <div class="row g-4 align-items-center mt-4">
+                        <?php if (!empty($contents['deskripsi']['image'])): ?>
+                            <div class="col-md-6">
+                                <img src="<?= base_url('uploads/landing/' . $contents['deskripsi']['image']) ?>" 
+                                     class="img-fluid rounded shadow" 
+                                     alt="<?= esc($contents['deskripsi']['title']) ?>"
+                                     style="width: 100%; height: auto; object-fit: cover;">
+                            </div>
+                        <?php endif; ?>
+                        
+                        <div class="<?= !empty($contents['deskripsi']['image']) ? 'col-md-6' : 'col-12' ?>">
+                            <?php if (!empty($contents['deskripsi']['content'])): ?>
+                                <div class="content-text">
+                                    <?= $contents['deskripsi']['content'] ?>
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($contents['deskripsi']['button_text']) && !empty($contents['deskripsi']['button_url'])): ?>
+                                <a href="<?= esc($contents['deskripsi']['button_url']) ?>" 
+                                   class="btn btn-lg mt-3" 
+                                   style="background: linear-gradient(135deg, #149823ff, #0b5804ff); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none;">
+                                    <?= esc($contents['deskripsi']['button_text']) ?>
+                                </a>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <h2 class="section-title">Deskripsi</h2>
+                <div class="section-content">
+                    <p>Bagian ini berisi deskripsi lengkap tentang program GreenMetric Polban.</p>
+                    <div class="content-placeholder">
+                        <i class="fas fa-info-circle"></i>
+                        <p>Konten Deskripsi belum diatur</p>
+                        <small class="text-muted">Silakan tambahkan konten melalui CMS</small>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
 
@@ -656,17 +648,65 @@
     </section>
 
     <!-- Section Kontak -->
-    <section id="kontak" class="content-section">
+    <section id="kontak" class="content-section" style="background: #1e3a5f; color: white;">
         <div class="container">
-            <h2 class="section-title">Kontak</h2>
-            <div class="section-content">
+            <h2 class="section-title" style="color: white;">Kontak</h2>
+            <div class="section-content" style="color: rgba(255,255,255,0.9);">
                 <p>Hubungi kami untuk informasi lebih lanjut tentang GreenMetric Polban.</p>
 
-                <!-- Placeholder untuk konten kontak -->
-                <div class="content-placeholder">
-                    <i class="fas fa-envelope"></i>
-                    <p>Konten Kontak akan ditambahkan di sini</p>
-                    <small class="text-muted">Anda dapat menambahkan form kontak, peta, atau informasi kontak</small>
+                <!-- Contact Information -->
+                <div class="row mt-5 align-items-center">
+                    <div class="col-md-8">
+                        <div class="contact-details" style="text-align: left;">
+                            <h4 style="color: #4CAF50; margin-bottom: 30px;">
+                                <i class="fas fa-info-circle"></i> Kontak informasi
+                            </h4>
+                            
+                            <div class="contact-item" style="margin-bottom: 20px; display: flex; align-items: start; gap: 15px;">
+                                <i class="fas fa-map-marker-alt" style="color: #4CAF50; font-size: 20px; margin-top: 5px;"></i>
+                                <div>
+                                    <strong>Jl. Gegerkalong Hilir, Ciwaruga, Kec. Parongpong,</strong><br>
+                                    Kabupaten Bandung Barat, Jawa Barat<br>
+                                    Kode Pos 40559 | Kotak Pos Bandung 1234
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item" style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
+                                <i class="fas fa-phone" style="color: #4CAF50; font-size: 20px;"></i>
+                                <div>
+                                    <strong>022 - 2013789 | 022 - 2015721</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="contact-item" style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
+                                <i class="fas fa-envelope" style="color: #4CAF50; font-size: 20px;"></i>
+                                <div>
+                                    <strong>polban@polban.ac.id</strong>
+                                </div>
+                            </div>
+                            
+                            <div class="social-media" style="display: flex; gap: 15px;">
+                                <a href="https://www.facebook.com/polbanofficial/?locale=id_ID" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #3b5998; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="Facebook POLBAN">
+                                    <i class="fab fa-facebook-f"></i>
+                                </a>
+                                <a href="https://www.instagram.com/politekniknegeribandung?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #E1306C; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="Instagram POLBAN">
+                                    <i class="fab fa-instagram"></i>
+                                </a>
+                                <a href="https://www.youtube.com/c/POLBANOFFICIAL" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #FF0000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="YouTube POLBAN">
+                                    <i class="fab fa-youtube"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4 text-center">
+                        <div style="background: white; padding: 30px; border-radius: 15px; display: inline-block;">
+                            <img src="https://e7.pngegg.com/pngimages/2/27/png-clipart-bandung-state-polytechnic-symbol-technical-school-pendhidhikan-dhuwur-symbol-miscellaneous-angle.png" 
+                                 alt="POLBAN Logo" 
+                                 style="width: 150px; height: auto;">
+                            <h5 style="color: #1e3a5f; margin-top: 15px; font-weight: bold;">POLBAN</h5>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -675,35 +715,6 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="row">
-                <!-- About -->
-                <div class="col-md-6 mb-4">
-                    <h4>UI GreenMetric Polban</h4>
-                    <p>
-                        Program pemeringkatan universitas berbasis kampus hijau dan berkelanjutan.
-                    </p>
-                </div>
-
-                <!-- Kontak -->
-                <div class="col-md-6 mb-4">
-                    <h4>Kontak</h4>
-                    <ul class="contact-info">
-                        <li>
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span>Jl. Gegerkalong Hilir, Bandung</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-envelope"></i>
-                            <span>greenmetric@polban.ac.id</span>
-                        </li>
-                        <li>
-                            <i class="fas fa-phone"></i>
-                            <span>+62 22 1234567</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
             <div class="footer-bottom">
                 <p>Copyright © 2024 UI GreenMetric Polban. All rights reserved.</p>
             </div>

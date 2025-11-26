@@ -46,6 +46,23 @@ $routes->get('laporan', 'LaporanController::index', ['filter' => 'auth']);
 $routes->get('dashboard/laporan', 'LaporanController::index', ['filter' => 'auth']);
 $routes->get('laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth']);
 $routes->get('dashboard/laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth']);
+// Edit & Delete routes (must be before other laporan routes)
+$routes->get('laporan/edit-dosen/(:num)', 'LaporanController::editDosen/$1', ['filter' => 'auth']);
+$routes->post('laporan/delete-dosen/(:num)', 'LaporanController::deleteDosen/$1', ['filter' => 'auth']);
+$routes->get('laporan/edit-kaprodi/(:num)', 'LaporanController::editKaprodi/$1', ['filter' => 'auth']);
+$routes->post('laporan/delete-kaprodi/(:num)', 'LaporanController::deleteKaprodi/$1', ['filter' => 'auth']);
+
+// Riwayat & Export routes
+$routes->get('laporan/riwayat-dosen', 'LaporanController::riwayatDosen', ['filter' => 'auth']);
+$routes->get('laporan/riwayat-kaprodi', 'LaporanController::riwayatKaprodi', ['filter' => 'auth']);
+$routes->get('laporan/export-dosen-pdf', 'LaporanController::exportDosenPdf', ['filter' => 'auth']);
+$routes->get('laporan/export-dosen-pdf/(:num)', 'LaporanController::exportDosenPdf/$1', ['filter' => 'auth']);
+$routes->get('laporan/export-kaprodi-pdf', 'LaporanController::exportKaprodiPdf', ['filter' => 'auth']);
+$routes->get('laporan/export-kaprodi-pdf/(:num)', 'LaporanController::exportKaprodiPdf/$1', ['filter' => 'auth']);
+
+// Save routes
+$routes->post('laporan/save-dosen', 'LaporanController::saveDosen', ['filter' => 'auth']);
+$routes->post('laporan/save-kaprodi', 'LaporanController::saveKaprodi', ['filter' => 'auth']);
 $routes->get('pengaturan', 'Dashboard::pengaturan');
 
 $routes->group('setting-infrastructure', ['filter' => 'auth'], function ($routes) {

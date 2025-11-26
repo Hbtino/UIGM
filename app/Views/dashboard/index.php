@@ -692,6 +692,24 @@
                             <span>Manajemen User</span>
                         </a>
                     </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('menus') ?>" class="nav-link">
+                            <i class="fas fa-bars"></i>
+                            <span>Manajemen Menu</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('news-admin') ?>" class="nav-link">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Manajemen Berita</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('landing-contents') ?>" class="nav-link">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Konten Landing Page</span>
+                        </a>
+                    </li>
                     <?php endif; ?>
                     
                     <!-- Laporan Menu with Submenu -->
@@ -965,6 +983,7 @@
                 </div>
             </div>
         </div>
+        
         <!-- Footer -->
         <footer style="background: #001f3f; color: white; padding: 40px 30px 20px; border-radius: 15px; margin-top: 40px;">
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-bottom: 30px;">

@@ -24,9 +24,22 @@ class EnergyClimateController extends BaseController
      */
     public function index()
     {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
         $data = [
-            'title' => 'Energy & Climate Change',
+            'title' => 'Energy & Climate Change - Data Capaian',
+            'page' => 'energy-climate',
+            'breadcrumb' => 'Home / Kriteria SDGs / Energi & Perubahan Iklim',
             'energyClimate' => $this->model->getAllWithUsers(),
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('kriteria/energy_climate/index', $data);

@@ -9,6 +9,11 @@ class Auth extends Controller
 {
     public function login()
     {
+        // Check if user is already logged in via session
+        if (session()->get('logged_in')) {
+            return redirect()->to('/dashboard');
+        }
+        
         return view('auth/login');
     }
 
@@ -53,6 +58,41 @@ class Auth extends Controller
                     'logged_in' => true
                 ];
                 $session->set($sessionData);
+                
+                // Handle Remember Me
+                $remember = $this->request->getVar('remember');
+                if ($remember) {
+                    $db = \Config\Database::connect();
+                    
+                    // Check if user already has a token
+                    if (!empty($user['remember_token'])) {
+                        // Reactivate existing token
+                        $token = $user['remember_token'];
+                        $db->table('users')
+                           ->where('id', $user['id'])
+                           ->update([
+                               'remember_token_active' => 1,
+                               'remember_token_expires' => date('Y-m-d H:i:s', strtotime('+30 days'))
+                           ]);
+                    } else {
+                        // Generate a new unique token
+                        $token = bin2hex(random_bytes(32));
+                        
+                        // Store token in database with active flag
+                        $db->table('users')
+                           ->where('id', $user['id'])
+                           ->update([
+                               'remember_token' => $token,
+                               'remember_token_active' => 1,
+                               'remember_token_expires' => date('Y-m-d H:i:s', strtotime('+30 days'))
+                           ]);
+                    }
+                    
+                    // Set cookie for 30 days with httpOnly and secure flags
+                    setcookie('remember_token', $token, time() + (30 * 24 * 60 * 60), '/', '', false, true);
+                    setcookie('user_id', $user['id'], time() + (30 * 24 * 60 * 60), '/', '', false, true);
+                }
+                
                 return redirect()->to('/dashboard');
             } else {
                 $session->setFlashdata('error', 'Password salah');
@@ -66,8 +106,27 @@ class Auth extends Controller
 
     public function logout()
     {
+        $userId = session()->get('user_id');
+        
+        // Deactivate remember token (set active flag to 0)
+        if ($userId) {
+            $db = \Config\Database::connect();
+            $db->table('users')
+               ->where('id', $userId)
+               ->update(['remember_token_active' => 0]);
+        }
+        
+        // Load cookie helper
+        helper('cookie');
+        
+        // Clear cookies using CodeIgniter helper
+        delete_cookie('remember_token');
+        delete_cookie('user_id');
+        
+        // Destroy session
         session()->destroy();
-        return redirect()->to('/login');
+        
+        return redirect()->to('/login')->with('success', 'Berhasil logout.');
     }
     public function register()
     {

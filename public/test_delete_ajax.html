@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Test Delete</title>
+</head>
+
+<body>
+    <h1>Test Delete Laporan</h1>
+
+    <button onclick="testDelete(6)">Test Delete ID 6</button>
+
+    <div id="result"></div>
+
+    <script>
+        function testDelete(id) {
+            console.log('Testing delete for ID:', id);
+
+            fetch('http://localhost/laporan/delete-dosen/' + id, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+                .then(response => {
+                    console.log('Response status:', response.status);
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Response data:', data);
+                    document.getElementById('result').innerHTML = '<pre>' + JSON.stringify(data, null, 2) + '</pre>';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('result').innerHTML = '<pre>Error: ' + error + '</pre>';
+                });
+        }
+    </script>
+</body>
+
+</html>

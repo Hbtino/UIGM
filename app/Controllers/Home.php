@@ -7,8 +7,26 @@ use App\Models\LandingContentModel;
 
 class Home extends BaseController
 {
-    public function index(): string
+    public function index()
     {
+        // Check if user is already logged in (via session or remember me cookie)
+        if (session()->get('logged_in')) {
+            // Redirect to dashboard based on role
+            $role = session()->get('role');
+            
+            if ($role == 'admin') {
+                return redirect()->to('/dashboard');
+            } elseif ($role == 'dosen') {
+                return redirect()->to('/dashboard');
+            } elseif ($role == 'kaprodi') {
+                return redirect()->to('/dashboard');
+            } elseif ($role == 'mahasiswa') {
+                return redirect()->to('/dashboard');
+            } else {
+                return redirect()->to('/dashboard');
+            }
+        }
+        
         $newsModel = new NewsModel();
         $landingContentModel = new LandingContentModel();
 

@@ -5,80 +5,244 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tambah User - UI Green Metric</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
-    body {
-      font-family: "Poppins", sans-serif;
-      background: #f7fdf9;
-      color: #333;
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
     }
-    .layout {
-      display: flex;
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       min-height: 100vh;
     }
-    /* Sidebar */
+    
+    /* Sidebar Styles - Same as dashboard */
     .sidebar {
-      width: 250px;
-      background-color: #009b4c;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
       position: fixed;
+      top: 0;
+      left: 0;
       height: 100vh;
-    }
-    .sidebar-header {
-      text-align: center;
-      padding: 20px 0;
-      font-weight: bold;
-      font-size: 1.3rem;
-      background-color: #00813f;
-      border-bottom: 1px solid #007a3c;
-    }
-    .menu {
-      list-style: none;
+      width: 280px;
+      background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
       padding: 0;
-      margin-top: 10px;
+      overflow-y: auto;
+      z-index: 1000;
+      box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+      transition: all 0.3s ease;
     }
-    .menu li {
-      padding: 15px 25px;
+    
+    .sidebar::-webkit-scrollbar {
+      width: 6px;
+    }
+    
+    .sidebar::-webkit-scrollbar-track {
+      background: rgba(255,255,255,0.1);
+    }
+    
+    .sidebar::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 3px;
+    }
+    
+    .sidebar-header {
+      padding: 25px 20px;
+      background: rgba(0,0,0,0.2);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      margin-bottom: 10px;
+    }
+    
+    .sidebar-logo {
       display: flex;
       align-items: center;
-      gap: 10px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      border-left: 4px solid transparent;
+      gap: 15px;
+      margin-bottom: 10px;
     }
-    .menu li:hover,
-    .menu li.active {
-      background-color: #006e33;
-      border-left-color: #00ff88;
+    
+    .sidebar-logo i {
+      font-size: 32px;
+      color: #4CAF50;
+    }
+    
+    .sidebar-header h4 {
+      color: white;
+      font-size: 20px;
+      font-weight: 700;
+      margin: 0;
+      letter-spacing: 0.5px;
+    }
+    
+    .sidebar-header p {
+      color: rgba(255,255,255,0.7);
+      font-size: 13px;
+      margin: 5px 0 0;
+    }
+    
+    .nav-section {
+      margin-bottom: 5px;
+    }
+    
+    .nav-section-title {
+      padding: 15px 20px 8px;
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .nav-menu {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .nav-item {
+      margin: 0;
+    }
+    
+    .nav-link {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      color: rgba(255,255,255,0.8);
+      text-decoration: none;
+      transition: all 0.3s ease;
+      border-left: 3px solid transparent;
+      position: relative;
+    }
+    
+    .nav-link:hover {
+      background-color: rgba(255,255,255,0.1);
+      color: white;
+      border-left-color: #4CAF50;
+      padding-left: 25px;
+    }
+    
+    .nav-link.active {
+      background-color: rgba(76, 175, 80, 0.2);
+      color: white;
+      border-left-color: #4CAF50;
+      font-weight: 600;
+    }
+    
+    .nav-link.active::before {
+      content: '';
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: #4CAF50;
+    }
+    
+    .nav-link i {
+      width: 24px;
+      margin-right: 12px;
+      font-size: 18px;
+      text-align: center;
+    }
+    
+    .nav-link span {
+      font-size: 14px;
+    }
+    
+    /* Submenu Collapse Styling */
+    .collapse .nav-link {
+      padding: 12px 20px 12px 15px;
+      font-size: 13px;
+      color: rgba(255,255,255,0.7);
+    }
+    
+    .collapse .nav-link:hover {
+      color: white;
+      background-color: rgba(255,255,255,0.08);
+      padding-left: 20px;
+    }
+    
+    .collapse .nav-link.active {
+      color: white;
+      background-color: rgba(76, 175, 80, 0.15);
+    }
+    
+    .collapse .nav-link i {
+      font-size: 14px;
+      width: 20px;
+    }
+    
+    /* Chevron icon animation */
+    .nav-link[data-bs-toggle="collapse"] .fa-chevron-down {
+      transition: transform 0.3s ease;
+    }
+    
+    .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+      transform: rotate(180deg);
+    }
+    
+    /* Force white color for collapse toggle links */
+    .nav-link[data-bs-toggle="collapse"],
+    .nav-link[data-bs-toggle="collapse"]:focus,
+    .nav-link[data-bs-toggle="collapse"]:active,
+    .nav-link[data-bs-toggle="collapse"][aria-expanded="true"],
+    .nav-link[data-bs-toggle="collapse"][aria-expanded="false"] {
+      color: rgba(255,255,255,0.8) !important;
+    }
+    
+    .nav-link[data-bs-toggle="collapse"]:hover {
+      color: white !important;
+    }
+    
+    .nav-link[data-bs-toggle="collapse"] span,
+    .nav-link[data-bs-toggle="collapse"] i {
+      color: inherit;
+    }
+    
+    .sidebar-footer {
+      padding: 20px;
+      margin-top: auto;
+      border-top: 1px solid rgba(255,255,255,0.1);
+      background: rgba(0,0,0,0.2);
+    }
+    
+    .sidebar-footer p {
+      color: rgba(255,255,255,0.5);
+      font-size: 11px;
+      margin: 0;
+      text-align: center;
     }
 
     /* Main content */
     .main-content {
-      flex: 1;
-      margin-left: 250px;
-      width: calc(100% - 250px);
+      margin-left: 280px;
+      padding: 20px;
+      min-height: 100vh;
+      transition: all 0.3s ease;
     }
+    
     .topbar {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background-color: #fff;
-      padding: 15px 25px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.08);
-      border-bottom: 1px solid #eaeaea;
     }
+    
     .topbar h3 {
-      color: #009b4c;
       margin: 0;
-      font-size: 1.5rem;
-      font-weight: 600;
+      color: #1e3c72;
+      font-size: 26px;
+      font-weight: 700;
     }
 
     /* Form container */
     .content {
-      padding: 30px;
+      padding: 0;
     }
     .card {
       background-color: #fff;
@@ -138,18 +302,160 @@
   </style>
 </head>
 <body>
-  <div class="layout">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="sidebar-header">UI Green Metric</div>
-      <ul class="menu">
-        <li><a href="<?= base_url('dashboard') ?>" style="color:white;text-decoration:none;"><i class="fa fa-home"></i> Dashboard</a></li>
-        <li class="active"><a href="<?= base_url('users') ?>" style="color:white;text-decoration:none;"><i class="fa fa-users"></i> Manajemen User</a></li>
-      </ul>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <i class="fas fa-leaf"></i>
+        <div>
+          <h4>POLBAN</h4>
+          <p>Kampus Berkelanjutan</p>
+        </div>
+      </div>
     </div>
+    
+    <nav>
+      <div class="nav-section">
+        <div class="nav-section-title">Menu Utama</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="<?= base_url('dashboard') ?>" class="nav-link">
+              <i class="fas fa-home"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Kriteria SDGs</div>
+        <ul class="nav-menu">
+          <li class="nav-item">
+            <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link">
+              <i class="fas fa-building"></i>
+              <span>Pengaturan & Infrastruktur</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('energy-climate') ?>" class="nav-link">
+              <i class="fas fa-bolt"></i>
+              <span>Energi & Perubahan Iklim</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('water-management') ?>" class="nav-link">
+              <i class="fas fa-tint"></i>
+              <span>Pengelolaan Air</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('waste-management') ?>" class="nav-link">
+              <i class="fas fa-recycle"></i>
+              <span>Pengelolaan Limbah</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('dashboard/transportasi') ?>" class="nav-link">
+              <i class="fas fa-bus"></i>
+              <span>Transportasi</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('education-research') ?>" class="nav-link">
+              <i class="fas fa-graduation-cap"></i>
+              <span>Pendidikan & Penelitian</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+      
+      <div class="nav-section">
+        <div class="nav-section-title">Sistem</div>
+        <ul class="nav-menu">
+          <?php 
+          $user_role = session()->get('role');
+          if($user_role == 'admin'): 
+          ?>
+          <li class="nav-item">
+            <a href="<?= base_url('users') ?>" class="nav-link active">
+              <i class="fas fa-users"></i>
+              <span>Manajemen User</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('menus') ?>" class="nav-link">
+              <i class="fas fa-bars"></i>
+              <span>Manajemen Menu</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('news-admin') ?>" class="nav-link">
+              <i class="fas fa-newspaper"></i>
+              <span>Manajemen Berita</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('landing-contents') ?>" class="nav-link">
+              <i class="fas fa-file-alt"></i>
+              <span>Konten Landing Page</span>
+            </a>
+          </li>
+          <?php endif; ?>
+          
+          <!-- Laporan Menu with Submenu -->
+          <?php if (in_array($user_role, ['admin', 'dosen', 'kaprodi'])): ?>
+          <li class="nav-item">
+            <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#laporanSubmenu" aria-expanded="false">
+              <i class="fas fa-file-alt"></i>
+              <span>Laporan</span>
+              <i class="fas fa-chevron-down ms-auto" style="font-size: 12px;"></i>
+            </a>
+            <div class="collapse" id="laporanSubmenu">
+              <ul class="nav flex-column ms-3">
+                <?php if (in_array($user_role, ['admin', 'dosen'])): ?>
+                <li class="nav-item">
+                  <a href="<?= base_url('dashboard/laporan') ?>" class="nav-link">
+                    <i class="fas fa-user-tie"></i>
+                    <span>Laporan Dosen</span>
+                  </a>
+                </li>
+                <?php endif; ?>
+                <?php if (in_array($user_role, ['admin', 'kaprodi'])): ?>
+                <li class="nav-item">
+                  <a href="<?= base_url('laporan/kaprodi') ?>" class="nav-link">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span>Laporan Kaprodi</span>
+                  </a>
+                </li>
+                <?php endif; ?>
+              </ul>
+            </div>
+          </li>
+          <?php endif; ?>
+          
+          <li class="nav-item">
+            <a href="<?= base_url('settings') ?>" class="nav-link">
+              <i class="fas fa-cog"></i>
+              <span>Pengaturan</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?= base_url('logout') ?>" class="nav-link">
+              <i class="fas fa-sign-out-alt"></i>
+              <span>Keluar</span>
+            </a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+    
+    <div class="sidebar-footer">
+      <p>&copy; 2024 Politeknik Negeri Bandung<br>Renstra TMKB 2024-2028</p>
+    </div>
+  </div>
 
-    <!-- Main Content -->
-    <div class="main-content">
+  <!-- Main Content -->
+  <div class="main-content">
       <div class="topbar">
         <h3>Tambah User</h3>
       </div>
@@ -219,5 +525,8 @@
       </div>
     </div>
   </div>
+
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

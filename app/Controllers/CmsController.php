@@ -25,13 +25,23 @@ class CmsController extends BaseController
     // MENU MANAGEMENT
     public function menus()
     {
-        if (session()->get('role') !== 'admin') {
+        $session = session();
+        if ($session->get('role') !== 'admin') {
             return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
         }
 
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
         $data = [
             'title' => 'Manajemen Menu',
-            'menus' => $this->menuModel->orderBy('order', 'ASC')->findAll()
+            'page' => 'cms-menus',
+            'breadcrumb' => 'Home / Sistem / Manajemen Menu',
+            'menus' => $this->menuModel->orderBy('order', 'ASC')->findAll(),
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('cms/menus/index', $data);
@@ -140,13 +150,23 @@ class CmsController extends BaseController
     // NEWS MANAGEMENT
     public function news()
     {
-        if (session()->get('role') !== 'admin') {
+        $session = session();
+        if ($session->get('role') !== 'admin') {
             return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
         }
 
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
         $data = [
             'title' => 'Manajemen Berita',
-            'news' => $this->newsModel->orderBy('created_at', 'DESC')->findAll()
+            'page' => 'cms-news',
+            'breadcrumb' => 'Home / Sistem / Manajemen Berita',
+            'news' => $this->newsModel->orderBy('created_at', 'DESC')->findAll(),
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('cms/news/index', $data);
@@ -321,13 +341,23 @@ class CmsController extends BaseController
     // LANDING PAGE CONTENT MANAGEMENT
     public function landingContents()
     {
-        if (session()->get('role') !== 'admin') {
+        $session = session();
+        if ($session->get('role') !== 'admin') {
             return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
         }
 
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
         $data = [
-            'title' => 'Manajemen Konten Landing Page',
-            'contents' => $this->landingContentModel->orderBy('order', 'ASC')->findAll()
+            'title' => 'Konten Landing Page',
+            'page' => 'cms-landing',
+            'breadcrumb' => 'Home / Sistem / Konten Landing Page',
+            'contents' => $this->landingContentModel->orderBy('order', 'ASC')->findAll(),
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('cms/landing/index', $data);

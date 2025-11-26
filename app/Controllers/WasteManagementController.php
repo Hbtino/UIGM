@@ -20,13 +20,26 @@ class WasteManagementController extends BaseController
     }
 
     /**
-     * Display list of all energy climate data
+     * Display list of all waste management data
      */
     public function index()
     {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
         $data = [
-            'title' => 'Energy & Climate Change',
+            'title' => 'Waste Management - Data Capaian',
+            'page' => 'waste-management',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengelolaan Limbah',
             'WasteManagement' => $this->model->getAllWithUsers(),
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('kriteria/waste_management/index', $data);

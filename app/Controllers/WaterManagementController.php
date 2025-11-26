@@ -20,13 +20,26 @@ class WaterManagementController extends BaseController
     }
 
     /**
-     * Display list of all energy climate data
+     * Display list of all water management data
      */
     public function index()
     {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
         $data = [
-            'title' => 'Energy & Climate Change',
+            'title' => 'Water Management - Data Capaian',
+            'page' => 'water-management',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengelolaan Air',
             'WaterManagement' => $this->model->getAllWithUsers(),
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
 
         return view('kriteria/water_management/index', $data);

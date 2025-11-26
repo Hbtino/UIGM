@@ -153,18 +153,68 @@
             font-size: 14px;
         }
         
+        /* Submenu Collapse Styling */
+        .collapse .nav-link {
+            padding: 12px 20px 12px 15px;
+            font-size: 13px;
+            color: rgba(255,255,255,0.7);
+        }
+        
+        .collapse .nav-link:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.08);
+            padding-left: 20px;
+        }
+        
+        .collapse .nav-link.active {
+            color: white;
+            background-color: rgba(76, 175, 80, 0.15);
+        }
+        
+        .collapse .nav-link i {
+            font-size: 14px;
+            width: 20px;
+        }
+        
+        /* Chevron icon animation */
+        .nav-link[data-bs-toggle="collapse"] .fa-chevron-down {
+            transition: transform 0.3s ease;
+        }
+        
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
+            transform: rotate(180deg);
+        }
+        
+        /* Force white color for collapse toggle links */
+        .nav-link[data-bs-toggle="collapse"],
+        .nav-link[data-bs-toggle="collapse"]:focus,
+        .nav-link[data-bs-toggle="collapse"]:active,
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"],
+        .nav-link[data-bs-toggle="collapse"][aria-expanded="false"] {
+            color: rgba(255,255,255,0.8) !important;
+        }
+        
+        .nav-link[data-bs-toggle="collapse"]:hover {
+            color: white !important;
+        }
+        
+        .nav-link[data-bs-toggle="collapse"] span,
+        .nav-link[data-bs-toggle="collapse"] i {
+            color: inherit;
+        }
+        
         .sidebar-footer {
             padding: 20px;
             margin-top: auto;
             border-top: 1px solid rgba(255,255,255,0.1);
             background: rgba(0,0,0,0.2);
-            display: flex;
-            flex-direction: column;
         }
         
-        .sidebar-footer .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
+        .sidebar-footer p {
+            color: rgba(255,255,255,0.5);
+            font-size: 11px;
+            margin: 0;
+            text-align: center;
         }
         
         /* Main Content */
@@ -387,12 +437,133 @@
         
         <nav>
             <div class="nav-section">
-                <div class="nav-section-title">MENU</div>
+                <div class="nav-section-title">Menu Utama</div>
                 <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="<?= base_url('dashboard') ?>" class="nav-link">
+                            <i class="fas fa-home"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Kriteria SDGs</div>
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link">
+                            <i class="fas fa-building"></i>
+                            <span>Pengaturan & Infrastruktur</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('energy-climate') ?>" class="nav-link">
+                            <i class="fas fa-bolt"></i>
+                            <span>Energi & Perubahan Iklim</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('water-management') ?>" class="nav-link">
+                            <i class="fas fa-tint"></i>
+                            <span>Pengelolaan Air</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('waste-management') ?>" class="nav-link">
+                            <i class="fas fa-recycle"></i>
+                            <span>Pengelolaan Limbah</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('dashboard/transportasi') ?>" class="nav-link">
+                            <i class="fas fa-bus"></i>
+                            <span>Transportasi</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('education-research') ?>" class="nav-link">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>Pendidikan & Penelitian</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="nav-section">
+                <div class="nav-section-title">Sistem</div>
+                <ul class="nav-menu">
+                    <?php 
+                    $current_user_role = isset($user_role) ? $user_role : (isset($user['role']) ? $user['role'] : session()->get('role'));
+                    if($current_user_role == 'admin'): 
+                    ?>
+                    <li class="nav-item">
+                        <a href="<?= base_url('users') ?>" class="nav-link">
+                            <i class="fas fa-users"></i>
+                            <span>Manajemen User</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('menus') ?>" class="nav-link">
+                            <i class="fas fa-bars"></i>
+                            <span>Manajemen Menu</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('news-admin') ?>" class="nav-link">
+                            <i class="fas fa-newspaper"></i>
+                            <span>Manajemen Berita</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('landing-contents') ?>" class="nav-link">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Konten Landing Page</span>
+                        </a>
+                    </li>
+                    <?php endif; ?>
+                    
+                    <!-- Laporan Menu with Submenu -->
+                    <?php if (in_array($current_user_role, ['admin', 'dosen', 'kaprodi'])): ?>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#laporanSubmenu" aria-expanded="false">
+                            <i class="fas fa-file-alt"></i>
+                            <span>Laporan</span>
+                            <i class="fas fa-chevron-down ms-auto" style="font-size: 12px;"></i>
+                        </a>
+                        <div class="collapse" id="laporanSubmenu">
+                            <ul class="nav flex-column ms-3">
+                                <?php if (in_array($current_user_role, ['admin', 'dosen'])): ?>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('dashboard/laporan') ?>" class="nav-link">
+                                        <i class="fas fa-user-tie"></i>
+                                        <span>Laporan Dosen</span>
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                                <?php if (in_array($current_user_role, ['admin', 'kaprodi'])): ?>
+                                <li class="nav-item">
+                                    <a href="<?= base_url('laporan/kaprodi') ?>" class="nav-link">
+                                        <i class="fas fa-graduation-cap"></i>
+                                        <span>Laporan Kaprodi</span>
+                                    </a>
+                                </li>
+                                <?php endif; ?>
+                            </ul>
+                        </div>
+                    </li>
+                    <?php endif; ?>
+                    
                     <li class="nav-item">
                         <a href="<?= base_url('settings') ?>" class="nav-link active">
                             <i class="fas fa-cog"></i>
                             <span>Pengaturan</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="<?= base_url('logout') ?>" class="nav-link">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span>Keluar</span>
                         </a>
                     </li>
                 </ul>
@@ -400,10 +571,7 @@
         </nav>
         
         <div class="sidebar-footer">
-            <a href="<?= base_url('dashboard') ?>" class="nav-link" style="display: flex; align-items: center; padding: 12px 20px; color: rgba(255,255,255,0.8); text-decoration: none; transition: all 0.3s ease; border-radius: 8px;">
-                <i class="fas fa-arrow-left" style="margin-right: 10px;"></i>
-                <span>Kembali ke Dashboard</span>
-            </a>
+            <p>&copy; 2024 Politeknik Negeri Bandung<br>Renstra TMKB 2024-2028</p>
         </div>
     </div>
     
