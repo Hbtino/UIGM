@@ -372,7 +372,7 @@ class CmsController extends BaseController
         // Special handling for berita section
         if ($section === 'berita') {
             $content = $this->landingContentModel->getBySection($section);
-            
+
             if (!$content) {
                 $content = [
                     'section' => 'berita',
@@ -385,7 +385,7 @@ class CmsController extends BaseController
                     'is_active' => 1
                 ];
             }
-            
+
             $publishedNews = $this->newsModel
                 ->where('is_published', 1)
                 ->orderBy('published_at', 'DESC')
@@ -399,9 +399,9 @@ class CmsController extends BaseController
             ]);
         }
 
-        // Regular sections (deskripsi, program, kontak)
+        // Regular sections (deskripsi, program, informasi)
         $content = $this->landingContentModel->getBySection($section);
-        
+
         if (!$content) {
             $content = [
                 'section' => $section,
@@ -453,5 +453,210 @@ class CmsController extends BaseController
         $this->landingContentModel->updateBySection($section, $data);
 
         return redirect()->to('/landing-contents')->with('success', 'Konten ' . ucfirst($section) . ' berhasil diperbarui.');
+    }
+
+    // DASHBOARD CONTENT MANAGEMENT
+    public function dashboardContents()
+    {
+        $session = session();
+        if ($session->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
+        $data = [
+            'title' => 'Konten Dashboard',
+            'page' => 'cms-dashboard',
+            'breadcrumb' => 'Home / Sistem / Konten Dashboard',
+            'contents' => $this->contentModel->orderBy('order', 'ASC')->findAll(),
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('cms/dashboard/index', $data);
+    }
+
+    // DASHBOARD STATISTICS MANAGEMENT
+    public function dashboardStatistics()
+    {
+        $session = session();
+        if ($session->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
+        // Load statistics model
+        $statisticModel = new \App\Models\DashboardStatisticModel();
+
+        $data = [
+            'title' => 'Statistik Dashboard',
+            'page' => 'cms-statistics',
+            'breadcrumb' => 'Home / Sistem / Statistik Dashboard',
+            'statistics' => $statisticModel->orderBy('order', 'ASC')->findAll(),
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('cms/statistics/index', $data);
+    }
+
+    public function editDashboardStatistic($id)
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $statisticModel = new \App\Models\DashboardStatisticModel();
+        $statistic = $statisticModel->find($id);
+
+        if (!$statistic) {
+            return redirect()->to('/dashboard-statistics')->with('error', 'Statistik tidak ditemukan.');
+        }
+
+        $data = [
+            'title' => 'Edit Statistik: ' . $statistic['label'],
+            'statistic' => $statistic
+        ];
+
+        return view('cms/statistics/edit', $data);
+    }
+
+    public function updateDashboardStatistic($id)
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $statisticModel = new \App\Models\DashboardStatisticModel();
+
+        $data = [
+            'label' => $this->request->getPost('label'),
+            'value' => $this->request->getPost('value'),
+            'type' => $this->request->getPost('type'),
+            'category' => $this->request->getPost('category'),
+            'description' => $this->request->getPost('description'),
+            'order' => $this->request->getPost('order') ?? 0,
+            'is_active' => $this->request->getPost('is_active') ?? 1,
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        $statisticModel->update($id, $data);
+
+        return redirect()->to('/dashboard-statistics')->with('success', 'Statistik berhasil diperbarui.');
+    }
+
+    public function createDashboardStatistic()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $data = [
+            'title' => 'Tambah Statistik Baru'
+        ];
+
+        return view('cms/statistics/create', $data);
+    }
+
+    public function storeDashboardStatistic()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $statisticModel = new \App\Models\DashboardStatisticModel();
+
+        $data = [
+            'key' => $this->request->getPost('key'),
+            'label' => $this->request->getPost('label'),
+            'value' => $this->request->getPost('value'),
+            'type' => $this->request->getPost('type'),
+            'category' => $this->request->getPost('category'),
+            'description' => $this->request->getPost('description'),
+            'order' => $this->request->getPost('order') ?? 0,
+            'is_active' => $this->request->getPost('is_active') ?? 1
+        ];
+
+        $statisticModel->insert($data);
+
+        return redirect()->to('/dashboard-statistics')->with('success', 'Statistik baru berhasil ditambahkan.');
+    }
+
+    public function deleteDashboardStatistic($id)
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $statisticModel = new \App\Models\DashboardStatisticModel();
+        $statisticModel->delete($id);
+
+        return redirect()->to('/dashboard-statistics')->with('success', 'Statistik berhasil dihapus.');
+    }
+
+    public function editDashboardContent($section)
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $content = $this->contentModel->getBySection($section);
+
+        if (!$content) {
+            $content = [
+                'section' => $section,
+                'title' => ucfirst(str_replace('_', ' ', $section)),
+                'subtitle' => '',
+                'content' => '',
+                'value' => '',
+                'icon' => '',
+                'color' => '',
+                'trend_text' => '',
+                'trend_type' => '',
+                'order' => 0,
+                'is_active' => 1
+            ];
+        }
+
+        $data = [
+            'title' => 'Edit Konten ' . ucfirst(str_replace('_', ' ', $section)),
+            'content' => $content,
+            'section' => $section
+        ];
+
+        return view('cms/dashboard/edit', $data);
+    }
+
+    public function updateDashboardContent($section)
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $data = [
+            'title' => $this->request->getPost('title'),
+            'subtitle' => $this->request->getPost('subtitle'),
+            'content' => $this->request->getPost('content'),
+            'value' => $this->request->getPost('value'),
+            'icon' => $this->request->getPost('icon'),
+            'color' => $this->request->getPost('color'),
+            'trend_text' => $this->request->getPost('trend_text'),
+            'trend_type' => $this->request->getPost('trend_type'),
+            'order' => $this->request->getPost('order') ?? 0,
+            'is_active' => $this->request->getPost('is_active') ?? 1,
+            'updated_at' => date('Y-m-d H:i:s')
+        ];
+
+        $this->contentModel->updateBySection($section, $data);
+
+        return redirect()->to('/dashboard-contents')->with('success', 'Konten ' . ucfirst(str_replace('_', ' ', $section)) . ' berhasil diperbarui.');
     }
 }

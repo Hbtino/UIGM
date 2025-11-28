@@ -254,6 +254,8 @@ $routes->get('test-menu', 'TestMenu::index');
 $routes->get('fix-duplicate-menus', 'FixDuplicateMenus::index');
 $routes->get('fix-duplicate-menus/delete/(:num)', 'FixDuplicateMenus::delete/$1');
 $routes->get('fix-duplicate-menus/auto-fix', 'FixDuplicateMenus::autoFix');
+$routes->get('debug-session', 'DebugSession::index');
+$routes->get('debug-session/clear', 'DebugSession::clearAll');
 
 // ============================================
 // CMS ROUTES (Admin Only)
@@ -284,6 +286,19 @@ $routes->post('contents/update/(:num)', 'CmsController::updateContent/$1', ['fil
 $routes->get('landing-contents', 'CmsController::landingContents', ['filter' => 'auth']);
 $routes->get('landing-contents/edit/(:segment)', 'CmsController::editLandingContent/$1', ['filter' => 'auth']);
 $routes->post('landing-contents/update/(:segment)', 'CmsController::updateLandingContent/$1', ['filter' => 'auth']);
+
+// Dashboard Content Management
+$routes->get('dashboard-contents', 'CmsController::dashboardContents', ['filter' => 'auth']);
+$routes->get('dashboard-contents/edit/(:segment)', 'CmsController::editDashboardContent/$1', ['filter' => 'auth']);
+$routes->post('dashboard-contents/update/(:segment)', 'CmsController::updateDashboardContent/$1', ['filter' => 'auth']);
+
+// Dashboard Statistics Management
+$routes->get('dashboard-statistics', 'CmsController::dashboardStatistics', ['filter' => 'auth']);
+$routes->get('dashboard-statistics/create', 'CmsController::createDashboardStatistic', ['filter' => 'auth']);
+$routes->post('dashboard-statistics/store', 'CmsController::storeDashboardStatistic', ['filter' => 'auth']);
+$routes->get('dashboard-statistics/edit/(:num)', 'CmsController::editDashboardStatistic/$1', ['filter' => 'auth']);
+$routes->post('dashboard-statistics/update/(:num)', 'CmsController::updateDashboardStatistic/$1', ['filter' => 'auth']);
+$routes->get('dashboard-statistics/delete/(:num)', 'CmsController::deleteDashboardStatistic/$1', ['filter' => 'auth']);
 
 // ============================================
 // PUBLIC NEWS ROUTES (No Auth Required)

@@ -4,14 +4,14 @@
 
 <div class="container-fluid">
     <h1 class="h3 mb-4">Konten Landing Page</h1>
-    
+
     <?php if (session()->getFlashdata('success')): ?>
         <div class="alert alert-success alert-dismissible fade show">
             <?= session()->getFlashdata('success') ?>
             <button type="button" class="close" data-dismiss="alert">&times;</button>
         </div>
     <?php endif; ?>
-    
+
     <div class="row">
         <div class="col-md-3 mb-3">
             <div class="card shadow">
@@ -26,7 +26,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 mb-3">
             <div class="card shadow">
                 <div class="card-header bg-success text-white">
@@ -40,7 +40,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 mb-3">
             <div class="card shadow">
                 <div class="card-header bg-warning text-white">
@@ -54,15 +54,15 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="col-md-3 mb-3">
             <div class="card shadow">
                 <div class="card-header bg-info text-white">
-                    <i class="fas fa-envelope"></i> Kontak
+                    <i class="fas fa-info-circle"></i> Informasi
                 </div>
                 <div class="card-body">
-                    <p class="small">Edit konten section Kontak di landing page</p>
-                    <a href="<?= base_url('landing-contents/edit/kontak') ?>" class="btn btn-info btn-sm btn-block">
+                    <p class="small">Edit konten section Informasi di landing page</p>
+                    <a href="<?= base_url('landing-contents/edit/informasi') ?>" class="btn btn-info btn-sm btn-block">
                         <i class="fas fa-edit"></i> Edit
                     </a>
                 </div>

@@ -22,21 +22,43 @@ class Dashboard extends BaseController
         $userModel = new \App\Models\UserModel();
         $user = $userModel->find($session->get('user_id'));
 
+        // Get dashboard content from database
+        $contentModel = new \App\Models\DashboardContentModel();
+        $dashboardContent = $contentModel->getDashboardData();
+
+        // Get statistics from database
+        $statisticModel = new \App\Models\DashboardStatisticModel();
+        $statistics = $statisticModel->getAsArray();
+
+        // Merge statistics values into dashboard content for stat cards
+        // This ensures stat cards show values from dashboard_statistics table
+        if (isset($dashboardContent['stat_card_1']) && isset($statistics['target_skor_2028'])) {
+            $dashboardContent['stat_card_1']['value'] = $statistics['target_skor_2028'];
+        }
+        if (isset($dashboardContent['stat_card_2']) && isset($statistics['target_ranking_dunia'])) {
+            $dashboardContent['stat_card_2']['value'] = $statistics['target_ranking_dunia'];
+        }
+        if (isset($dashboardContent['stat_card_3']) && isset($statistics['target_ranking_indonesia'])) {
+            $dashboardContent['stat_card_3']['value'] = $statistics['target_ranking_indonesia'];
+        }
+
         $data = [
             'title' => 'Dashboard - Kampus Berkelanjutan Polban',
             'page' => 'dashboard',
             'chartData' => $this->getChartData(),
             'stats' => $this->getStats(),
             'sdgsData' => $this->getSDGsData(),
+            'dashboard_content' => $dashboardContent,
+            'statistics' => $statistics,
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role'),
             'user_email' => $session->get('email'),
             'profile_photo' => $user['profile_photo'] ?? null
         ];
-        
+
         return view('dashboard/index', $data);
     }
-    
+
     private function getChartData()
     {
         // Data dari Renstra TMKB Polban 2024-2028 (Tabel 7 & Gambar 6)
@@ -97,16 +119,80 @@ class Dashboard extends BaseController
             'indonesiaRank' => [87, 70, 53, 39, 29, 26]
         ];
     }
-    
+
     private function getStats()
     {
-        // Data statistik dari Tabel 1 dan Tabel 7
+        // Hitung statistik real-time dari database
+        $db = \Config\Database::connect();
+
+        // Count data from each criteria table
+        $settingInfraCount = $db->table('setting_infrastructure')->countAllResults();
+        $energyClimateCount = $db->table('energy_climate')->countAllResults();
+        $waterManagementCount = $db->table('water_management')->countAllResults();
+        $wasteManagementCount = $db->table('waste_management')->countAllResults();
+        $transportationCount = $db->table('transportation')->countAllResults();
+        $educationResearchCount = $db->table('education_research')->countAllResults();
+
+        // Total data entries
+        $totalDataEntries = $settingInfraCount + $energyClimateCount + $waterManagementCount +
+            $wasteManagementCount + $transportationCount + $educationResearchCount;
+
+        // Count approved data
+        $approvedData = $db->table('setting_infrastructure')->where('status_verifikasi', 'approved')->countAllResults() +
+            $db->table('energy_climate')->where('status_verifikasi', 'approved')->countAllResults() +
+            $db->table('water_management')->where('status_verifikasi', 'approved')->countAllResults() +
+            $db->table('waste_management')->where('status_verifikasi', 'approved')->countAllResults() +
+            $db->table('transportation')->where('status_verifikasi', 'approved')->countAllResults() +
+            $db->table('education_research')->where('status_verifikasi', 'approved')->countAllResults();
+
+        // Count pending data
+        $pendingData = $db->table('setting_infrastructure')->where('status_verifikasi', 'pending')->countAllResults() +
+            $db->table('energy_climate')->where('status_verifikasi', 'pending')->countAllResults() +
+            $db->table('water_management')->where('status_verifikasi', 'pending')->countAllResults() +
+            $db->table('waste_management')->where('status_verifikasi', 'pending')->countAllResults() +
+            $db->table('transportation')->where('status_verifikasi', 'pending')->countAllResults() +
+            $db->table('education_research')->where('status_verifikasi', 'pending')->countAllResults();
+
+        // Count users
+        $totalUsers = $db->table('users')->countAllResults();
+        $approvedUsers = $db->table('users')->where('approval_status', 'approved')->countAllResults();
+        $pendingUsers = $db->table('users')->where('approval_status', 'pending')->countAllResults();
+
+        // Get latest year data for score calculation
+        $latestYear = date('Y');
+
+        // Calculate average score from approved data (simplified calculation)
+        // You can customize this based on your scoring formula
+        $scorePercentage = $totalDataEntries > 0 ? min(100, ($approvedData / ($totalDataEntries * 6)) * 100) : 0;
+
         return [
+            // Target values (from Renstra TMKB)
             'targetSkor2028' => 80,
             'targetRankingDunia' => 176,
             'targetRankingIndonesia' => 26,
             'jumlahKriteria' => 6,
-            'skorSekarang' => 43,
+
+            // Real-time calculated values
+            'skorSekarang' => round($scorePercentage, 1),
+            'totalDataEntries' => $totalDataEntries,
+            'approvedData' => $approvedData,
+            'pendingData' => $pendingData,
+            'rejectedData' => $totalDataEntries - $approvedData - $pendingData,
+
+            // Criteria breakdown
+            'settingInfraCount' => $settingInfraCount,
+            'energyClimateCount' => $energyClimateCount,
+            'waterManagementCount' => $waterManagementCount,
+            'wasteManagementCount' => $wasteManagementCount,
+            'transportationCount' => $transportationCount,
+            'educationResearchCount' => $educationResearchCount,
+
+            // User statistics
+            'totalUsers' => $totalUsers,
+            'approvedUsers' => $approvedUsers,
+            'pendingUsers' => $pendingUsers,
+
+            // Static values (can be moved to database later)
             'rankingDuniaSekarang' => 896,
             'rankingIndonesiaSekarang' => 87,
             'jumlahMahasiswa' => 6605,
@@ -120,7 +206,7 @@ class Dashboard extends BaseController
             'jumlahLaboratorium' => 119
         ];
     }
-    
+
     private function getSDGsData()
     {
         // 17 SDGs Goals
@@ -144,7 +230,7 @@ class Dashboard extends BaseController
             ['id' => 17, 'name' => 'Kemitraan Tujuan', 'icon' => 'fa-handshake']
         ];
     }
-    
+
     public function pengaturanInfrastruktur()
     {
         $session = session();
@@ -159,10 +245,10 @@ class Dashboard extends BaseController
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role')
         ];
-       // Redirect ke halaman CRUD kriteria
-return redirect()->to('/setting-infrastructure');
+        // Redirect ke halaman CRUD kriteria
+        return redirect()->to('/setting-infrastructure');
     }
-        
+
     public function energiIklim()
     {
         $session = session();
@@ -173,7 +259,7 @@ return redirect()->to('/setting-infrastructure');
         // Redirect ke halaman CRUD Energy Climate
         return redirect()->to('/energy-climate');
     }
-    
+
     public function limbah()
     {
         $session = session();
@@ -184,7 +270,7 @@ return redirect()->to('/setting-infrastructure');
         // Redirect ke halaman CRUD Waste Management
         return redirect()->to('/waste-management');
     }
-    
+
     public function air()
     {
         $session = session();
@@ -195,7 +281,7 @@ return redirect()->to('/setting-infrastructure');
         // Redirect ke halaman CRUD Water Management
         return redirect()->to('/water-management');
     }
-    
+
     public function transportasi()
     {
         $session = session();
@@ -206,7 +292,7 @@ return redirect()->to('/setting-infrastructure');
         // Redirect ke halaman CRUD Transportation
         return redirect()->to('/transportation');
     }
-    
+
     public function pendidikanPenelitian()
     {
         $session = session();
@@ -217,7 +303,7 @@ return redirect()->to('/setting-infrastructure');
         // Redirect ke halaman CRUD Education Research
         return redirect()->to('/education-research');
     }
-    
+
     public function laporan()
     {
         $session = session();
@@ -234,7 +320,7 @@ return redirect()->to('/setting-infrastructure');
         ];
         return view('dashboard/laporan', $data);
     }
-    
+
     public function pengaturan()
     {
         $session = session();
@@ -250,7 +336,7 @@ return redirect()->to('/setting-infrastructure');
         ];
         return view('dashboard/pengaturan', $data);
     }
-    
+
     private function getDetailChartData($type)
     {
         $dataMap = [
@@ -261,7 +347,7 @@ return redirect()->to('/setting-infrastructure');
             'TR' => [27, 30, 33, 37, 37, 39],
             'ED' => [53, 68, 81, 88, 90, 92]
         ];
-        
+
         return [
             'labels' => ['2023', '2024', '2025', '2026', '2027', '2028'],
             'data' => $dataMap[$type] ?? []

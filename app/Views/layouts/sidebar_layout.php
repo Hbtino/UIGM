@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $title ?? 'POLBAN - Kampus Berkelanjutan' ?></title>
-    
+
     <!-- CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <style>
         * {
             margin: 0;
@@ -34,7 +35,7 @@
             overflow-y: auto;
             z-index: 1000;
             transition: all 0.3s ease;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+            box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
         }
 
         .sidebar::-webkit-scrollbar {
@@ -42,18 +43,18 @@
         }
 
         .sidebar::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
         }
 
         .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
+            background: rgba(255, 255, 255, 0.3);
             border-radius: 3px;
         }
 
         .sidebar-header {
             padding: 25px 20px;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 10px;
         }
 
@@ -79,7 +80,7 @@
         .sidebar-header p {
             font-size: 13px;
             margin: 5px 0 0;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         .sidebar-menu {
@@ -96,14 +97,14 @@
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
-            color: rgba(255,255,255,0.5);
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .menu-item {
             display: flex;
             align-items: center;
             padding: 14px 20px;
-            color: rgba(255,255,255,0.8);
+            color: rgba(255, 255, 255, 0.8);
             text-decoration: none;
             transition: all 0.3s ease;
             position: relative;
@@ -111,7 +112,7 @@
         }
 
         .menu-item:hover {
-            background: rgba(255,255,255,0.1);
+            background: rgba(255, 255, 255, 0.1);
             color: white;
             border-left-color: #4CAF50;
             padding-left: 25px;
@@ -165,7 +166,7 @@
 
         .submenu {
             display: none;
-            background: rgba(0,0,0,0.2);
+            background: rgba(0, 0, 0, 0.2);
             padding: 5px 0;
         }
 
@@ -176,14 +177,14 @@
         .submenu-item {
             display: block;
             padding: 12px 20px 12px 15px;
-            color: rgba(255,255,255,0.7);
+            color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 13px;
             transition: all 0.3s ease;
         }
 
         .submenu-item:hover {
-            background: rgba(255,255,255,0.08);
+            background: rgba(255, 255, 255, 0.08);
             color: white;
             padding-left: 20px;
         }
@@ -204,7 +205,7 @@
         .topbar {
             background: white;
             padding: 15px 30px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -302,7 +303,7 @@
             border-radius: 50%;
             font-size: 20px;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             z-index: 1001;
         }
 
@@ -341,6 +342,7 @@
         <?= $this->renderSection('styles') ?>
     </style>
 </head>
+
 <body>
     <!-- Sidebar -->
     <div class="sidebar" id="sidebar">
@@ -396,30 +398,40 @@
             <!-- Sistem -->
             <div class="menu-section">
                 <div class="menu-section-title">Sistem</div>
-                
+
                 <?php if (($user_role ?? '') === 'admin'): ?>
-                <a href="<?= base_url('users') ?>" class="menu-item <?= ($page ?? '') == 'users' ? 'active' : '' ?>">
-                    <i class="fas fa-users"></i>
-                    <span>Manajemen User</span>
-                    <?php if (isset($pending_users) && $pending_users > 0): ?>
-                        <span class="badge"><?= $pending_users ?></span>
-                    <?php endif; ?>
-                </a>
-                
-                <a href="<?= base_url('menus') ?>" class="menu-item <?= ($page ?? '') == 'cms-menus' ? 'active' : '' ?>">
-                    <i class="fas fa-bars"></i>
-                    <span>Manajemen Menu</span>
-                </a>
-                
-                <a href="<?= base_url('news-admin') ?>" class="menu-item <?= ($page ?? '') == 'cms-news' ? 'active' : '' ?>">
-                    <i class="fas fa-newspaper"></i>
-                    <span>Manajemen Berita</span>
-                </a>
-                
-                <a href="<?= base_url('landing-contents') ?>" class="menu-item <?= ($page ?? '') == 'cms-landing' ? 'active' : '' ?>">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Konten Landing Page</span>
-                </a>
+                    <a href="<?= base_url('users') ?>" class="menu-item <?= ($page ?? '') == 'users' ? 'active' : '' ?>">
+                        <i class="fas fa-users"></i>
+                        <span>Manajemen User</span>
+                        <?php if (isset($pending_users) && $pending_users > 0): ?>
+                            <span class="badge"><?= $pending_users ?></span>
+                        <?php endif; ?>
+                    </a>
+
+                    <a href="<?= base_url('menus') ?>" class="menu-item <?= ($page ?? '') == 'cms-menus' ? 'active' : '' ?>">
+                        <i class="fas fa-bars"></i>
+                        <span>Manajemen Menu</span>
+                    </a>
+
+                    <a href="<?= base_url('news-admin') ?>" class="menu-item <?= ($page ?? '') == 'cms-news' ? 'active' : '' ?>">
+                        <i class="fas fa-newspaper"></i>
+                        <span>Manajemen Berita</span>
+                    </a>
+
+                    <a href="<?= base_url('landing-contents') ?>" class="menu-item <?= ($page ?? '') == 'cms-landing' ? 'active' : '' ?>">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Konten Landing Page</span>
+                    </a>
+
+                    <a href="<?= base_url('dashboard-contents') ?>" class="menu-item <?= ($page ?? '') == 'cms-dashboard' ? 'active' : '' ?>">
+                        <i class="fas fa-tachometer-alt"></i>
+                        <span>Konten Dashboard</span>
+                    </a>
+
+                    <a href="<?= base_url('dashboard-statistics') ?>" class="menu-item <?= ($page ?? '') == 'cms-statistics' ? 'active' : '' ?>">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Statistik Dashboard</span>
+                    </a>
                 <?php endif; ?>
 
                 <!-- Laporan Menu with Submenu -->
@@ -520,7 +532,7 @@
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.querySelector('.mobile-toggle');
-            
+
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
                     sidebar.classList.remove('show');
@@ -531,4 +543,5 @@
 
     <?= $this->renderSection('scripts') ?>
 </body>
+
 </html>

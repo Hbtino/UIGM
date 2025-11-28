@@ -54,11 +54,11 @@ abstract class BaseController extends Controller
         // Preload any models, libraries, etc, here.
 
         // E.g.: $this->session = service('session');
-        
+
         // Auto-login from remember me cookie
         $this->checkRememberMe();
     }
-    
+
     /**
      * Check and auto-login from remember me cookie
      */
@@ -68,52 +68,90 @@ abstract class BaseController extends Controller
         if (session()->get('logged_in')) {
             return;
         }
-        
+
         // Check for remember me cookie
         if (isset($_COOKIE['remember_token']) && isset($_COOKIE['user_id'])) {
             $userModel = new \App\Models\UserModel();
             $userId = $_COOKIE['user_id'];
             $token = $_COOKIE['remember_token'];
-            
+
             $user = $userModel->find($userId);
-            
-            if ($user && isset($user['remember_token']) && $user['remember_token'] === $token) {
-                // Check if token is active
-                if (!isset($user['remember_token_active']) || $user['remember_token_active'] != 1) {
-                    // Token is inactive, clear cookies
-                    $this->clearRememberCookies();
-                    return;
-                }
-                
+
+            // Validate: user exists, has token, token matches, token is not empty, and token is active
+            if (
+                $user &&
+                !empty($user['remember_token']) &&
+                $user['remember_token'] === $token &&
+                isset($user['remember_token_active']) &&
+                $user['remember_token_active'] == 1
+            ) {
                 // Check if token is not expired
-                if (isset($user['remember_token_expires']) && strtotime($user['remember_token_expires']) > time()) {
-                    // Set session
+                if (
+                    isset($user['remember_token_expires']) &&
+                    !empty($user['remember_token_expires']) &&
+                    strtotime($user['remember_token_expires']) > time()
+                ) {
+                    // All checks passed, set session
                     $sessionData = [
                         'user_id' => $user['id'],
+                        'user_name' => $user['name'],
                         'name'    => $user['name'],
                         'email'   => $user['email'],
+                        'user_role' => $user['role'],
                         'role'    => $user['role'],
                         'logged_in' => true
                     ];
                     session()->set($sessionData);
                 } else {
-                    // Token expired, clear cookies
+                    // Token expired or not set, clear cookies and deactivate token
                     $this->clearRememberCookies();
+                    $this->deactivateRememberToken($userId);
                 }
             } else {
-                // Invalid token, clear cookies
+                // Invalid token, token is NULL, or token is inactive - clear cookies
                 $this->clearRememberCookies();
+                if ($user && $userId) {
+                    $this->deactivateRememberToken($userId);
+                }
             }
         }
     }
-    
+
     /**
      * Clear remember me cookies
      */
     protected function clearRememberCookies()
     {
+        // Method 1: Using setcookie with past expiration
+        if (isset($_COOKIE['remember_token'])) {
+            setcookie('remember_token', '', time() - 3600, '/');
+            unset($_COOKIE['remember_token']);
+        }
+        if (isset($_COOKIE['user_id'])) {
+            setcookie('user_id', '', time() - 3600, '/');
+            unset($_COOKIE['user_id']);
+        }
+
+        // Method 2: Using CodeIgniter helper as backup
         helper('cookie');
         delete_cookie('remember_token');
         delete_cookie('user_id');
+    }
+
+    /**
+     * Deactivate remember token in database
+     */
+    protected function deactivateRememberToken($userId)
+    {
+        if ($userId) {
+            $db = \Config\Database::connect();
+            $db->table('users')
+                ->where('id', $userId)
+                ->update([
+                    'remember_token_active' => 0,
+                    'remember_token' => null,
+                    'remember_token_expires' => null
+                ]);
+        }
     }
 }

@@ -479,7 +479,7 @@
                     <li><a href="#deskripsi">Deskripsi</a></li>
                     <li><a href="#program">Program</a></li>
                     <li><a href="#berita">Berita</a></li>
-                    <li><a href="#kontak">Kontak</a></li>
+                    <li><a href="#informasi">Informasi</a></li>
                     <li><a href="/login" class="btn-login"><i class="fas fa-user"></i> Login</a></li>
                 </ul>
 
@@ -527,24 +527,24 @@
                     <div class="row g-4 align-items-center mt-4">
                         <?php if (!empty($contents['deskripsi']['image'])): ?>
                             <div class="col-md-6">
-                                <img src="<?= base_url('uploads/landing/' . $contents['deskripsi']['image']) ?>" 
-                                     class="img-fluid rounded shadow" 
-                                     alt="<?= esc($contents['deskripsi']['title']) ?>"
-                                     style="width: 100%; height: auto; object-fit: cover;">
+                                <img src="<?= base_url('uploads/landing/' . $contents['deskripsi']['image']) ?>"
+                                    class="img-fluid rounded shadow"
+                                    alt="<?= esc($contents['deskripsi']['title']) ?>"
+                                    style="width: 100%; height: auto; object-fit: cover;">
                             </div>
                         <?php endif; ?>
-                        
+
                         <div class="<?= !empty($contents['deskripsi']['image']) ? 'col-md-6' : 'col-12' ?>">
                             <?php if (!empty($contents['deskripsi']['content'])): ?>
                                 <div class="content-text">
                                     <?= $contents['deskripsi']['content'] ?>
                                 </div>
                             <?php endif; ?>
-                            
+
                             <?php if (!empty($contents['deskripsi']['button_text']) && !empty($contents['deskripsi']['button_url'])): ?>
-                                <a href="<?= esc($contents['deskripsi']['button_url']) ?>" 
-                                   class="btn btn-lg mt-3" 
-                                   style="background: linear-gradient(135deg, #149823ff, #0b5804ff); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none;">
+                                <a href="<?= esc($contents['deskripsi']['button_url']) ?>"
+                                    class="btn btn-lg mt-3"
+                                    style="background: linear-gradient(135deg, #149823ff, #0b5804ff); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none;">
                                     <?= esc($contents['deskripsi']['button_text']) ?>
                                 </a>
                             <?php endif; ?>
@@ -629,7 +629,7 @@
                             </div>
                         <?php endforeach; ?>
                     </div>
-                    
+
                     <!-- Tombol Lihat Semua Berita -->
                     <div class="text-center mt-5">
                         <a href="<?= base_url('news') ?>" class="btn btn-lg" style="background: linear-gradient(135deg, #149823ff, #0b5804ff); color: white; padding: 15px 40px; border-radius: 30px; font-weight: 600; box-shadow: 0 5px 15px rgba(20, 152, 35, 0.3); transition: all 0.3s;">
@@ -647,10 +647,10 @@
         </div>
     </section>
 
-    <!-- Section Kontak -->
-    <section id="kontak" class="content-section" style="background: #1e3a5f; color: white;">
+    <!-- Section Informasi -->
+    <section id="informasi" class="content-section" style="background: #1e3a5f; color: white;">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Kontak</h2>
+            <h2 class="section-title" style="color: white;">Informasi</h2>
             <div class="section-content" style="color: rgba(255,255,255,0.9);">
                 <p>Hubungi kami untuk informasi lebih lanjut tentang GreenMetric Polban.</p>
 
@@ -659,9 +659,9 @@
                     <div class="col-md-8">
                         <div class="contact-details" style="text-align: left;">
                             <h4 style="color: #4CAF50; margin-bottom: 30px;">
-                                <i class="fas fa-info-circle"></i> Kontak informasi
+                                <i class="fas fa-info-circle"></i> Informasi tentang Polban
                             </h4>
-                            
+
                             <div class="contact-item" style="margin-bottom: 20px; display: flex; align-items: start; gap: 15px;">
                                 <i class="fas fa-map-marker-alt" style="color: #4CAF50; font-size: 20px; margin-top: 5px;"></i>
                                 <div>
@@ -670,21 +670,21 @@
                                     Kode Pos 40559 | Kotak Pos Bandung 1234
                                 </div>
                             </div>
-                            
+
                             <div class="contact-item" style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
                                 <i class="fas fa-phone" style="color: #4CAF50; font-size: 20px;"></i>
                                 <div>
                                     <strong>022 - 2013789 | 022 - 2015721</strong>
                                 </div>
                             </div>
-                            
+
                             <div class="contact-item" style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
                                 <i class="fas fa-envelope" style="color: #4CAF50; font-size: 20px;"></i>
                                 <div>
                                     <strong>polban@polban.ac.id</strong>
                                 </div>
                             </div>
-                            
+
                             <div class="social-media" style="display: flex; gap: 15px;">
                                 <a href="https://www.facebook.com/polbanofficial/?locale=id_ID" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #3b5998; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="Facebook POLBAN">
                                     <i class="fab fa-facebook-f"></i>
@@ -698,12 +698,12 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <div class="col-md-4 text-center">
                         <div style="background: white; padding: 30px; border-radius: 15px; display: inline-block;">
-                            <img src="https://e7.pngegg.com/pngimages/2/27/png-clipart-bandung-state-polytechnic-symbol-technical-school-pendhidhikan-dhuwur-symbol-miscellaneous-angle.png" 
-                                 alt="POLBAN Logo" 
-                                 style="width: 150px; height: auto;">
+                            <img src="https://e7.pngegg.com/pngimages/2/27/png-clipart-bandung-state-polytechnic-symbol-technical-school-pendhidhikan-dhuwur-symbol-miscellaneous-angle.png"
+                                alt="POLBAN Logo"
+                                style="width: 150px; height: auto;">
                             <h5 style="color: #1e3a5f; margin-top: 15px; font-weight: bold;">POLBAN</h5>
                         </div>
                     </div>
