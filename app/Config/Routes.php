@@ -19,13 +19,13 @@ $routes->get('/login', 'Auth::login');
 $routes->post('/login/process', 'Auth::loginProcess');
 $routes->get('/logout', 'Auth::logout');
 $routes->get('/dashboard', 'Dashboard::index');
-$routes->get('/register', 'Auth::register');
-$routes->post('/register/process', 'Auth::registerProcess');
+$routes->get('/dashboard/user/info-sdgs', 'Dashboard::userInfoSdgs', ['filter' => 'auth']);
+$routes->get('/dashboard/user/kriteria', 'Dashboard::userKriteria', ['filter' => 'auth']);
+// Registration routes removed
 $routes->get('/users', 'UserController::index', ['filter' => 'admin']);
 $routes->get('/users/delete/(:num)', 'UserController::delete/$1', ['filter' => 'admin']);
 $routes->get('/users/edit/(:num)', 'UserController::edit/$1', ['filter' => 'admin']);
 $routes->post('/users/update/(:num)', 'UserController::update/$1', ['filter' => 'admin']);
-$routes->get('/dashboard', 'DashboardController::index');
 // ============================================
 // TAMBAHKAN KODE INI DI BAWAH BARIS DI ATAS
 // ============================================
@@ -53,6 +53,7 @@ $routes->get('laporan/edit-kaprodi/(:num)', 'LaporanController::editKaprodi/$1',
 $routes->post('laporan/delete-kaprodi/(:num)', 'LaporanController::deleteKaprodi/$1', ['filter' => 'auth']);
 
 // Riwayat & Export routes
+$routes->get('laporan/debug-kaprodi', 'LaporanController::debugKaprodi'); // Debug route - no auth for testing
 $routes->get('laporan/riwayat-dosen', 'LaporanController::riwayatDosen', ['filter' => 'auth']);
 $routes->get('laporan/riwayat-kaprodi', 'LaporanController::riwayatKaprodi', ['filter' => 'auth']);
 $routes->get('laporan/export-dosen-pdf', 'LaporanController::exportDosenPdf', ['filter' => 'auth']);
@@ -201,10 +202,7 @@ $routes->group('users', ['filter' => 'auth'], function ($routes) {
     $routes->get('edit/(:num)', 'UserController::edit/$1');
     $routes->post('update/(:num)', 'UserController::update/$1');
     $routes->get('delete/(:num)', 'UserController::delete/$1');
-    $routes->get('pending-approvals', 'UserController::pendingApprovals');
-    $routes->get('approve/(:num)', 'UserController::approve/$1');
-    $routes->post('reject/(:num)', 'UserController::reject/$1');
-    $routes->get('pending-count', 'UserController::getPendingCount');
+    // Routes approval dihapus - tidak ada sistem registrasi
 });
 
 // ============================================
@@ -287,6 +285,11 @@ $routes->get('landing-contents', 'CmsController::landingContents', ['filter' => 
 $routes->get('landing-contents/edit/(:segment)', 'CmsController::editLandingContent/$1', ['filter' => 'auth']);
 $routes->post('landing-contents/update/(:segment)', 'CmsController::updateLandingContent/$1', ['filter' => 'auth']);
 
+// Informasi Content Management
+$routes->get('informasi-contents', 'CmsController::informasiContents', ['filter' => 'auth']);
+$routes->post('informasi-contents/update', 'CmsController::updateInformasiContent', ['filter' => 'auth']);
+$routes->post('cms/sync-dashboard-to-landing', 'CmsController::syncDashboardToLanding', ['filter' => 'auth']);
+
 // Dashboard Content Management
 $routes->get('dashboard-contents', 'CmsController::dashboardContents', ['filter' => 'auth']);
 $routes->get('dashboard-contents/edit/(:segment)', 'CmsController::editDashboardContent/$1', ['filter' => 'auth']);
@@ -299,6 +302,112 @@ $routes->post('dashboard-statistics/store', 'CmsController::storeDashboardStatis
 $routes->get('dashboard-statistics/edit/(:num)', 'CmsController::editDashboardStatistic/$1', ['filter' => 'auth']);
 $routes->post('dashboard-statistics/update/(:num)', 'CmsController::updateDashboardStatistic/$1', ['filter' => 'auth']);
 $routes->get('dashboard-statistics/delete/(:num)', 'CmsController::deleteDashboardStatistic/$1', ['filter' => 'auth']);
+
+// Landing Page Statistics Management (Updated to use StatisticsController)
+$routes->get('landing-statistics', 'StatisticsController::landingStats', ['filter' => 'auth']);
+
+// Temporary fixed version
+$routes->get('landing-statistics-fixed', 'StatisticsController::landingStatsFixed', ['filter' => 'auth']);
+
+// DEBUG routes for JavaScript testing
+$routes->get('debug-js', 'DebugController::testJavaScript');
+$routes->post('cms/update-landing-statistic', 'CmsController::updateLandingStatistic', ['filter' => 'auth']);
+
+// Landing Page Charts Management
+$routes->get('landing-charts', 'CmsController::landingCharts', ['filter' => 'auth']);
+$routes->post('cms/update-landing-chart', 'CmsController::updateLandingChart', ['filter' => 'auth']);
+
+// ============================================
+// TEST ROUTE (Remove after testing)
+// ============================================
+$routes->get('test-statistics', 'TestStatistics::index');
+$routes->get('debug-session', 'DebugSession::index');
+$routes->get('debug-landing-stats', function () {
+    $landingStatModel = new \App\Models\LandingStatisticModel();
+    $landingStats = $landingStatModel->getAllGrouped();
+
+    echo '<h3>Landing Stats Debug:</h3>';
+    echo '<pre>' . print_r($landingStats, true) . '</pre>';
+
+    // Transform ranking data
+    if (isset($landingStats['ranking_dunia'])) {
+        $rankingDunia = [];
+        foreach ($landingStats['ranking_dunia'] as $stat) {
+            if (!str_contains($stat['key_name'], '_progress')) {
+                $rankingDunia[] = [
+                    'year' => $stat['label'],
+                    'rank_value' => $stat['value']
+                ];
+            }
+        }
+        echo '<h3>Transformed Ranking Dunia:</h3>';
+        echo '<pre>' . print_r($rankingDunia, true) . '</pre>';
+    }
+});
+
+
+$routes->get('debug-sections', function () {
+    $landingStatModel = new \App\Models\LandingStatisticModel();
+    $landingStats = $landingStatModel->getAllGrouped();
+
+    echo '<h3>Available Sections:</h3>';
+    echo '<ul>';
+    foreach (array_keys($landingStats) as $section) {
+        echo '<li><strong>' . $section . '</strong> (' . count($landingStats[$section]) . ' items)</li>';
+    }
+    echo '</ul>';
+
+    // Check specific sections needed by view
+    $requiredSections = ['info_box', 'profil_kampus', 'fasilitas', 'ranking_dunia', 'ranking_indonesia'];
+    echo '<h3>Required Sections Status:</h3>';
+    echo '<ul>';
+    foreach ($requiredSections as $section) {
+        $status = isset($landingStats[$section]) ? '✅ EXISTS' : '❌ MISSING';
+        echo '<li>' . $section . ': ' . $status . '</li>';
+    }
+    echo '</ul>';
+});
+
+// ============================================
+// STATISTICS & CHARTS MANAGEMENT (New CRUD System)
+// ============================================
+
+$routes->group('statistics', ['filter' => 'auth'], function ($routes) {
+    // Main statistics management page
+    $routes->get('/', 'StatisticsController::index');
+
+    // Landing page statistics CRUD
+    $routes->get('landing', 'StatisticsController::landingStats');
+    $routes->get('get-all-landing-stats', 'StatisticsController::getAllLandingStats');
+    $routes->get('get-landing-stat/(:num)', 'StatisticsController::getLandingStat/$1');
+    $routes->post('update-landing-stat', 'StatisticsController::updateLandingStat');
+    $routes->post('update-landing-stat/(:num)', 'StatisticsController::updateLandingStatById/$1');
+    $routes->post('create-landing-stat', 'StatisticsController::createLandingStat');
+    $routes->post('delete-landing-stat', 'StatisticsController::deleteLandingStat');
+
+    // Dashboard statistics CRUD
+    $routes->get('dashboard', 'StatisticsController::dashboardStats');
+    $routes->post('update-dashboard-stat', 'StatisticsController::updateDashboardStat');
+
+    // Charts & indicators CRUD
+    $routes->get('charts', 'StatisticsController::charts');
+    $routes->get('get-landing-charts', 'StatisticsController::getLandingCharts');
+    $routes->get('get-chart/(:num)', 'StatisticsController::getChart/$1');
+    $routes->post('create-chart', 'StatisticsController::createChart');
+    $routes->post('update-chart/(:num)', 'StatisticsController::updateChart/$1');
+    $routes->delete('delete-chart/(:num)', 'StatisticsController::deleteChart/$1');
+
+    // Chart data management
+    $routes->post('update-chart-data', 'StatisticsController::updateChartData');
+    $routes->post('sync-all', 'StatisticsController::syncAll');
+
+    // Synchronization
+    $routes->post('sync-statistics-to-charts', 'StatisticsController::syncStatisticsToCharts');
+    $routes->post('bulk-sync', 'StatisticsController::bulkSync');
+
+    // API endpoints
+    $routes->get('api/chart-data/(:segment)', 'StatisticsController::getChartData/$1');
+});
 
 // ============================================
 // PUBLIC NEWS ROUTES (No Auth Required)

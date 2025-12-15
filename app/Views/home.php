@@ -23,6 +23,27 @@
             scroll-behavior: smooth;
         }
 
+        /* Ranking Charts Styles */
+        .ranking-charts-grid {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr) !important;
+            gap: 25px !important;
+            margin-bottom: 40px !important;
+        }
+
+        .ranking-chart-card {
+            background: white !important;
+            padding: 30px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+        }
+
+        @media (max-width: 992px) {
+            .ranking-charts-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
         /* Header Styles */
         .header {
             background: linear-gradient(135deg, #149823ff, #0b5804ff);
@@ -70,28 +91,42 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            overflow: hidden;
-
+            transition: all 0.3s ease;
         }
 
-        @keyframes rotate {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
+        .logo-circle i {
+            font-size: 24px;
+            color: #149823ff;
+            transition: all 0.3s ease;
         }
 
         .logo-circle:hover {
-            animation-play-state: paused;
+            transform: rotate(360deg);
+            box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
         }
 
-        .logo-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+        .logo-circle:hover i {
+            color: #0b5804ff;
+            transform: scale(1.1);
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .brand-title {
+            font-size: 28px;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .brand-subtitle {
+            font-size: 12px;
+            font-weight: 400;
+            opacity: 0.9;
+            line-height: 1;
         }
 
         /* Navigation Menu */
@@ -118,6 +153,12 @@
         .nav-menu li a:hover {
             background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
+            color: white;
+        }
+
+        .nav-menu li a:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.3);
         }
 
         .btn-login {
@@ -409,20 +450,64 @@
             transform: scale(1.1) translateY(-3px);
         }
 
+        /* Mobile Menu */
+        .mobile-menu-toggle {
+            display: none;
+            background: white;
+            color: #03c914ff;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mobile-menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: scale(1.05);
+        }
+
         /* Mobile Responsive */
         @media (max-width: 992px) {
             .nav-menu {
-                display: none;
+                position: fixed;
+                top: 80px;
+                right: -100%;
+                width: 250px;
+                height: calc(100vh - 80px);
+                background: linear-gradient(135deg, #149823ff, #0b5804ff);
+                flex-direction: column;
+                justify-content: flex-start;
+                align-items: stretch;
+                padding: 20px 0;
+                transition: right 0.3s ease;
+                box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
+                z-index: 999;
+            }
+
+            .nav-menu.active {
+                right: 0;
+            }
+
+            .nav-menu li {
+                margin: 0;
+                width: 100%;
+            }
+
+            .nav-menu li a {
+                display: block;
+                padding: 15px 25px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                transition: all 0.3s ease;
+            }
+
+            .nav-menu li a:hover {
+                background: rgba(255, 255, 255, 0.2);
+                transform: translateX(10px);
             }
 
             .mobile-menu-toggle {
                 display: block;
-                background: white;
-                color: #03c914ff;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 5px;
-                cursor: pointer;
             }
         }
 
@@ -451,7 +536,24 @@
             }
 
             .navbar-brand {
+                gap: 10px;
+            }
+
+            .brand-title {
                 font-size: 22px;
+            }
+
+            .brand-subtitle {
+                font-size: 10px;
+            }
+
+            .logo-circle {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-circle i {
+                font-size: 20px;
             }
 
             .section-title {
@@ -469,14 +571,18 @@
             <nav class="d-flex justify-content-between align-items-center">
                 <a href="/" class="navbar-brand">
                     <div class="logo-circle">
-                        <img src="https://e7.pngegg.com/pngimages/2/27/png-clipart-bandung-state-polytechnic-symbol-technical-school-pendhidhikan-dhuwur-symbol-miscellaneous-angle.png" alt="POLBAN Logo">
+                        <i class="fas fa-leaf"></i>
                     </div>
-                    <span>POLBAN</span>
+                    <div class="brand-text">
+                        <span class="brand-title">POLBAN</span>
+                        <span class="brand-subtitle">Kampus Berkelanjutan</span>
+                    </div>
                 </a>
 
                 <!-- Desktop Menu -->
                 <ul class="nav-menu">
                     <li><a href="#deskripsi">Deskripsi</a></li>
+                    <li><a href="#statistik">Statistik</a></li>
                     <li><a href="#program">Program</a></li>
                     <li><a href="#berita">Berita</a></li>
                     <li><a href="#informasi">Informasi</a></li>
@@ -565,6 +671,203 @@
         </div>
     </section>
 
+    <!-- Section Statistik Kampus -->
+    <?php if (isset($landingStats) && !empty($landingStats)): ?>
+        <section id="statistik" class="content-section" style="background: #f8f9fa;">
+            <div class="container">
+                <!-- Progress Ranking (2 Grafik) -->
+                <h2 class="section-title" style="text-align: center; margin-bottom: 30px; color: #1e3a8a; font-size: 28px; font-weight: 700;">
+                    <i class="fas fa-chart-line"></i> Progress Ranking Kampus
+                </h2>
+                <?php if (isset($landingStats) && !empty($landingStats) && (isset($landingStats['ranking_dunia']) || isset($landingStats['ranking_indonesia']))): ?>
+                    <div class="ranking-charts-grid">
+                        <!-- Ranking Dunia -->
+                        <?php if (isset($landingStats['ranking_dunia']) && !empty($landingStats['ranking_dunia'])): ?>
+                            <div class="ranking-chart-card">
+                                <h3 style="color: #1e3a8a; font-size: 20px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-globe"></i> Progress Ranking Dunia
+                                </h3>
+                                <?php foreach ($landingStats['ranking_dunia'] as $index => $chart): ?>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #e2e8f0;">
+                                        <span style="color: #64748b;"><?= esc($chart['year']) ?></span>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <strong style="color: #1e3a8a; font-size: 20px;">#<?= is_numeric($chart['rank_value']) ? number_format($chart['rank_value']) : esc($chart['rank_value']) ?></strong>
+                                            <?php if ($index > 0): ?>
+                                                <?php
+                                                $prevRank = $landingStats['ranking_dunia'][$index - 1]['rank_value'];
+                                                $improvement = $prevRank - $chart['rank_value'];
+                                                ?>
+                                                <?php if ($improvement > 0): ?>
+                                                    <span style="color: #10b981; font-size: 14px;">
+                                                        <i class="fas fa-arrow-up"></i> <?= $improvement ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+
+                        <!-- Ranking Indonesia -->
+                        <?php if (isset($landingStats['ranking_indonesia']) && !empty($landingStats['ranking_indonesia'])): ?>
+                            <div class="ranking-chart-card">
+                                <h3 style="color: #1e3a8a; font-size: 20px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fas fa-map-marker-alt"></i> Progress Ranking Indonesia
+                                </h3>
+                                <?php foreach ($landingStats['ranking_indonesia'] as $index => $chart): ?>
+                                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 15px 0; border-bottom: 1px solid #e2e8f0;">
+                                        <span style="color: #64748b;"><?= esc($chart['year']) ?></span>
+                                        <div style="display: flex; align-items: center; gap: 10px;">
+                                            <strong style="color: #1e3a8a; font-size: 20px;">#<?= is_numeric($chart['rank_value']) ? number_format($chart['rank_value']) : esc($chart['rank_value']) ?></strong>
+                                            <?php if ($index > 0): ?>
+                                                <?php
+                                                $prevRank = $landingStats['ranking_indonesia'][$index - 1]['rank_value'];
+                                                $improvement = $prevRank - $chart['rank_value'];
+                                                ?>
+                                                <?php if ($improvement > 0): ?>
+                                                    <span style="color: #10b981; font-size: 14px;">
+                                                        <i class="fas fa-arrow-up"></i> <?= $improvement ?>
+                                                    </span>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+                                        </div>
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Info Boxes (4 boxes) -->
+                <?php if (isset($landingStats['info_box'])): ?>
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 40px;">
+                        <style>
+                            @media (max-width: 1200px) {
+                                #statistik .container>div:nth-child(2) {
+                                    grid-template-columns: repeat(2, 1fr) !important;
+                                }
+                            }
+
+                            @media (max-width: 768px) {
+                                #statistik .container>div:nth-child(2) {
+                                    grid-template-columns: 1fr !important;
+                                }
+                            }
+                        </style>
+                        <?php
+                        $infoBoxes = [];
+                        foreach ($landingStats['info_box'] as $stat) {
+                            $key = $stat['key_name'];
+                            if (!str_contains($key, 'subtitle') && !str_contains($key, 'progress')) {
+                                $infoBoxes[$key] = [
+                                    'label' => $stat['label'],
+                                    'value' => $stat['value'],
+                                    'icon' => $stat['icon'],
+                                    'color' => $stat['color']
+                                ];
+                            }
+                        }
+                        foreach ($infoBoxes as $key => $box):
+                        ?>
+                            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid <?= $box['color'] ?>;">
+                                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                                    <div style="width: 50px; height: 50px; background: <?= $box['color'] ?>; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="<?= $box['icon'] ?>" style="font-size: 24px; color: white;"></i>
+                                    </div>
+                                    <div>
+                                        <h4 style="font-size: 32px; font-weight: 700; color: <?= $box['color'] ?>; margin: 0;">
+                                            <?= esc($box['value']) ?>
+                                        </h4>
+                                    </div>
+                                </div>
+                                <p style="color: #64748b; font-size: 14px; margin: 0;"><?= esc($box['label']) ?></p>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Profil & Fasilitas Kampus -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 25px; margin-bottom: 40px;">
+                    <!-- Profil Kampus -->
+                    <?php if (isset($landingStats['profil_kampus'])): ?>
+                        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <h3 style="color: #1e3a8a; font-size: 20px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-university"></i> Profil Kampus Polban
+                            </h3>
+                            <?php foreach ($landingStats['profil_kampus'] as $stat): ?>
+                                <div style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="color: #64748b;"><?= esc($stat['label']) ?></span>
+                                    <strong style="color: #1e3a8a; font-size: 18px;">
+                                        <?= is_numeric($stat['value']) ? number_format($stat['value']) : esc($stat['value']) ?>
+                                    </strong>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Fasilitas Kampus -->
+                    <?php if (isset($landingStats['fasilitas'])): ?>
+                        <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <h3 style="color: #1e3a8a; font-size: 20px; font-weight: 700; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-building"></i> Fasilitas Kampus
+                            </h3>
+                            <?php foreach ($landingStats['fasilitas'] as $stat): ?>
+                                <div style="display: flex; justify-content: space-between; padding: 15px 0; border-bottom: 1px solid #e2e8f0;">
+                                    <span style="color: #64748b;"><?= esc($stat['label']) ?></span>
+                                    <strong style="color: #1e3a8a; font-size: 18px;">
+                                        <?= is_numeric($stat['value']) ? number_format($stat['value']) : esc($stat['value']) ?>
+                                    </strong>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+                </div>
+
+                <!-- Interactive Charts Section -->
+                <!-- Dashboard Charts Section -->
+                <?php if (!empty($chartData)): ?>
+                    <div style="margin-top: 50px;">
+                        <h2 class="section-title" style="text-align: center; margin-bottom: 30px; color: #1e3a8a; font-size: 28px; font-weight: 700;">
+                            <i class="fas fa-chart-area"></i> Grafik Pencapaian Keberlanjutan
+                        </h2>
+
+                        <!-- Main Dashboard Charts -->
+                        <div style="display: grid; grid-template-columns: 1fr; gap: 30px;">
+
+                            <!-- Chart 1: Capaian Kriteria Kampus Berkelanjutan (Grouped Bar Chart) -->
+                            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <h3 style="color: #1e3a8a; font-size: 20px; font-weight: 600; margin-bottom: 15px; text-align: center;">
+                                    Capaian Kriteria Kampus Berkelanjutan (2023-2028)
+                                </h3>
+                                <p style="color: #64748b; font-size: 14px; text-align: center; margin-bottom: 25px;">
+                                    Proyeksi pencapaian berdasarkan UI GreenMetric World University Ranking
+                                </p>
+                                <div style="position: relative; height: 400px;">
+                                    <canvas id="sustainabilityChart" style="max-height: 400px;"></canvas>
+                                </div>
+                            </div>
+
+                            <!-- Chart 2: Total Skor Capaian Per Tahun (Line Chart) -->
+                            <div style="background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+                                <h3 style="color: #1e3a8a; font-size: 20px; font-weight: 600; margin-bottom: 15px; text-align: center;">
+                                    Total Skor Capaian Per Tahun
+                                </h3>
+                                <p style="color: #64748b; font-size: 14px; text-align: center; margin-bottom: 25px;">
+                                    Grafik peningkatan skor keseluruhan kampus berkelanjutan
+                                </p>
+                                <div style="position: relative; height: 400px;">
+                                    <canvas id="totalScoreChart" style="max-height: 400px;"></canvas>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </section>
+    <?php endif; ?>
+
     <!-- Section Program -->
     <section id="program" class="content-section">
         <div class="container">
@@ -650,64 +953,83 @@
     <!-- Section Informasi -->
     <section id="informasi" class="content-section" style="background: #1e3a5f; color: white;">
         <div class="container">
-            <h2 class="section-title" style="color: white;">Informasi</h2>
+            <?php
+            $informasiContent = isset($contents['informasi']) ? $contents['informasi'] : null;
+            ?>
+            <h2 class="section-title" style="color: white;">
+                <?= $informasiContent ? esc($informasiContent['title']) : 'Informasi' ?>
+            </h2>
             <div class="section-content" style="color: rgba(255,255,255,0.9);">
-                <p>Hubungi kami untuk informasi lebih lanjut tentang GreenMetric Polban.</p>
+                <p><?= $informasiContent ? esc($informasiContent['content']) : 'Hubungi kami untuk informasi lebih lanjut tentang GreenMetric Polban.' ?></p>
 
                 <!-- Contact Information -->
-                <div class="row mt-5 align-items-center">
-                    <div class="col-md-8">
-                        <div class="contact-details" style="text-align: left;">
-                            <h4 style="color: #4CAF50; margin-bottom: 30px;">
-                                <i class="fas fa-info-circle"></i> Informasi tentang Polban
-                            </h4>
-
-                            <div class="contact-item" style="margin-bottom: 20px; display: flex; align-items: start; gap: 15px;">
-                                <i class="fas fa-map-marker-alt" style="color: #4CAF50; font-size: 20px; margin-top: 5px;"></i>
-                                <div>
-                                    <strong>Jl. Gegerkalong Hilir, Ciwaruga, Kec. Parongpong,</strong><br>
-                                    Kabupaten Bandung Barat, Jawa Barat<br>
-                                    Kode Pos 40559 | Kotak Pos Bandung 1234
-                                </div>
-                            </div>
-
-                            <div class="contact-item" style="margin-bottom: 20px; display: flex; align-items: center; gap: 15px;">
-                                <i class="fas fa-phone" style="color: #4CAF50; font-size: 20px;"></i>
-                                <div>
-                                    <strong>022 - 2013789 | 022 - 2015721</strong>
-                                </div>
-                            </div>
-
-                            <div class="contact-item" style="margin-bottom: 30px; display: flex; align-items: center; gap: 15px;">
-                                <i class="fas fa-envelope" style="color: #4CAF50; font-size: 20px;"></i>
-                                <div>
-                                    <strong>polban@polban.ac.id</strong>
-                                </div>
-                            </div>
-
-                            <div class="social-media" style="display: flex; gap: 15px;">
-                                <a href="https://www.facebook.com/polbanofficial/?locale=id_ID" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #3b5998; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="Facebook POLBAN">
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 40px; margin-top: 40px; margin-bottom: 30px;">
+                    <!-- Contact Details (Left Column) -->
+                    <div>
+                        <h4 style="color: #4CAF50; margin-bottom: 20px; font-size: 18px; font-weight: 700;">
+                            <i class="fas fa-info-circle"></i>
+                            <?= $informasiContent ? esc($informasiContent['subtitle']) : 'Informasi tentang Polban' ?>
+                        </h4>
+                        <div style="line-height: 1.8; color: rgba(255,255,255,0.9);">
+                            <p style="margin-bottom: 15px;">
+                                <i class="fas fa-map-marker-alt" style="color: #4CAF50; margin-right: 10px;"></i>
+                                <?= $informasiContent && $informasiContent['address'] ? nl2br(esc($informasiContent['address'])) : 'Jl. Gegerkalong Hilir, Ds. Ciwaruga, Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559' ?>
+                            </p>
+                            <p style="margin-bottom: 15px;">
+                                <i class="fas fa-phone" style="color: #4CAF50; margin-right: 10px;"></i>
+                                <?= $informasiContent && $informasiContent['phone'] ? esc($informasiContent['phone']) : '(022) 2013789' ?>
+                            </p>
+                            <p style="margin-bottom: 15px;">
+                                <i class="fas fa-envelope" style="color: #4CAF50; margin-right: 10px;"></i>
+                                <?= $informasiContent && $informasiContent['email'] ? esc($informasiContent['email']) : 'info@polban.ac.id' ?>
+                            </p>
+                            <div style="margin-top: 20px;">
+                                <a href="https://www.facebook.com/polbanofficial/?locale=id_ID" target="_blank" style="display: inline-block; width: 35px; height: 35px; background: #3b5998; border-radius: 50%; text-align: center; line-height: 35px; margin-right: 10px; color: white; text-decoration: none; transition: transform 0.3s;">
                                     <i class="fab fa-facebook-f"></i>
                                 </a>
-                                <a href="https://www.instagram.com/politekniknegeribandung?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #E1306C; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="Instagram POLBAN">
+                                <a href="https://www.instagram.com/politekniknegeribandung?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" style="display: inline-block; width: 35px; height: 35px; background: #E1306C; border-radius: 50%; text-align: center; line-height: 35px; margin-right: 10px; color: white; text-decoration: none; transition: transform 0.3s;">
                                     <i class="fab fa-instagram"></i>
                                 </a>
-                                <a href="https://www.youtube.com/c/POLBANOFFICIAL" target="_blank" rel="noopener noreferrer" style="width: 40px; height: 40px; background: #FF0000; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; text-decoration: none; transition: transform 0.3s;" title="YouTube POLBAN">
+                                <a href="https://www.youtube.com/c/POLBANOFFICIAL" target="_blank" style="display: inline-block; width: 35px; height: 35px; background: #FF0000; border-radius: 50%; text-align: center; line-height: 35px; color: white; text-decoration: none; transition: transform 0.3s;">
                                     <i class="fab fa-youtube"></i>
                                 </a>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 text-center">
-                        <div style="background: white; padding: 30px; border-radius: 15px; display: inline-block;">
-                            <img src="https://e7.pngegg.com/pngimages/2/27/png-clipart-bandung-state-polytechnic-symbol-technical-school-pendhidhikan-dhuwur-symbol-miscellaneous-angle.png"
-                                alt="POLBAN Logo"
-                                style="width: 150px; height: auto;">
-                            <h5 style="color: #1e3a5f; margin-top: 15px; font-weight: bold;">POLBAN</h5>
+                    <!-- Logo Section (Right Column) -->
+                    <div style="text-align: center;">
+                        <div style="background: white; padding: 40px; border-radius: 15px; display: inline-block; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                            <div style="display: flex; flex-direction: column; align-items: center; gap: 15px;">
+                                <div style="width: 80px; height: 80px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 15px rgba(20, 152, 35, 0.3); border: 3px solid #149823ff;">
+                                    <img src="<?= base_url('assets/images/logo-polban.png') ?>" alt="Logo Polban" style="width: 60px; height: 60px; object-fit: contain;">
+                                </div>
+                                <div style="text-align: center;">
+                                    <h4 style="color: #149823ff; margin: 0; font-weight: bold;">POLBAN</h4>
+                                    <p style="color: #666; margin: 5px 0 0 0; font-size: 14px;">Kampus Berkelanjutan</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+
+                <!-- Google Maps Location (Full Width Below) -->
+                <?php if ($informasiContent && !empty($informasiContent['map_embed'])): ?>
+                    <div style="border-top: 1px solid rgba(255,255,255,0.1); padding-top: 30px; margin-top: 30px;">
+                        <h4 style="color: #4CAF50; margin-bottom: 20px; font-size: 18px; font-weight: 700; text-align: center;">
+                            <i class="fas fa-map-marked-alt"></i> Lokasi Kampus
+                        </h4>
+                        <div class="map-container" style="border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">
+                            <?= $informasiContent['map_embed'] ?>
+                        </div>
+                        <style>
+                            .map-container iframe {
+                                width: 100% !important;
+                                height: 350px !important;
+                            }
+                        </style>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </section>
@@ -727,6 +1049,8 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js for interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Animated JavaScript -->
     <script src="<?= base_url('assets/js/home_animated.js') ?>"></script>
     <script>
@@ -748,13 +1072,16 @@
             });
         });
 
-        // Smooth scroll untuk menu navigasi
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        // Smooth scroll untuk menu navigasi header
+        document.querySelectorAll('.nav-menu a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+                const targetId = this.getAttribute('href');
+                const target = document.querySelector(targetId);
+
                 if (target) {
-                    const headerOffset = 80;
+                    // Offset untuk header yang sticky (responsive)
+                    const headerOffset = window.innerWidth <= 992 ? 90 : 80;
                     const elementPosition = target.getBoundingClientRect().top;
                     const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
 
@@ -762,31 +1089,350 @@
                         top: offsetPosition,
                         behavior: 'smooth'
                     });
+
+                    // Update active menu dengan animasi
+                    document.querySelectorAll('.nav-menu a').forEach(link => {
+                        link.style.background = '';
+                        link.style.borderRadius = '';
+                    });
+                    this.style.background = 'rgba(255, 255, 255, 0.2)';
+                    this.style.borderRadius = '5px';
                 }
             });
         });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const navMenu = document.querySelector('.nav-menu');
+
+        if (mobileMenuToggle && navMenu) {
+            mobileMenuToggle.addEventListener('click', function() {
+                navMenu.classList.toggle('active');
+
+                // Change icon
+                const icon = this.querySelector('i');
+                if (navMenu.classList.contains('active')) {
+                    icon.className = 'fas fa-times';
+                } else {
+                    icon.className = 'fas fa-bars';
+                }
+            });
+
+            // Close mobile menu when clicking on a link
+            document.querySelectorAll('.nav-menu a[href^="#"]').forEach(link => {
+                link.addEventListener('click', function() {
+                    navMenu.classList.remove('active');
+                    mobileMenuToggle.querySelector('i').className = 'fas fa-bars';
+                });
+            });
+
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!navMenu.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                    navMenu.classList.remove('active');
+                    mobileMenuToggle.querySelector('i').className = 'fas fa-bars';
+                }
+            });
+        }
 
         // Active menu highlight saat scroll
         window.addEventListener('scroll', () => {
             const sections = document.querySelectorAll('.content-section');
             const navLinks = document.querySelectorAll('.nav-menu a[href^="#"]');
+            const headerOffset = window.innerWidth <= 992 ? 90 : 80;
 
             let current = '';
             sections.forEach(section => {
-                const sectionTop = section.offsetTop;
-                const sectionHeight = section.clientHeight;
-                if (window.pageYOffset >= (sectionTop - 100)) {
+                const sectionTop = section.offsetTop - headerOffset - 50;
+                const sectionBottom = sectionTop + section.clientHeight;
+
+                if (window.pageYOffset >= sectionTop && window.pageYOffset < sectionBottom) {
                     current = section.getAttribute('id');
                 }
             });
 
+            // Update active menu
             navLinks.forEach(link => {
                 link.style.background = '';
+                link.style.borderRadius = '';
                 if (link.getAttribute('href') === '#' + current) {
                     link.style.background = 'rgba(255, 255, 255, 0.2)';
+                    link.style.borderRadius = '5px';
                 }
             });
         });
+
+        // Initialize Dashboard Charts on Landing Page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configure Chart.js defaults
+            Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+            Chart.defaults.font.size = 12;
+            Chart.defaults.color = '#64748b';
+
+            <?php if (!empty($chartData)): ?>
+                // Data dari controller (sama seperti dashboard)
+                const chartData = <?= json_encode($chartData) ?>;
+
+                // Chart 1: Capaian Kriteria Kampus Berkelanjutan (Grouped Bar Chart)
+                const sustainabilityCtx = document.getElementById('sustainabilityChart');
+                if (sustainabilityCtx) {
+                    new Chart(sustainabilityCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: chartData.labels,
+                            datasets: chartData.datasets
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'bottom',
+                                    labels: {
+                                        padding: 15,
+                                        font: {
+                                            size: 11
+                                        },
+                                        usePointStyle: true,
+                                        pointStyle: 'rect',
+                                        boxWidth: 12,
+                                        boxHeight: 12
+                                    }
+                                },
+                                title: {
+                                    display: false
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                                    padding: 12,
+                                    titleFont: {
+                                        size: 13,
+                                        weight: 'bold'
+                                    },
+                                    bodyFont: {
+                                        size: 12
+                                    },
+                                    callbacks: {
+                                        label: function(context) {
+                                            return context.dataset.label + ': ' + context.parsed.y + '%';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + '%';
+                                        },
+                                        stepSize: 10,
+                                        font: {
+                                            size: 11
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.06)',
+                                        drawBorder: false
+                                    },
+                                    title: {
+                                        display: false
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false,
+                                        drawBorder: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: 11,
+                                            weight: '600'
+                                        }
+                                    }
+                                }
+                            },
+                            interaction: {
+                                intersect: false,
+                                mode: 'index'
+                            }
+                        }
+                    });
+                }
+
+                // Chart 2: Total Skor Capaian Per Tahun (Line Chart)
+                const totalScoreCtx = document.getElementById('totalScoreChart');
+                if (totalScoreCtx) {
+                    // Create gradient
+                    const gradient = totalScoreCtx.getContext('2d').createLinearGradient(0, 0, 0, 400);
+                    gradient.addColorStop(0, 'rgba(45, 122, 79, 0.3)');
+                    gradient.addColorStop(1, 'rgba(45, 122, 79, 0.05)');
+
+                    new Chart(totalScoreCtx, {
+                        type: 'line',
+                        data: {
+                            labels: chartData.labels,
+                            datasets: [{
+                                label: 'Total Skor (%)',
+                                data: chartData.totalScore,
+                                backgroundColor: gradient,
+                                borderColor: '#2d7a4f',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: '#2d7a4f',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 6,
+                                pointHoverRadius: 8,
+                                pointHoverBackgroundColor: '#2d7a4f',
+                                pointHoverBorderColor: '#fff',
+                                pointHoverBorderWidth: 3
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: true,
+                                    position: 'top',
+                                    labels: {
+                                        usePointStyle: true,
+                                        padding: 15,
+                                        font: {
+                                            size: 12,
+                                            weight: '600'
+                                        }
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(45, 122, 79, 0.95)',
+                                    padding: 12,
+                                    titleFont: {
+                                        size: 13,
+                                        weight: 'bold'
+                                    },
+                                    bodyFont: {
+                                        size: 12
+                                    },
+                                    callbacks: {
+                                        label: function(context) {
+                                            return 'Total Skor: ' + context.parsed.y + '%';
+                                        },
+                                        afterLabel: function(context) {
+                                            const index = context.dataIndex;
+                                            const worldRank = chartData.worldRank[index];
+                                            const idRank = chartData.indonesiaRank[index];
+                                            return 'World Rank: #' + worldRank + '\nID Rank: #' + idRank;
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    max: 100,
+                                    ticks: {
+                                        callback: function(value) {
+                                            return value + '%';
+                                        },
+                                        stepSize: 10,
+                                        font: {
+                                            size: 11
+                                        }
+                                    },
+                                    grid: {
+                                        color: 'rgba(0, 0, 0, 0.06)',
+                                        drawBorder: false
+                                    }
+                                },
+                                x: {
+                                    grid: {
+                                        display: false,
+                                        drawBorder: false
+                                    },
+                                    ticks: {
+                                        font: {
+                                            size: 11,
+                                            weight: '600'
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+
+            <?php endif; ?>
+
+            // Initialize generic landing page charts (if any)
+            const chartCanvases = document.querySelectorAll('canvas[id^="landingChart"]');
+            chartCanvases.forEach(function(canvas) {
+                const ctx = canvas.getContext('2d');
+                const chartType = canvas.dataset.chartType;
+                const chartData = JSON.parse(canvas.dataset.chartData || '{}');
+                const chartConfig = JSON.parse(canvas.dataset.chartConfig || '{}');
+
+                // Default config
+                const defaultConfig = {
+                    type: chartType,
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: false
+                            }
+                        }
+                    }
+                };
+
+                // Merge dengan custom config
+                const finalConfig = mergeDeep(defaultConfig, {
+                    options: chartConfig
+                });
+
+                // Create chart
+                try {
+                    new Chart(ctx, finalConfig);
+                } catch (error) {
+                    console.error('Error creating chart:', error);
+                }
+            });
+        });
+
+        // Helper function untuk merge object
+        function mergeDeep(target, source) {
+            const output = Object.assign({}, target);
+            if (isObject(target) && isObject(source)) {
+                Object.keys(source).forEach(key => {
+                    if (isObject(source[key])) {
+                        if (!(key in target))
+                            Object.assign(output, {
+                                [key]: source[key]
+                            });
+                        else
+                            output[key] = mergeDeep(target[key], source[key]);
+                    } else {
+                        Object.assign(output, {
+                            [key]: source[key]
+                        });
+                    }
+                });
+            }
+            return output;
+        }
+
+        function isObject(item) {
+            return (item && typeof item === "object" && !Array.isArray(item));
+        }
     </script>
 </body>
 

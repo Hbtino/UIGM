@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,7 +19,7 @@
             color: #fff;
             position: relative;
         }
-        
+
         .login-box {
             background: white;
             color: #333;
@@ -29,7 +30,7 @@
             text-align: center;
             position: relative;
         }
-        
+
         .back-button {
             position: absolute;
             top: 15px;
@@ -47,14 +48,14 @@
             transition: all 0.3s ease;
             z-index: 10;
         }
-        
+
         .back-button:hover {
             background: #003C8F;
             color: white;
             transform: scale(1.1);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
         }
-        
+
         .back-button i {
             font-size: 16px;
         }
@@ -83,27 +84,27 @@
         small {
             color: grey;
         }
-        
+
         .welcome-text {
             color: #003C8F;
             font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 10px;
         }
-        
+
         .description {
             color: #666;
             font-size: 0.9rem;
             margin-bottom: 20px;
             line-height: 1.4;
         }
-        
+
         .form-control {
             border-radius: 5px;
             padding: 10px;
             margin-bottom: 15px;
         }
-        
+
         .form-options {
             display: flex;
             justify-content: space-between;
@@ -111,75 +112,76 @@
             margin-bottom: 20px;
             font-size: 0.9rem;
         }
-        
+
         .remember-me {
             display: flex;
             align-items: center;
         }
-        
+
         .remember-me input {
             margin-right: 5px;
         }
-        
+
         .forgot-password {
             color: #003C8F;
             text-decoration: none;
         }
-        
+
         .forgot-password:hover {
             text-decoration: underline;
         }
-        
+
         .signup-link {
             margin-top: 15px;
             color: #666;
             font-size: 0.9rem;
         }
-        
+
         .signup-link a {
             color: #12e03fff;
             text-decoration: none;
             font-weight: bold;
         }
-        
+
         .signup-link a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
+
 <body>
     <div class="login-box">
         <!-- Back Button -->
         <a href="<?= base_url('/') ?>" class="back-button" title="Kembali ke Beranda">
             <i class="fas fa-arrow-left"></i>
         </a>
-        
+
         <img src="https://e7.pngegg.com/pngimages/2/27/png-clipart-bandung-state-polytechnic-symbol-technical-school-pendhidhikan-dhuwur-symbol-miscellaneous-angle.png" class="logo" alt="POLBAN Logo">
-        
+
         <div class="welcome-text">UI Green Metric Polban!</div>
         <div class="description">
-           <br> Polban berpartisipasi aktif dalam UI GreenMetric sebagai bentuk dukungan terhadap pembangunan berkelanjutan di lingkungan kampus.<br>
+            <br> Polban berpartisipasi aktif dalam UI GreenMetric sebagai bentuk dukungan terhadap pembangunan berkelanjutan di lingkungan kampus.<br>
         </div>
 
-        <?php if(session()->getFlashdata('error')): ?>
+        <?php if (session()->getFlashdata('error')): ?>
             <div class="alert alert-danger">
                 <i class="fas fa-exclamation-circle"></i> <?= session()->getFlashdata('error') ?>
             </div>
         <?php endif; ?>
-        
-        <?php if(session()->getFlashdata('warning')): ?>
+
+        <?php if (session()->getFlashdata('warning')): ?>
             <div class="alert alert-warning">
                 <i class="fas fa-clock"></i> <?= session()->getFlashdata('warning') ?>
             </div>
         <?php endif; ?>
-        
-        <?php if(session()->getFlashdata('info')): ?>
+
+        <?php if (session()->getFlashdata('info')): ?>
             <div class="alert alert-info">
                 <i class="fas fa-info-circle"></i> <?= session()->getFlashdata('info') ?>
             </div>
         <?php endif; ?>
-        
-        <?php if(session()->getFlashdata('success')): ?>
+
+        <?php if (session()->getFlashdata('success')): ?>
             <div class="alert alert-success">
                 <i class="fas fa-check-circle"></i> <?= session()->getFlashdata('success') ?>
             </div>
@@ -192,7 +194,7 @@
             <div class="mb-2">
                 <input type="password" name="password" class="form-control" placeholder="***********" required>
             </div>
-            
+
             <div class="form-options">
                 <div class="remember-me">
                     <input type="checkbox" id="remember" name="remember">
@@ -200,14 +202,13 @@
                 </div>
 
             </div>
-            
+
             <button type="submit" class="btn btn-login w-100">Login</button>
         </form>
-        
-        <div class="signup-link">
-            Not a member yet? <a href="/register">Sign up</a>
-        </div>
+
+        <!-- Registration removed - contact admin for new accounts -->
     </div>
 
 </body>
+
 </html>

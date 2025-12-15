@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple JavaScript Test</title>
+</head>
+<body>
+    <h1>Simple JavaScript Test</h1>
+    <p>Jika JavaScript berfungsi, Anda akan melihat alert dan pesan di console F12.</p>
+    
+    <button onclick="testButton()">Klik untuk Test</button>
+    
+    <script>
+        // Test 1: Immediate execution
+        console.log('🚀 SIMPLE TEST: JavaScript loaded!');
+        console.log('📅 Time:', new Date().toISOString());
+        
+        // Test 2: Alert
+        alert('SIMPLE TEST: JavaScript berfungsi!');
+        
+        // Test 3: Function
+        function testButton() {
+            console.log('🔘 Button clicked!');
+            alert('Button test berhasil!');
+        }
+        
+        // Test 4: Delayed execution
+        setTimeout(function() {
+            console.log('⏰ Delayed test: 2 seconds passed');
+        }, 2000);
+    </script>
+</body>
+</html>

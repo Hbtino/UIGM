@@ -109,6 +109,13 @@
             transition: all 0.3s ease;
             position: relative;
             border-left: 3px solid transparent;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        /* Ensure menu items are clickable */
+        .menu-item:not(.has-submenu) {
+            pointer-events: auto !important;
         }
 
         .menu-item:hover {
@@ -119,10 +126,15 @@
         }
 
         .menu-item.active {
-            background: rgba(76, 175, 80, 0.2);
-            color: white;
-            border-left-color: #4CAF50;
-            font-weight: 600;
+            background: rgba(76, 175, 80, 0.2) !important;
+            color: white !important;
+            border-left-color: #4CAF50 !important;
+            font-weight: 600 !important;
+        }
+
+        /* Ensure active state is not overridden by JavaScript */
+        .menu-item.active:hover {
+            background: rgba(76, 175, 80, 0.3) !important;
         }
 
         .menu-item.active::before {
@@ -175,12 +187,21 @@
         }
 
         .submenu-item {
-            display: block;
+            display: flex;
+            align-items: center;
             padding: 12px 20px 12px 15px;
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
             font-size: 13px;
             transition: all 0.3s ease;
+        }
+
+        .submenu-item i {
+            width: 16px;
+            font-size: 12px;
+            margin-right: 8px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         .submenu-item:hover {
@@ -189,9 +210,23 @@
             padding-left: 20px;
         }
 
-        .submenu-item.active {
+        .submenu-item:hover i {
             color: white;
-            background: rgba(76, 175, 80, 0.15);
+        }
+
+        .submenu-item.active {
+            color: white !important;
+            background: rgba(76, 175, 80, 0.15) !important;
+            font-weight: 600 !important;
+        }
+
+        .submenu-item.active i {
+            color: #4CAF50 !important;
+        }
+
+        /* Ensure submenu active state is stable */
+        .submenu-item.active:hover {
+            background: rgba(76, 175, 80, 0.25) !important;
         }
 
         /* Main Content */
@@ -212,6 +247,32 @@
             position: sticky;
             top: 0;
             z-index: 999;
+        }
+
+        .sidebar-toggle-btn {
+            background: #149823ff;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-right: 15px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .sidebar-toggle-btn:hover {
+            background: #0b5804ff;
+            transform: scale(1.05);
+        }
+
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            flex-direction: row;
         }
 
         .topbar-left h1 {
@@ -307,6 +368,68 @@
             z-index: 1001;
         }
 
+        /* Collapsed Sidebar Styles */
+        .sidebar.collapsed {
+            width: 70px;
+            transition: width 0.3s ease;
+        }
+
+        /* Prevent layout shift during transitions */
+        .sidebar {
+            transition: width 0.3s ease;
+        }
+
+        .main-content {
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed .sidebar-header h2,
+        .sidebar.collapsed .sidebar-header p,
+        .sidebar.collapsed .menu-section-title,
+        .sidebar.collapsed .menu-item span,
+        .sidebar.collapsed .submenu {
+            display: none;
+        }
+
+        .sidebar.collapsed .menu-item {
+            justify-content: center;
+            padding: 15px;
+        }
+
+        .sidebar.collapsed .menu-item i {
+            margin-right: 0;
+        }
+
+        .sidebar.collapsed .menu-item.has-submenu::after {
+            display: none;
+        }
+
+        /* Adjust main content when sidebar is collapsed */
+        .sidebar-collapsed .main-content {
+            margin-left: 70px;
+        }
+
+        /* Tooltip for collapsed sidebar */
+        .sidebar.collapsed .menu-item {
+            position: relative;
+        }
+
+        .sidebar.collapsed .menu-item:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            left: 70px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 1000;
+            pointer-events: none;
+        }
+
         /* Responsive */
         @media (max-width: 768px) {
             .sidebar {
@@ -360,7 +483,7 @@
             <!-- Menu Utama -->
             <div class="menu-section">
                 <div class="menu-section-title">Menu Utama</div>
-                <a href="<?= base_url('dashboard') ?>" class="menu-item <?= ($page ?? '') == 'dashboard' ? 'active' : '' ?>">
+                <a href="<?= base_url('dashboard') ?>" class="menu-item <?= ($page ?? '') == 'dashboard' ? 'active' : '' ?>" data-tooltip="Dashboard" onclick="console.log('Dashboard clicked, navigating to:', this.href);">
                     <i class="fas fa-home"></i>
                     <span>Dashboard</span>
                 </a>
@@ -400,12 +523,10 @@
                 <div class="menu-section-title">Sistem</div>
 
                 <?php if (($user_role ?? '') === 'admin'): ?>
-                    <a href="<?= base_url('users') ?>" class="menu-item <?= ($page ?? '') == 'users' ? 'active' : '' ?>">
+                    <a href="<?= base_url('users') ?>" class="menu-item <?= ($page ?? '') == 'users' ? 'active' : '' ?>" data-tooltip="Manajemen User">
                         <i class="fas fa-users"></i>
                         <span>Manajemen User</span>
-                        <?php if (isset($pending_users) && $pending_users > 0): ?>
-                            <span class="badge"><?= $pending_users ?></span>
-                        <?php endif; ?>
+                        <!-- Badge pending users dihapus -->
                     </a>
 
                     <a href="<?= base_url('menus') ?>" class="menu-item <?= ($page ?? '') == 'cms-menus' ? 'active' : '' ?>">
@@ -423,6 +544,11 @@
                         <span>Konten Landing Page</span>
                     </a>
 
+                    <a href="<?= base_url('informasi-contents') ?>" class="menu-item <?= ($page ?? '') == 'cms-informasi' ? 'active' : '' ?>">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Kelola Informasi</span>
+                    </a>
+
                     <a href="<?= base_url('dashboard-contents') ?>" class="menu-item <?= ($page ?? '') == 'cms-dashboard' ? 'active' : '' ?>">
                         <i class="fas fa-tachometer-alt"></i>
                         <span>Konten Dashboard</span>
@@ -432,29 +558,38 @@
                         <i class="fas fa-chart-line"></i>
                         <span>Statistik Dashboard</span>
                     </a>
+
+                    <!-- New Statistics & Charts Management Menu -->
+                    <a href="<?= base_url('statistics') ?>" class="menu-item <?= ($page ?? '') == 'statistics' ? 'active' : '' ?>" data-tooltip="Manajemen Statistik & Chart">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Manajemen Statistik & Chart</span>
+                    </a>
                 <?php endif; ?>
 
-                <!-- Laporan Menu with Submenu -->
-                <a href="#" class="menu-item has-submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'riwayat_laporan']) ? 'active open' : '' ?>" onclick="toggleSubmenu(event, this)">
+                <!-- Laporan Menu with Dropdown - No Separate Riwayat Items -->
+                <a href="#" class="menu-item has-submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'riwayat_laporan', 'riwayat_kaprodi', 'riwayat_laporan_kaprodi']) ? 'active open' : '' ?>" data-menu-id="laporan-menu">
                     <i class="fas fa-file-alt"></i>
                     <span>Laporan</span>
                     <i class="fas fa-chevron-down dropdown-icon"></i>
                 </a>
-                <div class="submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'riwayat_laporan']) ? 'show' : '' ?>">
-                    <?php if (in_array(($user_role ?? ''), ['admin', 'dosen'])): ?>
+                <div class="submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'riwayat_laporan', 'riwayat_kaprodi', 'riwayat_laporan_kaprodi']) ? 'show' : '' ?>">
+                    <?php if (($user_role ?? '') === 'admin'): ?>
+                        <!-- Admin melihat kedua opsi laporan -->
                         <a href="<?= base_url('laporan') ?>" class="submenu-item <?= ($page ?? '') == 'laporan' ? 'active' : '' ?>">
-                            Laporan Dosen
+                            <i class="fas fa-user-tie"></i> Laporan Dosen
                         </a>
-                        <a href="<?= base_url('laporan/riwayat-dosen') ?>" class="submenu-item <?= ($page ?? '') == 'riwayat_laporan' ? 'active' : '' ?>">
-                            Riwayat Laporan Dosen
-                        </a>
-                    <?php endif; ?>
-                    <?php if (in_array(($user_role ?? ''), ['admin', 'kaprodi'])): ?>
                         <a href="<?= base_url('laporan/kaprodi') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_kaprodi' ? 'active' : '' ?>">
-                            Laporan Kaprodi
+                            <i class="fas fa-graduation-cap"></i> Laporan Kaprodi
                         </a>
-                        <a href="<?= base_url('laporan/riwayat-kaprodi') ?>" class="submenu-item">
-                            Riwayat Laporan Kaprodi
+                    <?php elseif (($user_role ?? '') === 'dosen'): ?>
+                        <!-- Dosen hanya melihat laporan dosen -->
+                        <a href="<?= base_url('laporan') ?>" class="submenu-item <?= ($page ?? '') == 'laporan' ? 'active' : '' ?>">
+                            <i class="fas fa-user-tie"></i> Laporan Dosen
+                        </a>
+                    <?php elseif (($user_role ?? '') === 'kaprodi'): ?>
+                        <!-- Kaprodi hanya melihat laporan kaprodi -->
+                        <a href="<?= base_url('laporan/kaprodi') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_kaprodi' ? 'active' : '' ?>">
+                            <i class="fas fa-graduation-cap"></i> Laporan Kaprodi
                         </a>
                     <?php endif; ?>
                 </div>
@@ -477,6 +612,9 @@
         <!-- Topbar -->
         <div class="topbar">
             <div class="topbar-left">
+                <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <h1>Dashboard Kampus Berkelanjutan</h1>
                 <div class="breadcrumb">
                     Renstra TMKB Polban 2024-2028 | UI GreenMetric
@@ -485,10 +623,10 @@
             <div class="topbar-right">
                 <div class="user-info">
                     <div class="user-avatar">
-                        <?php if (isset($profile_photo) && $profile_photo): ?>
-                            <img src="<?= base_url('uploads/profile/' . $profile_photo) ?>" alt="Profile">
+                        <?php if (!empty($profile_photo) && file_exists(FCPATH . 'uploads/profiles/' . $profile_photo)): ?>
+                            <img src="<?= base_url('uploads/profiles/' . $profile_photo) ?>" alt="Profile">
                         <?php else: ?>
-                            <?= strtoupper(substr($user_name ?? 'U', 0, 1)) ?>
+                            <?= isset($user_name) ? strtoupper(substr($user_name, 0, 1)) : 'U' ?>
                         <?php endif; ?>
                     </div>
                     <div class="user-details">
@@ -512,31 +650,157 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Chart.js for statistics and charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- jQuery for AJAX operations -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Toastr for notifications -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <script>
-        // Toggle Sidebar (Mobile)
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('show');
-        }
+        // Persistent Sidebar State Management
+        const SIDEBAR_STATE_KEY = 'polban_sidebar_state';
+        const SUBMENU_STATE_KEY = 'polban_submenu_states';
 
-        // Toggle Submenu
-        function toggleSubmenu(event, element) {
-            event.preventDefault();
-            element.classList.toggle('open');
-            const submenu = element.nextElementSibling;
-            if (submenu && submenu.classList.contains('submenu')) {
-                submenu.classList.toggle('show');
+        // Toggle Sidebar (Mobile & Desktop)
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const isOpen = sidebar.classList.contains('show') || window.innerWidth > 768;
+
+            if (window.innerWidth <= 768) {
+                sidebar.classList.toggle('show');
+            } else {
+                // Desktop: Toggle collapsed state
+                sidebar.classList.toggle('collapsed');
+                document.body.classList.toggle('sidebar-collapsed');
+
+                // Save state
+                localStorage.setItem(SIDEBAR_STATE_KEY, sidebar.classList.contains('collapsed') ? 'collapsed' : 'expanded');
             }
         }
 
-        // Close sidebar when clicking outside (mobile)
+        // Toggle Submenu with persistence - FIXED VERSION
+        function toggleSubmenu(event, element) {
+            // Only prevent default for submenu toggle, not regular navigation
+            if (element.classList.contains('has-submenu')) {
+                event.preventDefault();
+                event.stopPropagation();
+
+                const isOpen = element.classList.contains('open');
+                element.classList.toggle('open');
+
+                const submenu = element.nextElementSibling;
+                if (submenu && submenu.classList.contains('submenu')) {
+                    submenu.classList.toggle('show');
+                }
+
+                // Save submenu state
+                const menuId = element.getAttribute('data-menu-id') || element.textContent.trim();
+                saveSubmenuState(menuId, !isOpen);
+            }
+        }
+
+        // Save submenu state to localStorage
+        function saveSubmenuState(menuId, isOpen) {
+            let submenuStates = JSON.parse(localStorage.getItem(SUBMENU_STATE_KEY) || '{}');
+            submenuStates[menuId] = isOpen;
+            localStorage.setItem(SUBMENU_STATE_KEY, JSON.stringify(submenuStates));
+        }
+
+        // Restore submenu states
+        function restoreSubmenuStates() {
+            const submenuStates = JSON.parse(localStorage.getItem(SUBMENU_STATE_KEY) || '{}');
+
+            document.querySelectorAll('.menu-item.has-submenu').forEach(function(menuItem) {
+                const menuId = menuItem.getAttribute('data-menu-id') || menuItem.textContent.trim();
+                const isOpen = submenuStates[menuId];
+
+                if (isOpen) {
+                    menuItem.classList.add('open');
+                    const submenu = menuItem.nextElementSibling;
+                    if (submenu && submenu.classList.contains('submenu')) {
+                        submenu.classList.add('show');
+                    }
+                }
+            });
+        }
+
+        // Restore sidebar state
+        function restoreSidebarState() {
+            const sidebarState = localStorage.getItem(SIDEBAR_STATE_KEY);
+            const sidebar = document.getElementById('sidebar');
+
+            if (window.innerWidth > 768 && sidebarState === 'collapsed') {
+                sidebar.classList.add('collapsed');
+                document.body.classList.add('sidebar-collapsed');
+            }
+        }
+
+        // Handle menu clicks properly - SIMPLIFIED VERSION
+        document.addEventListener('DOMContentLoaded', function() {
+            // Restore sidebar state only
+            restoreSidebarState();
+            restoreSubmenuStates();
+
+            // Add data-menu-id to submenu items for persistence
+            document.querySelectorAll('.menu-item.has-submenu').forEach(function(item, index) {
+                if (!item.getAttribute('data-menu-id')) {
+                    item.setAttribute('data-menu-id', 'menu-' + index);
+                }
+            });
+
+            // FIXED: Only handle submenu items, let regular menu items navigate normally
+            const submenuItems = document.querySelectorAll('.menu-item.has-submenu');
+            submenuItems.forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    // Only prevent default for submenu toggle
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleSubmenu(e, this);
+                });
+            });
+
+            // Don't add any event listeners to regular menu items
+            // Let them navigate normally with their href attributes
+
+            // DEBUG: Add console log to see if regular menu items are being clicked
+            const regularMenuItems = document.querySelectorAll('.menu-item:not(.has-submenu)');
+            regularMenuItems.forEach(function(item) {
+                item.addEventListener('click', function(e) {
+                    console.log('Regular menu item clicked:', this.href);
+                    // Don't prevent default - let navigation happen
+                });
+            });
+
+            // Don't try to set active menu from localStorage - let PHP handle it
+            // This prevents conflicts between JavaScript and PHP active states
+        });
+
+        // Close sidebar when clicking outside (mobile only)
         document.addEventListener('click', function(event) {
             const sidebar = document.getElementById('sidebar');
             const toggle = document.querySelector('.mobile-toggle');
+
+            // DEBUG: Log all clicks
+            console.log('Document click detected:', event.target);
 
             if (window.innerWidth <= 768) {
                 if (!sidebar.contains(event.target) && !toggle.contains(event.target)) {
                     sidebar.classList.remove('show');
                 }
+            }
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            const sidebar = document.getElementById('sidebar');
+
+            if (window.innerWidth > 768) {
+                sidebar.classList.remove('show');
+                restoreSidebarState();
+            } else {
+                sidebar.classList.remove('collapsed');
+                document.body.classList.remove('sidebar-collapsed');
             }
         });
     </script>

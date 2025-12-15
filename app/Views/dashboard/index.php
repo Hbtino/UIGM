@@ -289,24 +289,8 @@
             box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
         }
 
-        /* Bell Notification */
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .notification-bell .fa-bell {
-            transition: all 0.3s ease;
-        }
-
-        .notification-bell .fa-bell:hover {
-            color: #667eea !important;
-            transform: scale(1.1);
-        }
-
-        .notification-bell .badge {
-            font-size: 0.65rem;
-            padding: 0.25em 0.5em;
+        /* Sistem notifikasi dihapus - animation pulse untuk elemen yang memerlukan */
+        .pulse-animation {
             animation: pulse 2s infinite;
         }
 
@@ -750,6 +734,12 @@
                             </a>
                         </li>
                         <li class="nav-item">
+                            <a href="<?= base_url('informasi-contents') ?>" class="nav-link">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Kelola Informasi</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
                             <a href="<?= base_url('dashboard-contents') ?>" class="nav-link">
                                 <i class="fas fa-tachometer-alt"></i>
                                 <span>Konten Dashboard</span>
@@ -759,6 +749,13 @@
                             <a href="<?= base_url('dashboard-statistics') ?>" class="nav-link">
                                 <i class="fas fa-chart-line"></i>
                                 <span>Statistik Dashboard</span>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="<?= base_url('statistics') ?>" class="nav-link">
+                                <i class="fas fa-chart-line"></i>
+                                <span>Manajemen Statistik & Chart</span>
                             </a>
                         </li>
                     <?php endif; ?>
@@ -824,25 +821,7 @@
                 <p><?= isset($dashboard_content['top_bar_subtitle']) ? esc($dashboard_content['top_bar_subtitle']['subtitle']) : 'Renstra TMKB Polban 2024-2028 | UI GreenMetric' ?></p>
             </div>
             <div class="user-info">
-                <div class="notification-bell" style="position: relative; margin-right: 20px;">
-                    <a href="#" id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="color: #333; text-decoration: none; position: relative;">
-                        <i class="fas fa-bell" style="font-size: 1.5rem;"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notification-badge" style="display: none; font-size: 0.7rem;">
-                            0
-                        </span>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 320px;">
-                        <li>
-                            <h6 class="dropdown-header">Notifikasi</h6>
-                        </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li id="notification-content">
-                            <a class="dropdown-item text-center text-muted" href="#">Tidak ada notifikasi</a>
-                        </li>
-                    </ul>
-                </div>
+                <!-- Bell notifikasi dihapus - tidak ada sistem registrasi -->
                 <div class="user-details">
                     <div class="name"><?= isset($user_name) ? esc($user_name) : 'Admin' ?></div>
                     <div class="role"><?= isset($user_role) ? esc($user_role) : 'User' ?></div>
@@ -889,7 +868,7 @@
         <div class="info-box">
             <h4>
                 <i class="fas <?= isset($dashboard_content['info_box']) ? esc($dashboard_content['info_box']['icon']) : 'fa-info-circle' ?>"></i>
-                <?= isset($dashboard_content['info_box']) ? esc($dashboard_content['info_box']['title']) : 'Tentang Renstra TMKB Polban' ?>
+                <?= isset($dashboard_content['info_box']) ? esc($dashboard_content['info_box']['title']) : 'Tentang Dashboard Kampus Berkelanjutan' ?>
             </h4>
             <p>
                 <?= isset($dashboard_content['info_box']) ? $dashboard_content['info_box']['content'] : 'Rencana Strategis Transformasi Menuju Kampus Berkelanjutan (TMKB) Politeknik Negeri Bandung periode 2024-2028 disusun untuk mendukung pencapaian Sustainable Development Goals (SDGs) yang ditetapkan oleh PBB. Dashboard ini menampilkan capaian 6 kriteria utama kampus berkelanjutan berdasarkan UI GreenMetric World University Ranking.' ?>
@@ -1426,167 +1405,10 @@
         }
 
         <?php if (isset($user_role) && $user_role == 'admin'): ?>
-            // Bell Notification System for Admin - User Approvals & Password Requests
-            function checkPendingApprovals() {
-                console.log('=== Checking Pending Approvals ===');
-                console.log('Base URL:', '<?= base_url() ?>');
-
-                // Fetch user approvals
-                fetch('<?= base_url('users/pending-count') ?>')
-                    .then(response => {
-                        console.log('User approvals response status:', response.status);
-                        return response.json();
-                    })
-                    .then(userApprovals => {
-                        console.log('User Approvals Data:', userApprovals);
-
-                        // Fetch password requests
-                        return fetch('<?= base_url('settings/pending-password-requests') ?>')
-                            .then(response => {
-                                console.log('Password requests response status:', response.status);
-                                return response.json();
-                            })
-                            .then(passwordRequests => {
-                                console.log('Password Requests Data:', passwordRequests);
-                                console.log('Password Requests Type:', typeof passwordRequests);
-                                console.log('Password Requests Keys:', Object.keys(passwordRequests));
-                                console.log('Has success?', passwordRequests.hasOwnProperty('success'));
-                                console.log('Success value:', passwordRequests.success);
-                                console.log('Has requests?', passwordRequests.hasOwnProperty('requests'));
-                                console.log('Requests value:', passwordRequests.requests);
-                                console.log('Requests length:', passwordRequests.requests ? passwordRequests.requests.length : 'undefined');
-
-                                const badge = document.getElementById('notification-badge');
-                                const content = document.getElementById('notification-content');
-
-                                if (!badge || !content) {
-                                    console.error('Badge or content element not found!');
-                                    return;
-                                }
-
-                                let userCount = userApprovals.count || 0;
-                                let passwordCount = 0;
-
-                                if (passwordRequests && passwordRequests.success && passwordRequests.requests) {
-                                    passwordCount = passwordRequests.requests.length;
-                                }
-
-                                console.log('User Count:', userCount);
-                                console.log('Password Count:', passwordCount);
-
-                                let totalCount = userCount + passwordCount;
-                                console.log('Total Count:', totalCount);
-
-                                let notificationHTML = '';
-
-                                if (userCount > 0) {
-                                    notificationHTML += `
-                                <a class="dropdown-item" href="<?= base_url('users/pending-approvals') ?>">
-                                    <i class="fas fa-user-clock text-warning"></i> 
-                                    ${userCount} user menunggu persetujuan
-                                </a>
-                            `;
-                                }
-
-                                if (passwordCount > 0) {
-                                    notificationHTML += `
-                                <a class="dropdown-item" href="<?= base_url('settings/password-requests') ?>">
-                                    <i class="fas fa-key text-info"></i> 
-                                    ${passwordCount} request ganti password
-                                </a>
-                            `;
-                                }
-
-                                if (totalCount > 0) {
-                                    badge.textContent = totalCount;
-                                    badge.style.display = 'inline-block';
-                                    content.innerHTML = notificationHTML;
-                                    console.log('✓ Notification badge updated with count:', totalCount);
-                                } else {
-                                    badge.style.display = 'none';
-                                    content.innerHTML = '<a class="dropdown-item text-center text-muted" href="#">Tidak ada notifikasi</a>';
-                                    console.log('✓ No notifications');
-                                }
-                            });
-                    })
-                    .catch(error => {
-                        console.error('❌ Error fetching notifications:', error);
-                        const badge = document.getElementById('notification-badge');
-                        const content = document.getElementById('notification-content');
-                        if (badge && content) {
-                            badge.style.display = 'none';
-                            content.innerHTML = '<a class="dropdown-item text-center text-danger" href="#">Error loading notifications</a>';
-                        }
-                    });
-            }
-
-            // Check immediately on page load
-            console.log('Initializing notification system...');
-            checkPendingApprovals();
-
-            // Check every 30 seconds
-            setInterval(checkPendingApprovals, 30000);
-            console.log('Notification check interval set to 30 seconds');
+            // Sistem registrasi dihapus - tidak perlu notifikasi approval
+            console.log('Dashboard admin dimuat - sistem registrasi dinonaktifkan');
         <?php else: ?>
-            // Bell Notification System for Non-Admin - Password Change Status
-            function checkPasswordChangeStatus() {
-                // Check if notification has been read
-                const notificationRead = localStorage.getItem('password_change_notification_read');
-
-                if (notificationRead === 'true') {
-                    const badge = document.getElementById('notification-badge');
-                    const content = document.getElementById('notification-content');
-                    badge.style.display = 'none';
-                    content.innerHTML = '<div class="dropdown-item text-center text-muted" style="cursor: default;">Tidak ada notifikasi</div>';
-                    return;
-                }
-
-                fetch('<?= base_url('settings/check-password-change-status') ?>')
-                    .then(response => response.json())
-                    .then(data => {
-                        const badge = document.getElementById('notification-badge');
-                        const content = document.getElementById('notification-content');
-
-                        if (data.has_notification) {
-                            badge.textContent = '1';
-                            badge.style.display = 'inline-block';
-                            content.innerHTML = `
-                        <div class="dropdown-item" style="cursor: default; background: #d4edda; border-left: 4px solid #28a745;">
-                            <i class="fas fa-check-circle text-success"></i> 
-                            ${data.message}
-                        </div>
-                    `;
-                        } else {
-                            badge.style.display = 'none';
-                            content.innerHTML = '<div class="dropdown-item text-center text-muted" style="cursor: default;">Tidak ada notifikasi</div>';
-                        }
-                    })
-                    .catch(error => console.error('Error checking password status:', error));
-            }
-
-            // Mark notification as read when dropdown is opened
-            const notificationDropdown = document.getElementById('notificationDropdown');
-            if (notificationDropdown) {
-                notificationDropdown.addEventListener('click', function() {
-                    // Mark as read after a short delay (when dropdown is shown)
-                    setTimeout(function() {
-                        localStorage.setItem('password_change_notification_read', 'true');
-                    }, 500);
-                });
-
-                // Hide notification when dropdown is closed
-                notificationDropdown.addEventListener('hidden.bs.dropdown', function() {
-                    const badge = document.getElementById('notification-badge');
-                    const content = document.getElementById('notification-content');
-                    badge.style.display = 'none';
-                    content.innerHTML = '<div class="dropdown-item text-center text-muted" style="cursor: default;">Tidak ada notifikasi</div>';
-                });
-            }
-
-            // Check immediately on page load
-            checkPasswordChangeStatus();
-
-            // Check every 30 seconds
-            setInterval(checkPasswordChangeStatus, 30000);
+            // Tidak perlu sistem notifikasi untuk user non-admin
+            console.log('Dashboard user dimuat - tidak perlu notifikasi');
         <?php endif; ?>
     </script>

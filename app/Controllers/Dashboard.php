@@ -22,38 +22,79 @@ class Dashboard extends BaseController
         $userModel = new \App\Models\UserModel();
         $user = $userModel->find($session->get('user_id'));
 
-        // Get dashboard content from database
+        // Check user role - redirect to user dashboard if role is 'user'
+        $userRole = $session->get('role');
+        if (in_array($userRole, ['user', 'staff'])) {
+            // User biasa - tampilkan dashboard read-only
+            $data = [
+                'title' => 'Dashboard User - Kampus Berkelanjutan',
+                'user_name' => $session->get('name'),
+                'user_role' => $userRole,
+                'user_email' => $session->get('email'),
+                'profile_photo' => $user['profile_photo'] ?? null
+            ];
+            return view('dashboard/user', $data);
+        }
+
+        // Admin, Dosen, Kaprodi, Reviewer - tampilkan dashboard lengkap
+        // Get dashboard content
         $contentModel = new \App\Models\DashboardContentModel();
-        $dashboardContent = $contentModel->getDashboardData();
+        $dashboard_content = $contentModel->getDashboardData();
 
-        // Get statistics from database
-        $statisticModel = new \App\Models\DashboardStatisticModel();
-        $statistics = $statisticModel->getAsArray();
+        // Load new statistics and charts system (with error handling)
+        $realTimeStats = ['summary' => ['total_data' => 0, 'approved_data' => 0, 'pending_data' => 0, 'rejected_data' => 0, 'score_percentage' => 0]];
+        $staticStats = [];
+        $dashboardCharts = [];
 
-        // Merge statistics values into dashboard content for stat cards
-        // This ensures stat cards show values from dashboard_statistics table
-        if (isset($dashboardContent['stat_card_1']) && isset($statistics['target_skor_2028'])) {
-            $dashboardContent['stat_card_1']['value'] = $statistics['target_skor_2028'];
-        }
-        if (isset($dashboardContent['stat_card_2']) && isset($statistics['target_ranking_dunia'])) {
-            $dashboardContent['stat_card_2']['value'] = $statistics['target_ranking_dunia'];
-        }
-        if (isset($dashboardContent['stat_card_3']) && isset($statistics['target_ranking_indonesia'])) {
-            $dashboardContent['stat_card_3']['value'] = $statistics['target_ranking_indonesia'];
+        try {
+            helper('statistics');
+
+            // Get real-time statistics
+            if (function_exists('get_real_time_statistics')) {
+                $realTimeStats = get_real_time_statistics();
+            }
+
+            // Load dashboard statistics from database
+            if (class_exists('\App\Models\DashboardStatisticModel')) {
+                $dashboardModel = new \App\Models\DashboardStatisticModel();
+                $staticStats = $dashboardModel->getAsArray();
+            }
+
+            // Load dashboard charts
+            if (class_exists('\App\Models\ChartIndicatorModel')) {
+                $chartModel = new \App\Models\ChartIndicatorModel();
+                $dashboardCharts = $chartModel->getByLocation('dashboard');
+
+                // Sync chart data with latest statistics
+                $chartModel->syncWithStatistics();
+            }
+        } catch (\Exception $e) {
+            // Log error but continue with empty data
+            log_message('error', 'Statistics system error: ' . $e->getMessage());
         }
 
         $data = [
             'title' => 'Dashboard - Kampus Berkelanjutan Polban',
             'page' => 'dashboard',
-            'chartData' => $this->getChartData(),
-            'stats' => $this->getStats(),
+            'chartData' => $this->getChartData(), // Legacy chart data
+            'stats' => $this->getStats(), // Legacy stats
             'sdgsData' => $this->getSDGsData(),
-            'dashboard_content' => $dashboardContent,
-            'statistics' => $statistics,
+            'dashboard_content' => $dashboard_content,
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role'),
             'user_email' => $session->get('email'),
-            'profile_photo' => $user['profile_photo'] ?? null
+            'profile_photo' => $user['profile_photo'] ?? null,
+            // New statistics system
+            'realTimeStats' => $realTimeStats,
+            'staticStats' => $staticStats,
+            'dashboardCharts' => $dashboardCharts,
+            'combinedStats' => array_merge($staticStats, [
+                'total_data' => $realTimeStats['summary']['total_data'],
+                'approved_data' => $realTimeStats['summary']['approved_data'],
+                'pending_data' => $realTimeStats['summary']['pending_data'],
+                'rejected_data' => $realTimeStats['summary']['rejected_data'],
+                'score_percentage' => $realTimeStats['summary']['score_percentage']
+            ])
         ];
 
         return view('dashboard/index', $data);
@@ -122,77 +163,13 @@ class Dashboard extends BaseController
 
     private function getStats()
     {
-        // Hitung statistik real-time dari database
-        $db = \Config\Database::connect();
-
-        // Count data from each criteria table
-        $settingInfraCount = $db->table('setting_infrastructure')->countAllResults();
-        $energyClimateCount = $db->table('energy_climate')->countAllResults();
-        $waterManagementCount = $db->table('water_management')->countAllResults();
-        $wasteManagementCount = $db->table('waste_management')->countAllResults();
-        $transportationCount = $db->table('transportation')->countAllResults();
-        $educationResearchCount = $db->table('education_research')->countAllResults();
-
-        // Total data entries
-        $totalDataEntries = $settingInfraCount + $energyClimateCount + $waterManagementCount +
-            $wasteManagementCount + $transportationCount + $educationResearchCount;
-
-        // Count approved data
-        $approvedData = $db->table('setting_infrastructure')->where('status_verifikasi', 'approved')->countAllResults() +
-            $db->table('energy_climate')->where('status_verifikasi', 'approved')->countAllResults() +
-            $db->table('water_management')->where('status_verifikasi', 'approved')->countAllResults() +
-            $db->table('waste_management')->where('status_verifikasi', 'approved')->countAllResults() +
-            $db->table('transportation')->where('status_verifikasi', 'approved')->countAllResults() +
-            $db->table('education_research')->where('status_verifikasi', 'approved')->countAllResults();
-
-        // Count pending data
-        $pendingData = $db->table('setting_infrastructure')->where('status_verifikasi', 'pending')->countAllResults() +
-            $db->table('energy_climate')->where('status_verifikasi', 'pending')->countAllResults() +
-            $db->table('water_management')->where('status_verifikasi', 'pending')->countAllResults() +
-            $db->table('waste_management')->where('status_verifikasi', 'pending')->countAllResults() +
-            $db->table('transportation')->where('status_verifikasi', 'pending')->countAllResults() +
-            $db->table('education_research')->where('status_verifikasi', 'pending')->countAllResults();
-
-        // Count users
-        $totalUsers = $db->table('users')->countAllResults();
-        $approvedUsers = $db->table('users')->where('approval_status', 'approved')->countAllResults();
-        $pendingUsers = $db->table('users')->where('approval_status', 'pending')->countAllResults();
-
-        // Get latest year data for score calculation
-        $latestYear = date('Y');
-
-        // Calculate average score from approved data (simplified calculation)
-        // You can customize this based on your scoring formula
-        $scorePercentage = $totalDataEntries > 0 ? min(100, ($approvedData / ($totalDataEntries * 6)) * 100) : 0;
-
+        // Data statistik dari Tabel 1 dan Tabel 7
         return [
-            // Target values (from Renstra TMKB)
             'targetSkor2028' => 80,
             'targetRankingDunia' => 176,
             'targetRankingIndonesia' => 26,
             'jumlahKriteria' => 6,
-
-            // Real-time calculated values
-            'skorSekarang' => round($scorePercentage, 1),
-            'totalDataEntries' => $totalDataEntries,
-            'approvedData' => $approvedData,
-            'pendingData' => $pendingData,
-            'rejectedData' => $totalDataEntries - $approvedData - $pendingData,
-
-            // Criteria breakdown
-            'settingInfraCount' => $settingInfraCount,
-            'energyClimateCount' => $energyClimateCount,
-            'waterManagementCount' => $waterManagementCount,
-            'wasteManagementCount' => $wasteManagementCount,
-            'transportationCount' => $transportationCount,
-            'educationResearchCount' => $educationResearchCount,
-
-            // User statistics
-            'totalUsers' => $totalUsers,
-            'approvedUsers' => $approvedUsers,
-            'pendingUsers' => $pendingUsers,
-
-            // Static values (can be moved to database later)
+            'skorSekarang' => 43,
             'rankingDuniaSekarang' => 896,
             'rankingIndonesiaSekarang' => 87,
             'jumlahMahasiswa' => 6605,
@@ -378,5 +355,47 @@ class Dashboard extends BaseController
     public function staff()
     {
         return $this->index();
+    }
+
+    // User Dashboard - Info SDGs
+    public function userInfoSdgs()
+    {
+        $session = session();
+        if (!$session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
+        $data = [
+            'title' => 'Tentang SDGs - Kampus Berkelanjutan',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('dashboard/user_info_sdgs', $data);
+    }
+
+    // User Dashboard - Kriteria
+    public function userKriteria()
+    {
+        $session = session();
+        if (!$session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
+        $data = [
+            'title' => 'Kriteria UI GreenMetric - Kampus Berkelanjutan',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('dashboard/user_kriteria', $data);
     }
 }

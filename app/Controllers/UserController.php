@@ -10,80 +10,22 @@ class UserController extends BaseController
     {
         $userModel = new UserModel();
         $data['users'] = $userModel->findAll();
-        $data['pending_count'] = $userModel->where('approval_status', 'pending')->countAllResults();
-        
+        // Sistem approval dihapus
+
         // Get current user data including profile photo
         $currentUser = $userModel->find(session()->get('user_id'));
         $data['profile_photo'] = $currentUser['profile_photo'] ?? null;
 
+        // Add user session data for sidebar
+        $data = array_merge($data, $this->getSidebarData('users'));
+        $data['title'] = 'Manajemen User - Kampus Berkelanjutan';
+
         return view('users/index', $data);
     }
-    
-    public function pendingApprovals()
-    {
-        $userModel = new UserModel();
-        $data['users'] = $userModel->where('approval_status', 'pending')->findAll();
-        $data['pending_count'] = count($data['users']);
 
-        return view('users/pending_approvals', $data);
-    }
-    
-    public function approve($id)
-    {
-        $session = session();
-        if ($session->get('role') != 'admin') {
-            return redirect()->to('/users')->with('error', 'Hanya admin yang dapat menyetujui user');
-        }
-        
-        $userModel = new UserModel();
-        $user = $userModel->find($id);
-        
-        if (!$user) {
-            return redirect()->back()->with('error', 'User tidak ditemukan');
-        }
-        
-        $userModel->update($id, [
-            'approval_status' => 'approved',
-            'approved_by' => $session->get('user_id'),
-            'approved_at' => date('Y-m-d H:i:s')
-        ]);
-        
-        return redirect()->back()->with('success', 'User berhasil disetujui');
-    }
-    
-    public function reject($id)
-    {
-        $session = session();
-        if ($session->get('role') != 'admin') {
-            return redirect()->to('/users')->with('error', 'Hanya admin yang dapat menolak user');
-        }
-        
-        $userModel = new UserModel();
-        $user = $userModel->find($id);
-        
-        if (!$user) {
-            return redirect()->back()->with('error', 'User tidak ditemukan');
-        }
-        
-        $reason = $this->request->getPost('rejection_reason') ?? 'Tidak memenuhi kriteria';
-        
-        $userModel->update($id, [
-            'approval_status' => 'rejected',
-            'approved_by' => $session->get('user_id'),
-            'approved_at' => date('Y-m-d H:i:s'),
-            'rejection_reason' => $reason
-        ]);
-        
-        return redirect()->back()->with('success', 'User berhasil ditolak');
-    }
-    
-    public function getPendingCount()
-    {
-        $userModel = new UserModel();
-        $count = $userModel->where('approval_status', 'pending')->countAllResults();
-        
-        return $this->response->setJSON(['count' => $count]);
-    }
+    // Method approval dihapus - tidak ada sistem registrasi
+
+    // Semua method approval dihapus - tidak ada sistem registrasi
 
     public function delete($id)
     {
@@ -111,7 +53,15 @@ class UserController extends BaseController
             return redirect()->to('/users')->with('error', 'User tidak ditemukan');
         }
 
-        return view('users/edit', ['user' => $user]);
+        // Get current user data for profile photo
+        $currentUser = $userModel->find(session()->get('user_id'));
+
+        $data = array_merge($this->getSidebarData('users'), [
+            'user' => $user,
+            'title' => 'Edit User - Kampus Berkelanjutan'
+        ]);
+
+        return view('users/edit', $data);
     }
 
     public function update($id)
@@ -128,16 +78,22 @@ class UserController extends BaseController
         // Validasi password jika diisi
         $newPassword = $this->request->getVar('new_password');
         $confirmPassword = $this->request->getVar('confirm_password');
-        
+
         if (!empty($newPassword)) {
             $rules['new_password'] = 'required|min_length[6]';
             $rules['confirm_password'] = 'required|matches[new_password]';
         }
 
         if (!$this->validate($rules)) {
+            // Get current user data for profile photo
+            $currentUser = $userModel->find(session()->get('user_id'));
+
             return view('users/edit', [
                 "validation" => $this->validator,
-                "user" => $userModel->find($id)
+                "user" => $userModel->find($id),
+                'title' => 'Edit User - Kampus Berkelanjutan',
+                'page' => 'users',
+
             ]);
         }
 
@@ -163,7 +119,18 @@ class UserController extends BaseController
     public function create()
     {
         helper(['form']);
-        return view('users/create');
+
+        // Get current user data for profile photo
+        $userModel = new UserModel();
+        $currentUser = $userModel->find(session()->get('user_id'));
+
+        $data = [
+            'title' => 'Tambah User - Kampus Berkelanjutan',
+            'page' => 'users',
+
+        ];
+
+        return view('users/create', $data);
     }
 
     public function store()
@@ -179,8 +146,14 @@ class UserController extends BaseController
         ];
 
         if (!$this->validate($rules)) {
+            // Get current user data for profile photo
+            $currentUser = $userModel->find(session()->get('user_id'));
+
             return view('users/create', [
-                'validation' => $this->validator
+                'validation' => $this->validator,
+                'title' => 'Tambah User - Kampus Berkelanjutan',
+                'page' => 'users',
+
             ]);
         }
 
@@ -190,9 +163,7 @@ class UserController extends BaseController
             'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
             'role' => $this->request->getVar('role'),
             'jurusan' => $this->request->getVar('jurusan'),
-            'approval_status' => 'approved', // Langsung approved jika ditambahkan oleh admin
-            'approved_by' => session()->get('user_id'),
-            'approved_at' => date('Y-m-d H:i:s')
+            'approval_status' => 'approved' // Otomatis disetujui ketika dibuat oleh admin
         ]);
 
         return redirect()->to('/users')->with('success', 'User berhasil ditambahkan dan langsung diaktifkan');

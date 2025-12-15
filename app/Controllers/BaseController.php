@@ -154,4 +154,51 @@ abstract class BaseController extends Controller
                 ]);
         }
     }
+
+    /**
+     * Get standardized sidebar data for all controllers
+     * This ensures consistent variable names across all views
+     */
+    protected function getSidebarData($page = '')
+    {
+        $session = session();
+        $userModel = new \App\Models\UserModel();
+
+        // Get current user data
+        $user = null;
+        if ($session->get('user_id')) {
+            $user = $userModel->find($session->get('user_id'));
+        }
+
+        return [
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'), // Standardized to 'role'
+            'user_email' => $session->get('email'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            'page' => $page
+        ];
+    }
+
+    /**
+     * Get consistent user data for all views
+     */
+    protected function getUserData($page = '')
+    {
+        $session = session();
+        $userModel = new \App\Models\UserModel();
+
+        // Get current user data
+        $user = null;
+        if ($session->get('user_id')) {
+            $user = $userModel->find($session->get('user_id'));
+        }
+
+        return [
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'user_email' => $session->get('email'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            'page' => $page
+        ];
+    }
 }

@@ -1,940 +1,556 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= esc($title) ?></title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            min-height: 100vh;
-        }
-        
-        /* Sidebar Styles */
-        .sidebar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            width: 280px;
-            background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
-            padding: 0;
-            overflow-y: auto;
-            z-index: 1000;
-            box-shadow: 4px 0 15px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-        
-        .sidebar::-webkit-scrollbar {
-            width: 6px;
-        }
-        
-        .sidebar::-webkit-scrollbar-track {
-            background: rgba(255,255,255,0.1);
-        }
-        
-        .sidebar::-webkit-scrollbar-thumb {
-            background: rgba(255,255,255,0.3);
-            border-radius: 3px;
-        }
-        
-        .sidebar-header {
-            padding: 25px 20px;
-            background: rgba(0,0,0,0.2);
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin-bottom: 10px;
-        }
-        
-        .sidebar-logo {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 10px;
-        }
-        
-        .sidebar-logo i {
-            font-size: 32px;
-            color: #4CAF50;
-        }
-        
-        .sidebar-header h4 {
-            color: white;
-            font-size: 20px;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 0.5px;
-        }
-        
-        .sidebar-header p {
-            color: rgba(255,255,255,0.7);
-            font-size: 13px;
-            margin: 5px 0 0;
-        }
-        
-        .nav-section {
-            margin-bottom: 5px;
-        }
-        
-        .nav-section-title {
-            padding: 15px 20px 8px;
-            color: rgba(255,255,255,0.5);
-            font-size: 11px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        
-        .nav-menu {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-        
-        .nav-item {
-            margin: 0;
-        }
-        
-        .nav-link {
-            display: flex;
-            align-items: center;
-            padding: 14px 20px;
-            color: rgba(255,255,255,0.8);
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border-left: 3px solid transparent;
-            position: relative;
-        }
-        
-        .nav-link:hover {
-            background-color: rgba(255,255,255,0.1);
-            color: white;
-            border-left-color: #4CAF50;
-            padding-left: 25px;
-        }
-        
-        .nav-link.active {
-            background-color: rgba(76, 175, 80, 0.2);
-            color: white;
-            border-left-color: #4CAF50;
-            font-weight: 600;
-        }
-        
-        .nav-link.active::before {
-            content: '';
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #4CAF50;
-        }
-        
-        .nav-link i {
-            width: 24px;
-            margin-right: 12px;
-            font-size: 18px;
-            text-align: center;
-        }
-        
-        .nav-link span {
-            font-size: 14px;
-        }
-        
-        /* Submenu Collapse Styling */
-        .collapse .nav-link {
-            padding: 12px 20px 12px 15px;
-            font-size: 13px;
-            color: rgba(255,255,255,0.7);
-        }
-        
-        .collapse .nav-link:hover {
-            color: white;
-            background-color: rgba(255,255,255,0.08);
-            padding-left: 20px;
-        }
-        
-        .collapse .nav-link.active {
-            color: white;
-            background-color: rgba(76, 175, 80, 0.15);
-        }
-        
-        .collapse .nav-link i {
-            font-size: 14px;
-            width: 20px;
-        }
-        
-        /* Chevron icon animation */
-        .nav-link[data-bs-toggle="collapse"] .fa-chevron-down {
-            transition: transform 0.3s ease;
-        }
-        
-        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"] .fa-chevron-down {
-            transform: rotate(180deg);
-        }
-        
-        /* Force white color for collapse toggle links */
-        .nav-link[data-bs-toggle="collapse"],
-        .nav-link[data-bs-toggle="collapse"]:focus,
-        .nav-link[data-bs-toggle="collapse"]:active,
-        .nav-link[data-bs-toggle="collapse"][aria-expanded="true"],
-        .nav-link[data-bs-toggle="collapse"][aria-expanded="false"] {
-            color: rgba(255,255,255,0.8) !important;
-        }
-        
-        .nav-link[data-bs-toggle="collapse"]:hover {
-            color: white !important;
-        }
-        
-        .nav-link[data-bs-toggle="collapse"] span,
-        .nav-link[data-bs-toggle="collapse"] i {
-            color: inherit;
-        }
-        
-        .sidebar-footer {
-            padding: 20px;
-            margin-top: auto;
-            border-top: 1px solid rgba(255,255,255,0.1);
-            background: rgba(0,0,0,0.2);
-        }
-        
-        .sidebar-footer p {
-            color: rgba(255,255,255,0.5);
-            font-size: 11px;
-            margin: 0;
-            text-align: center;
-        }
-        
-        /* Main Content */
-        .main-content {
-            margin-left: 280px;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        /* Top Bar */
-        .top-bar {
-            background: white;
-            padding: 20px 30px;
-            border-radius: 15px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .top-bar-left h2 {
-            margin: 0;
-            color: #1e3c72;
-            font-size: 26px;
-            font-weight: 700;
-        }
-        
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .user-details {
-            text-align: right;
-        }
-        
-        .user-details .name {
-            font-weight: 600;
-            color: #333;
-            font-size: 14px;
-        }
-        
-        .user-details .role {
-            font-size: 12px;
-            color: #999;
-            text-transform: capitalize;
-        }
-        
-        .user-avatar {
-            width: 45px;
-            height: 45px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 700;
-            font-size: 18px;
-            box-shadow: 0 2px 10px rgba(102, 126, 234, 0.4);
-        }
-        
-        /* Settings Container */
-        .settings-container {
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            overflow: hidden;
-        }
-        
-        .settings-header {
-            background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
-            color: white;
-            padding: 25px 30px;
-        }
-        
-        .settings-header h3 {
-            margin: 0;
-            font-size: 24px;
-            font-weight: 700;
-        }
-        
-        .settings-header p {
-            margin: 8px 0 0;
-            opacity: 0.9;
-            font-size: 14px;
-        }
-        
-        .settings-body {
-            padding: 30px;
-        }
-        
-        .settings-section {
-            margin-bottom: 30px;
-            padding-bottom: 30px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .settings-section:last-child {
-            border-bottom: none;
-            margin-bottom: 0;
-            padding-bottom: 0;
-        }
-        
-        .settings-section h4 {
-            color: #1e3c72;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .settings-section h4 i {
-            color: #149823ff;
-        }
-        
-        .form-label {
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 8px;
-        }
-        
-        .form-control {
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            padding: 10px 15px;
-        }
-        
-        .form-control:focus {
-            border-color: #149823ff;
-            box-shadow: 0 0 0 0.2rem rgba(20, 152, 35, 0.25);
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 15px rgba(20, 152, 35, 0.4);
-        }
-        
-        .alert {
-            border-radius: 10px;
-            border: none;
-        }
-        
-        .request-history {
-            margin-top: 20px;
-        }
-        
-        .request-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border-left: 4px solid #ddd;
-        }
-        
-        .request-item.pending {
-            border-left-color: #ffc107;
-            background: #fff8e1;
-        }
-        
-        .request-item.approved {
-            border-left-color: #28a745;
-            background: #d4edda;
-        }
-        
-        .request-item.rejected {
-            border-left-color: #dc3545;
-            background: #f8d7da;
-        }
-        
-        .request-status {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-        
-        .request-status.pending {
-            background: #ffc107;
-            color: #000;
-        }
-        
-        .request-status.approved {
-            background: #28a745;
-            color: white;
-        }
-        
-        .request-status.rejected {
-            background: #dc3545;
-            color: white;
-        }
-    </style>
-</head>
-<body>
-    <!-- Sidebar -->
-    <div class="sidebar">
-        <div class="sidebar-header">
-            <div class="sidebar-logo">
-                <i class="fas fa-leaf"></i>
-                <div>
-                    <h4>POLBAN</h4>
-                    <p>Kampus Berkelanjutan</p>
-                </div>
-            </div>
-        </div>
-        
-        <nav>
-            <div class="nav-section">
-                <div class="nav-section-title">Menu Utama</div>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="<?= base_url('dashboard') ?>" class="nav-link">
-                            <i class="fas fa-home"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Kriteria SDGs</div>
-                <ul class="nav-menu">
-                    <li class="nav-item">
-                        <a href="<?= base_url('setting-infrastructure') ?>" class="nav-link">
-                            <i class="fas fa-building"></i>
-                            <span>Pengaturan & Infrastruktur</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('energy-climate') ?>" class="nav-link">
-                            <i class="fas fa-bolt"></i>
-                            <span>Energi & Perubahan Iklim</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('water-management') ?>" class="nav-link">
-                            <i class="fas fa-tint"></i>
-                            <span>Pengelolaan Air</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('waste-management') ?>" class="nav-link">
-                            <i class="fas fa-recycle"></i>
-                            <span>Pengelolaan Limbah</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('dashboard/transportasi') ?>" class="nav-link">
-                            <i class="fas fa-bus"></i>
-                            <span>Transportasi</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('education-research') ?>" class="nav-link">
-                            <i class="fas fa-graduation-cap"></i>
-                            <span>Pendidikan & Penelitian</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-            
-            <div class="nav-section">
-                <div class="nav-section-title">Sistem</div>
-                <ul class="nav-menu">
-                    <?php 
-                    $current_user_role = isset($user_role) ? $user_role : (isset($user['role']) ? $user['role'] : session()->get('role'));
-                    if($current_user_role == 'admin'): 
-                    ?>
-                    <li class="nav-item">
-                        <a href="<?= base_url('users') ?>" class="nav-link">
-                            <i class="fas fa-users"></i>
-                            <span>Manajemen User</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('menus') ?>" class="nav-link">
-                            <i class="fas fa-bars"></i>
-                            <span>Manajemen Menu</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('news-admin') ?>" class="nav-link">
-                            <i class="fas fa-newspaper"></i>
-                            <span>Manajemen Berita</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('landing-contents') ?>" class="nav-link">
-                            <i class="fas fa-file-alt"></i>
-                            <span>Konten Landing Page</span>
-                        </a>
-                    </li>
-                    <?php endif; ?>
-                    
-                    <!-- Laporan Menu with Submenu -->
-                    <?php if (in_array($current_user_role, ['admin', 'dosen', 'kaprodi'])): ?>
-                    <li class="nav-item">
-                        <a href="#" class="nav-link" data-bs-toggle="collapse" data-bs-target="#laporanSubmenu" aria-expanded="false">
-                            <i class="fas fa-file-alt"></i>
-                            <span>Laporan</span>
-                            <i class="fas fa-chevron-down ms-auto" style="font-size: 12px;"></i>
-                        </a>
-                        <div class="collapse" id="laporanSubmenu">
-                            <ul class="nav flex-column ms-3">
-                                <?php if (in_array($current_user_role, ['admin', 'dosen'])): ?>
-                                <li class="nav-item">
-                                    <a href="<?= base_url('dashboard/laporan') ?>" class="nav-link">
-                                        <i class="fas fa-user-tie"></i>
-                                        <span>Laporan Dosen</span>
-                                    </a>
-                                </li>
-                                <?php endif; ?>
-                                <?php if (in_array($current_user_role, ['admin', 'kaprodi'])): ?>
-                                <li class="nav-item">
-                                    <a href="<?= base_url('laporan/kaprodi') ?>" class="nav-link">
-                                        <i class="fas fa-graduation-cap"></i>
-                                        <span>Laporan Kaprodi</span>
-                                    </a>
-                                </li>
-                                <?php endif; ?>
-                            </ul>
-                        </div>
-                    </li>
-                    <?php endif; ?>
-                    
-                    <li class="nav-item">
-                        <a href="<?= base_url('settings') ?>" class="nav-link active">
-                            <i class="fas fa-cog"></i>
-                            <span>Pengaturan</span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="<?= base_url('logout') ?>" class="nav-link">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Keluar</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-        
-        <div class="sidebar-footer">
-            <p>&copy; 2024 Politeknik Negeri Bandung<br>Renstra TMKB 2024-2028</p>
-        </div>
+<?= $this->extend('layouts/sidebar_layout') ?>
+
+<?= $this->section('styles') ?>
+<style>
+    .settings-container {
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .settings-header {
+        background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
+        color: white;
+        padding: 25px 30px;
+    }
+
+    .settings-header h3 {
+        margin: 0;
+        font-size: 24px;
+        font-weight: 700;
+    }
+
+    .settings-header p {
+        margin: 8px 0 0;
+        opacity: 0.9;
+        font-size: 14px;
+    }
+
+    .settings-body {
+        padding: 30px;
+    }
+
+    .settings-section {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .settings-section:last-child {
+        border-bottom: none;
+        margin-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .settings-section h4 {
+        color: #1e3c72;
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 15px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .settings-section h4 i {
+        color: #149823ff;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .form-control {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 10px 15px;
+    }
+
+    .form-control:focus {
+        border-color: #149823ff;
+        box-shadow: 0 0 0 0.2rem rgba(20, 152, 35, 0.25);
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(20, 152, 35, 0.4);
+    }
+
+    .alert {
+        border-radius: 10px;
+        border: none;
+    }
+
+    .request-history {
+        margin-top: 20px;
+    }
+
+    .request-item {
+        background: #f8f9fa;
+        padding: 15px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        border-left: 4px solid #ddd;
+    }
+
+    .request-item.pending {
+        border-left-color: #ffc107;
+        background: #fff8e1;
+    }
+
+    .request-item.approved {
+        border-left-color: #28a745;
+        background: #d4edda;
+    }
+
+    .request-item.rejected {
+        border-left-color: #dc3545;
+        background: #f8d7da;
+    }
+
+    .request-status {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .request-status.pending {
+        background: #ffc107;
+        color: #000;
+    }
+
+    .request-status.approved {
+        background: #28a745;
+        color: white;
+    }
+
+    .request-status.rejected {
+        background: #dc3545;
+        color: white;
+    }
+</style>
+<?= $this->endSection() ?>
+
+<?= $this->section('content') ?>
+<!-- Settings Container -->
+<div class="settings-container">
+    <div class="settings-header">
+        <h3><i class="fas fa-cog"></i> Pengaturan Akun</h3>
+        <p>Kelola informasi dan keamanan akun Anda</p>
     </div>
-    
-    <!-- Main Content -->
-    <div class="main-content">
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <div class="top-bar-left">
-                <h2>Pengaturan</h2>
-            </div>
-            <div class="user-info">
-                <div class="user-details">
-                    <div class="name"><?= isset($user['name']) ? esc($user['name']) : (isset($user_name) ? esc($user_name) : 'User') ?></div>
-                    <div class="role"><?= isset($user['role']) ? ucfirst(esc($user['role'])) : (isset($user_role) ? ucfirst(esc($user_role)) : 'User') ?></div>
+
+    <div class="settings-body">
+        <!-- Profile Photo -->
+        <div class="settings-section">
+            <h4><i class="fas fa-camera"></i> Foto Profil</h4>
+            <p class="text-muted mb-3">Upload foto profil Anda (Max 10MB, Format: JPG, PNG)</p>
+
+            <div id="photoAlertContainer"></div>
+
+            <div class="row align-items-center">
+                <div class="col-md-3 text-center mb-3">
+                    <div style="width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; overflow: hidden; border: 4px solid #149823ff; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
+                        <?php if (!empty($user['profile_photo']) && file_exists(FCPATH . 'uploads/profiles/' . $user['profile_photo'])): ?>
+                            <img src="<?= base_url('uploads/profiles/' . $user['profile_photo']) ?>" alt="Profile" id="profilePhotoPreview" style="width: 100%; height: 100%; object-fit: cover;">
+                        <?php else: ?>
+                            <div id="profilePhotoPreview" style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 60px; font-weight: 700;">
+                                <?= strtoupper(substr($user['name'], 0, 1)) ?>
+                            </div>
+                        <?php endif; ?>
+                    </div>
                 </div>
-                <div class="user-avatar" style="overflow: hidden;">
-                    <?php if(!empty($user['profile_photo']) && file_exists(FCPATH . 'uploads/profiles/' . $user['profile_photo'])): ?>
-                        <img src="<?= base_url('uploads/profiles/' . $user['profile_photo']) ?>" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">
-                    <?php else: ?>
-                        <?php 
-                        $displayName = isset($user['name']) ? $user['name'] : (isset($user_name) ? $user_name : 'U');
-                        echo strtoupper(substr($displayName, 0, 1));
-                        ?>
-                    <?php endif; ?>
+                <div class="col-md-9">
+                    <form id="photoUploadForm" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/jpeg,image/png,image/jpg" required>
+                            <small class="text-muted">Pilih foto profil baru (JPG, PNG, max 10MB)</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Upload Foto
+                        </button>
+                        <?php if (!empty($user['profile_photo'])): ?>
+                            <button type="button" class="btn btn-danger" onclick="deleteProfilePhoto()">
+                                <i class="fas fa-trash"></i> Hapus Foto
+                            </button>
+                        <?php endif; ?>
+                    </form>
                 </div>
             </div>
         </div>
-        
-        <!-- Settings Container -->
-        <div class="settings-container">
-            <div class="settings-header">
-                <h3><i class="fas fa-cog"></i> Pengaturan Akun</h3>
-                <p>Kelola informasi dan keamanan akun Anda</p>
-            </div>
-            
-            <div class="settings-body">
-                <!-- Profile Photo -->
-                <div class="settings-section">
-                    <h4><i class="fas fa-camera"></i> Foto Profil</h4>
-                    <p class="text-muted mb-3">Upload foto profil Anda (Max 10MB, Format: JPG, PNG)</p>
-                    
-                    <div id="photoAlertContainer"></div>
-                    
-                    <div class="row align-items-center">
-                        <div class="col-md-3 text-center mb-3">
-                            <div style="width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; overflow: hidden; border: 4px solid #149823ff; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">
-                                <?php if(!empty($user['profile_photo']) && file_exists(FCPATH . 'uploads/profiles/' . $user['profile_photo'])): ?>
-                                    <img src="<?= base_url('uploads/profiles/' . $user['profile_photo']) ?>" alt="Profile" id="profilePhotoPreview" style="width: 100%; height: 100%; object-fit: cover;">
-                                <?php else: ?>
-                                    <div id="profilePhotoPreview" style="width: 100%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center; color: white; font-size: 60px; font-weight: 700;">
-                                        <?= strtoupper(substr($user['name'], 0, 1)) ?>
+
+        <!-- Profile Information -->
+        <div class="settings-section">
+            <h4><i class="fas fa-user"></i> Informasi Profil</h4>
+            <p class="text-muted mb-3">Update nama lengkap dan username Anda</p>
+
+            <div id="profileAlertContainer"></div>
+
+            <form id="profileUpdateForm">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Nama Lengkap</label>
+                        <input type="text" class="form-control" id="name" name="name" value="<?= esc($user['name']) ?>" required>
+                        <small class="text-muted">Nama lengkap Anda</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Email (Username)</label>
+                        <input type="email" class="form-control" id="email" name="email" value="<?= esc($user['email']) ?>" required>
+                        <small class="text-muted">Email digunakan sebagai username untuk login</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Role</label>
+                        <input type="text" class="form-control" value="<?= esc($user['role']) ?>" readonly style="text-transform: capitalize;">
+                    </div>
+                    <?php if (!empty($user['jurusan'])): ?>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Jurusan</label>
+                            <input type="text" class="form-control" value="<?= esc($user['jurusan']) ?>" readonly>
+                        </div>
+                    <?php endif; ?>
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Simpan Perubahan
+                </button>
+            </form>
+        </div>
+
+        <?php if ($user_role !== 'admin'): ?>
+            <!-- Password Change Request -->
+            <div class="settings-section">
+                <h4><i class="fas fa-key"></i> Ganti Password</h4>
+                <p class="text-muted mb-3">Request untuk mengganti password Anda. Admin akan menyetujui permintaan Anda.</p>
+
+                <div id="alertContainer"></div>
+
+                <form id="passwordChangeForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="new_password" name="new_password" required minlength="6">
+                            <small class="text-muted">Minimal 6 karakter</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password" required minlength="6">
+                            <small class="text-muted">Ulangi password baru</small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Alasan Perubahan</label>
+                        <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Jelaskan alasan Anda ingin mengganti password..."></textarea>
+                        <small class="text-muted">Opsional - berikan alasan untuk mempercepat persetujuan</small>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-paper-plane"></i> Kirim Permintaan
+                    </button>
+                </form>
+
+                <!-- Request History -->
+                <?php if (!empty($requests)): ?>
+                    <div class="request-history">
+                        <h5><i class="fas fa-history"></i> Riwayat Permintaan</h5>
+                        <?php foreach ($requests as $request): ?>
+                            <div class="request-item <?= $request['status'] ?>">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <strong>Permintaan #<?= $request['id'] ?></strong>
+                                        <span class="request-status <?= $request['status'] ?>"><?= ucfirst($request['status']) ?></span>
+                                        <p class="mb-1 mt-2"><?= esc($request['reason']) ?></p>
+                                        <small class="text-muted">Dibuat: <?= date('d/m/Y H:i', strtotime($request['created_at'])) ?></small>
+                                    </div>
+                                </div>
+                                <?php if ($request['status'] == 'approved'): ?>
+                                    <div class="mt-2">
+                                        <small class="text-success">✓ Disetujui pada <?= date('d/m/Y H:i', strtotime($request['updated_at'])) ?></small>
+                                    </div>
+                                <?php elseif ($request['status'] == 'rejected'): ?>
+                                    <div class="mt-2">
+                                        <small class="text-danger">✗ Ditolak pada <?= date('d/m/Y H:i', strtotime($request['updated_at'])) ?></small>
                                     </div>
                                 <?php endif; ?>
                             </div>
-                        </div>
-                        <div class="col-md-9">
-                            <form id="photoUploadForm" enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <input type="file" class="form-control" id="profile_photo" name="profile_photo" accept="image/jpeg,image/png,image/jpg" required>
-                                    <small class="text-muted">Pilih foto profil baru (JPG, PNG, max 10MB)</small>
-                                </div>
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="fas fa-upload"></i> Upload Foto
-                                </button>
-                                <?php if(!empty($user['profile_photo'])): ?>
-                                <button type="button" class="btn btn-danger" onclick="deleteProfilePhoto()">
-                                    <i class="fas fa-trash"></i> Hapus Foto
-                                </button>
-                                <?php endif; ?>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Profile Information -->
-                <div class="settings-section">
-                    <h4><i class="fas fa-user"></i> Informasi Profil</h4>
-                    <p class="text-muted mb-3">Update nama lengkap dan username Anda</p>
-                    
-                    <div id="profileAlertContainer"></div>
-                    
-                    <form id="profileUpdateForm">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Nama Lengkap</label>
-                                <input type="text" class="form-control" id="name" name="name" value="<?= esc($user['name']) ?>" required>
-                                <small class="text-muted">Nama lengkap Anda</small>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Email (Username)</label>
-                                <input type="email" class="form-control" id="email" name="email" value="<?= esc($user['email']) ?>" required>
-                                <small class="text-muted">Email digunakan sebagai username untuk login</small>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Role</label>
-                                <input type="text" class="form-control" value="<?= esc($user['role']) ?>" readonly style="text-transform: capitalize;">
-                            </div>
-                            <?php if(!empty($user['jurusan'])): ?>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Jurusan</label>
-                                <input type="text" class="form-control" value="<?= esc($user['jurusan']) ?>" readonly>
-                            </div>
-                            <?php endif; ?>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-save"></i> Simpan Perubahan
-                        </button>
-                    </form>
-                </div>
-                
-                <?php if($user_role !== 'admin'): ?>
-                <!-- Password Change Request -->
-                <div class="settings-section">
-                    <h4><i class="fas fa-key"></i> Ganti Password</h4>
-                    <p class="text-muted mb-3">Request untuk mengganti password Anda. Admin akan menyetujui permintaan Anda.</p>
-                    
-                    <div id="alertContainer"></div>
-                    
-                    <form id="passwordChangeForm">
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Password Baru</label>
-                                <input type="password" class="form-control" id="new_password" name="new_password" required minlength="6">
-                                <small class="text-muted">Minimal 6 karakter</small>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label class="form-label">Konfirmasi Password Baru</label>
-                                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary">
-                            <i class="fas fa-paper-plane"></i> Kirim Request
-                        </button>
-                    </form>
-                    
-                    <!-- Request History -->
-                    <?php if(!empty($requests)): ?>
-                    <div class="request-history">
-                        <h5 class="mb-3">Riwayat Request</h5>
-                        <?php foreach($requests as $req): ?>
-                        <div class="request-item <?= $req['status'] ?>">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <span class="request-status <?= $req['status'] ?>">
-                                        <?php
-                                        if($req['status'] == 'pending') echo 'Menunggu';
-                                        elseif($req['status'] == 'approved') echo 'Disetujui';
-                                        else echo 'Ditolak';
-                                        ?>
-                                    </span>
-                                    <small class="text-muted ms-2">
-                                        Request: <?= date('d M Y H:i', strtotime($req['requested_at'])) ?>
-                                    </small>
-                                </div>
-                                <?php if($req['processed_at']): ?>
-                                <small class="text-muted">
-                                    Diproses: <?= date('d M Y H:i', strtotime($req['processed_at'])) ?>
-                                </small>
-                                <?php endif; ?>
-                            </div>
-                            <?php if($req['notes']): ?>
-                            <div class="mt-2">
-                                <small><strong>Catatan:</strong> <?= esc($req['notes']) ?></small>
-                            </div>
-                            <?php endif; ?>
-                        </div>
                         <?php endforeach; ?>
                     </div>
-                    <?php endif; ?>
-                </div>
                 <?php endif; ?>
             </div>
-        </div>
+        <?php endif; ?>
+
+        <?php if ($user_role === 'admin'): ?>
+            <!-- Admin Password Change -->
+            <div class="settings-section">
+                <h4><i class="fas fa-key"></i> Ganti Password</h4>
+                <p class="text-muted mb-3">Sebagai admin, Anda dapat langsung mengganti password tanpa persetujuan.</p>
+
+                <div id="adminPasswordAlertContainer"></div>
+
+                <form id="adminPasswordChangeForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Password Lama</label>
+                            <input type="password" class="form-control" id="current_password" name="current_password" required>
+                            <small class="text-muted">Masukkan password saat ini</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Password Baru</label>
+                            <input type="password" class="form-control" id="admin_new_password" name="new_password" required minlength="6">
+                            <small class="text-muted">Minimal 6 karakter</small>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Konfirmasi Password</label>
+                            <input type="password" class="form-control" id="admin_confirm_password" name="confirm_password" required minlength="6">
+                            <small class="text-muted">Ulangi password baru</small>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> Ganti Password
+                    </button>
+                </form>
+            </div>
+
+            <!-- Admin: Pending Password Requests -->
+            <div class="settings-section">
+                <h4><i class="fas fa-clock"></i> Permintaan Ganti Password</h4>
+                <p class="text-muted mb-3">Kelola permintaan ganti password dari user lain.</p>
+
+                <div id="pendingRequestsContainer">
+                    <div class="text-center">
+                        <i class="fas fa-spinner fa-spin"></i> Memuat permintaan...
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
     </div>
-    
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Photo Upload Form
-        document.getElementById('photoUploadForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const alertContainer = document.getElementById('photoAlertContainer');
-            const fileInput = document.getElementById('profile_photo');
-            const file = fileInput.files[0];
-            
-            // Validate file size (max 10MB)
-            if (file && file.size > 10 * 1024 * 1024) {
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle"></i> Ukuran file terlalu besar. Maksimal 10MB.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
-                return;
-            }
-            
-            fetch('<?= base_url('settings/upload-photo') ?>', {
+</div>
+<?= $this->endSection() ?>
+
+<?= $this->section('scripts') ?>
+<script>
+    // Profile Photo Upload
+    document.getElementById('photoUploadForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const alertContainer = document.getElementById('photoAlertContainer');
+
+        fetch('<?= base_url('settings/upload-photo') ?>', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
-                if(data.success) {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle"></i> ${data.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
+                if (data.success) {
+                    alertContainer.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                    if (data.photo_url) {
+                        document.getElementById('profilePhotoPreview').innerHTML =
+                            '<img src="' + data.photo_url + '" alt="Profile" style="width: 100%; height: 100%; object-fit: cover;">';
+                    }
                     setTimeout(() => location.reload(), 1500);
                 } else {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle"></i> ${data.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
+                    alertContainer.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle"></i> Terjadi kesalahan sistem
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
+                alertContainer.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat upload foto</div>';
             });
-        });
-        
-        // Delete Profile Photo
-        function deleteProfilePhoto() {
-            if(!confirm('Apakah Anda yakin ingin menghapus foto profil?')) {
-                return;
-            }
-            
-            const alertContainer = document.getElementById('photoAlertContainer');
-            
+    });
+
+    // Delete Profile Photo
+    function deleteProfilePhoto() {
+        if (confirm('Apakah Anda yakin ingin menghapus foto profil?')) {
             fetch('<?= base_url('settings/delete-photo') ?>', {
-                method: 'POST'
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle"></i> ${data.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-                    setTimeout(() => location.reload(), 1500);
-                } else {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle"></i> ${data.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-                }
-            });
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const alertContainer = document.getElementById('photoAlertContainer');
+                    if (data.success) {
+                        alertContainer.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                        setTimeout(() => location.reload(), 1500);
+                    } else {
+                        alertContainer.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+                    }
+                });
         }
-        
-        // Profile Update Form
-        document.getElementById('profileUpdateForm')?.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            const alertContainer = document.getElementById('profileAlertContainer');
-            
-            fetch('<?= base_url('settings/update-profile') ?>', {
+    }
+
+    // Profile Update
+    document.getElementById('profileUpdateForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const alertContainer = document.getElementById('profileAlertContainer');
+
+        fetch('<?= base_url('settings/update-profile') ?>', {
                 method: 'POST',
                 body: formData
             })
             .then(response => response.json())
             .then(data => {
-                if(data.success) {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle"></i> ${data.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
+                if (data.success) {
+                    alertContainer.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
                     setTimeout(() => location.reload(), 1500);
                 } else {
-                    let errorMsg = data.message;
-                    if(data.errors) {
-                        errorMsg += '<ul class="mb-0 mt-2">';
-                        for(let field in data.errors) {
-                            errorMsg += `<li>${data.errors[field]}</li>`;
-                        }
-                        errorMsg += '</ul>';
-                    }
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle"></i> ${errorMsg}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
+                    alertContainer.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle"></i> Terjadi kesalahan sistem
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                `;
+                alertContainer.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat update profil</div>';
             });
-        });
-        
-        // Password Change Request Form
-        document.getElementById('passwordChangeForm')?.addEventListener('submit', function(e) {
+    });
+
+    <?php if ($user_role !== 'admin'): ?>
+        // Password Change Request
+        document.getElementById('passwordChangeForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            const formData = new FormData(this);
+
+            const newPassword = document.getElementById('new_password').value;
+            const confirmPassword = document.getElementById('confirm_password').value;
             const alertContainer = document.getElementById('alertContainer');
-            
+
+            if (newPassword !== confirmPassword) {
+                alertContainer.innerHTML = '<div class="alert alert-danger">Password dan konfirmasi password tidak sama!</div>';
+                return;
+            }
+
+            const formData = new FormData(this);
+
             fetch('<?= base_url('settings/request-password-change') ?>', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.success) {
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-success alert-dismissible fade show" role="alert">
-                            <i class="fas fa-check-circle"></i> ${data.message}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                    `;
-                    this.reset();
-                    setTimeout(() => location.reload(), 2000);
-                } else {
-                    let errorMsg = data.message;
-                    if(data.errors) {
-                        errorMsg += '<ul class="mb-0 mt-2">';
-                        for(let field in data.errors) {
-                            errorMsg += `<li>${data.errors[field]}</li>`;
-                        }
-                        errorMsg += '</ul>';
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alertContainer.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                        this.reset();
+                        setTimeout(() => location.reload(), 2000);
+                    } else {
+                        alertContainer.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
                     }
-                    alertContainer.innerHTML = `
-                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                            <i class="fas fa-exclamation-circle"></i> ${errorMsg}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                })
+                .catch(error => {
+                    alertContainer.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat mengirim permintaan</div>';
+                });
+        });
+    <?php endif; ?>
+
+    <?php if ($user_role === 'admin'): ?>
+        // Admin Password Change
+        document.getElementById('adminPasswordChangeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const newPassword = document.getElementById('admin_new_password').value;
+            const confirmPassword = document.getElementById('admin_confirm_password').value;
+            const alertContainer = document.getElementById('adminPasswordAlertContainer');
+
+            if (newPassword !== confirmPassword) {
+                alertContainer.innerHTML = '<div class="alert alert-danger">Password baru dan konfirmasi password tidak sama!</div>';
+                return;
+            }
+
+            const formData = new FormData(this);
+
+            fetch('<?= base_url('settings/change-password') ?>', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alertContainer.innerHTML = '<div class="alert alert-success">' + data.message + '</div>';
+                        this.reset();
+                    } else {
+                        alertContainer.innerHTML = '<div class="alert alert-danger">' + data.message + '</div>';
+                    }
+                })
+                .catch(error => {
+                    alertContainer.innerHTML = '<div class="alert alert-danger">Terjadi kesalahan saat mengganti password</div>';
+                });
+        });
+
+        // Load Pending Password Requests
+        function loadPendingRequests() {
+            fetch('<?= base_url('settings/get-pending-requests') ?>')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('pendingRequestsContainer');
+
+                    if (data.success && data.requests.length > 0) {
+                        let html = '';
+                        data.requests.forEach(request => {
+                            html += `
+                    <div class="request-item pending" id="request-${request.id}">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <strong>${request.user_name}</strong>
+                                <span class="request-status pending">Pending</span>
+                                <p class="mb-1 mt-2">${request.reason || 'Tidak ada alasan'}</p>
+                                <small class="text-muted">Dibuat: ${new Date(request.created_at).toLocaleDateString('id-ID')}</small>
+                            </div>
+                            <div>
+                                <button class="btn btn-sm btn-success me-2" onclick="processRequest(${request.id}, 'approved')">
+                                    <i class="fas fa-check"></i> Setujui
+                                </button>
+                                <button class="btn btn-sm btn-danger" onclick="processRequest(${request.id}, 'rejected')">
+                                    <i class="fas fa-times"></i> Tolak
+                                </button>
+                            </div>
                         </div>
-                    `;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alertContainer.innerHTML = `
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <i class="fas fa-exclamation-circle"></i> Terjadi kesalahan sistem
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
                 `;
-            });
-        });
-    </script>
-</body>
-</html>
+                        });
+                        container.innerHTML = html;
+                    } else {
+                        container.innerHTML = '<div class="text-muted text-center">Tidak ada permintaan pending</div>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('pendingRequestsContainer').innerHTML =
+                        '<div class="text-danger text-center">Gagal memuat permintaan</div>';
+                });
+        }
+
+        // Process Password Request
+        function processRequest(requestId, action) {
+            fetch(`<?= base_url('settings/process-password-request') ?>/${requestId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: action
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById(`request-${requestId}`).remove();
+                        // Reload if no more requests
+                        if (document.querySelectorAll('.request-item').length === 0) {
+                            loadPendingRequests();
+                        }
+                    } else {
+                        alert('Gagal memproses permintaan: ' + data.message);
+                    }
+                });
+        }
+
+        // Load pending requests on page load
+        loadPendingRequests();
+    <?php endif; ?>
+</script>
+<?= $this->endSection() ?>

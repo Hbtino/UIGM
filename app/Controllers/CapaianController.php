@@ -9,13 +9,38 @@ class CapaianController extends BaseController
     public function index()
     {
         $model = new CapaianModel();
-        $data['capaian'] = $model->where('user_id', session()->get('user_id'))->findAll();
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find(session()->get('user_id'));
+
+        $data = [
+            'capaian' => $model->where('user_id', session()->get('user_id'))->findAll(),
+            'title' => 'Capaian - Kampus Berkelanjutan',
+            'page' => 'capaian',
+            'user_name' => session()->get('name'),
+            'user_role' => session()->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
         return view('capaian/index', $data);
     }
 
     public function create()
     {
-        return view('capaian/create');
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find(session()->get('user_id'));
+
+        $data = [
+            'title' => 'Tambah Capaian - Kampus Berkelanjutan',
+            'page' => 'capaian',
+            'user_name' => session()->get('name'),
+            'user_role' => session()->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('capaian/create', $data);
     }
 
     public function store()
@@ -35,7 +60,20 @@ class CapaianController extends BaseController
     public function edit($id)
     {
         $model = new CapaianModel();
-        $data['capaian'] = $model->find($id);
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find(session()->get('user_id'));
+
+        $data = [
+            'capaian' => $model->find($id),
+            'title' => 'Edit Capaian - Kampus Berkelanjutan',
+            'page' => 'capaian',
+            'user_name' => session()->get('name'),
+            'user_role' => session()->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
         return view('capaian/edit', $data);
     }
 

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Test</title>
+</head>
+<body>
+    <h1>JavaScript Test Page</h1>
+    <p>Buka F12 Console untuk melihat output</p>
+    
+    <button onclick="testFunction()">Test Button</button>
+    
+    <script>
+        console.log('🚀 JavaScript Test Page Loaded!');
+        console.log('📅 Timestamp:', new Date().toISOString());
+        
+        function testFunction() {
+            console.log('🔘 Button clicked!');
+            alert('Button berfungsi!');
+        }
+        
+        // Auto test
+        setTimeout(() => {
+            console.log('⏰ Auto test after 2 seconds');
+        }, 2000);
+    </script>
+</body>
+</html>

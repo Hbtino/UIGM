@@ -16,30 +16,27 @@ class LaporanController extends BaseController
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Check if user is dosen or admin
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if (!in_array($userRole, ['admin', 'dosen'])) {
             return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini');
         }
-        
-        // Get user data including profile photo
-        $userModel = new UserModel();
-        $user = $userModel->find(session()->get('user_id'));
-        
+
         $laporanData = $this->getLaporanData();
-        
+
         // Get list of dosen for admin
         $dosenList = [];
         if ($userRole === 'admin') {
+            $userModel = new UserModel();
             $dosenList = $userModel->where('role', 'dosen')->findAll();
         }
-        
+
         // Check if editing existing laporan
         $savedData = null;
         $lastSaved = null;
         $editId = null;
-        
+
         if (session()->getFlashdata('edit_laporan_id')) {
             // Load data from edit
             $editId = session()->getFlashdata('edit_laporan_id');
@@ -51,20 +48,16 @@ class LaporanController extends BaseController
             // Load latest laporan if available
             $laporanModel = new LaporanDosenModel();
             $existingLaporan = $laporanModel->getLatestLaporanByUserId(session()->get('user_id'));
-            
+
             if ($existingLaporan) {
                 $savedData = json_decode($existingLaporan['data_laporan'], true);
                 $lastSaved = $existingLaporan['updated_at'] ?? $existingLaporan['created_at'];
             }
         }
-        
-        $data = [
+
+        $data = array_merge($this->getSidebarData('laporan'), [
             'title' => 'Laporan UI GreenMetric',
-            'page' => 'laporan',
-            'user_name' => session()->get('user_name'),
             'user_id' => session()->get('user_id'),
-            'user_role' => session()->get('user_role'),
-            'profile_photo' => $user['profile_photo'] ?? null,
             'dosen_list' => $dosenList,
             'laporan_data' => $laporanData,
             'saved_data' => $savedData,
@@ -91,30 +84,26 @@ class LaporanController extends BaseController
                 'worldRank' => [896, 800, 700, 600, 550, 500],
                 'indonesiaRank' => [87, 75, 65, 58, 52, 50]
             ]
-        ];
-        
+        ]);
+
         return view('laporan/index', $data);
     }
-    
+
     public function kaprodi()
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Check if user is kaprodi or admin
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if (!in_array($userRole, ['admin', 'kaprodi'])) {
             return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini');
         }
-        
-        // Get user data including profile photo
-        $userModel = new UserModel();
-        $user = $userModel->find(session()->get('user_id'));
-        
+
         $laporanData = $this->getLaporanData();
-        
+
         // Get list of prodi for admin
         $prodiList = [];
         if ($userRole === 'admin') {
@@ -130,26 +119,23 @@ class LaporanController extends BaseController
                 ['id' => 7, 'nama' => 'Teknik Konversi Energi'],
             ];
         }
-        
+
         // Load latest laporan if available
         $laporanModel = new LaporanKaprodiModel();
         $existingLaporan = $laporanModel->getLatestLaporanByUserId(session()->get('user_id'));
         $savedData = null;
         $lastSaved = null;
-        
+
         if ($existingLaporan) {
             $savedData = json_decode($existingLaporan['data_laporan'], true);
             $lastSaved = $existingLaporan['updated_at'] ?? $existingLaporan['created_at'];
         }
-        
-        $data = [
+
+        $data = array_merge($this->getSidebarData('laporan_kaprodi'), [
             'title' => 'Laporan Program Studi - UI GreenMetric',
-            'page' => 'laporan_kaprodi',
-            'user_name' => session()->get('user_name'),
+            'user_id' => session()->get('user_id'),
             'user_prodi_id' => session()->get('user_prodi_id') ?? 1,
             'prodi_name' => session()->get('prodi_name') ?? 'Program Studi',
-            'user_role' => session()->get('user_role'),
-            'profile_photo' => $user['profile_photo'] ?? null,
             'prodi_list' => $prodiList,
             'laporan_data' => $laporanData,
             'saved_data' => $savedData,
@@ -176,11 +162,11 @@ class LaporanController extends BaseController
                 'worldRank' => [896, 800, 700, 600, 550, 500],
                 'indonesiaRank' => [87, 75, 65, 58, 52, 50]
             ]
-        ];
-        
+        ]);
+
         return view('laporan/kaprodi', $data);
     }
-    
+
     public function saveDosen()
     {
         if (!session()->get('logged_in')) {
@@ -189,10 +175,10 @@ class LaporanController extends BaseController
 
         $laporanModel = new LaporanDosenModel();
         $postData = $this->request->getPost();
-        
+
         // Get user_name - either from post data or get from database if admin selected different user
-        $userName = $postData['user_name'] ?? session()->get('user_name');
-        
+        $userName = $postData['user_name'] ?? session()->get('name');
+
         // If admin selected a different dosen, get that dosen's name
         if (isset($postData['selected_dosen_id']) && !empty($postData['selected_dosen_id'])) {
             $userModel = new UserModel();
@@ -202,7 +188,7 @@ class LaporanController extends BaseController
                 $postData['user_id'] = $selectedUser['id'];
             }
         }
-        
+
         $data = [
             'user_id' => $postData['user_id'],
             'user_name' => $userName,
@@ -226,10 +212,10 @@ class LaporanController extends BaseController
 
         $laporanModel = new LaporanKaprodiModel();
         $postData = $this->request->getPost();
-        
+
         // Get user_name - either from post data or get from database if admin selected different user
-        $userName = $postData['user_name'] ?? session()->get('user_name');
-        
+        $userName = $postData['user_name'] ?? session()->get('name');
+
         // If admin selected a different kaprodi, get that kaprodi's name
         if (isset($postData['selected_kaprodi_id']) && !empty($postData['selected_kaprodi_id'])) {
             $userModel = new UserModel();
@@ -239,7 +225,7 @@ class LaporanController extends BaseController
                 $postData['user_id'] = $selectedUser['id'];
             }
         }
-        
+
         $data = [
             'user_id' => $postData['user_id'],
             'user_name' => $userName,
@@ -265,23 +251,23 @@ class LaporanController extends BaseController
         }
 
         $laporanModel = new LaporanDosenModel();
-        
+
         // If ID provided, get specific laporan, otherwise get latest
         if ($id) {
             $laporan = $laporanModel->find($id);
         } else {
             $laporan = $laporanModel->getLatestLaporanByUserId(session()->get('user_id'));
         }
-        
+
         if (!$laporan) {
             return redirect()->back()->with('error', 'Laporan tidak ditemukan. Silakan simpan laporan terlebih dahulu.');
         }
 
         $data = json_decode($laporan['data_laporan'], true);
-        
+
         // Get user name from laporan record
-        $userName = $laporan['user_name'] ?? session()->get('user_name');
-        
+        $userName = $laporan['user_name'] ?? session()->get('name');
+
         $html = view('laporan/pdf_dosen', [
             'laporan' => $laporan,
             'data' => $data,
@@ -292,12 +278,12 @@ class LaporanController extends BaseController
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
-        
+
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        
+
         $dompdf->stream('Laporan_Dosen_' . date('Y-m-d') . '.pdf', ['Attachment' => true]);
     }
 
@@ -308,23 +294,23 @@ class LaporanController extends BaseController
         }
 
         $laporanModel = new LaporanKaprodiModel();
-        
+
         // If ID provided, get specific laporan, otherwise get latest
         if ($id) {
             $laporan = $laporanModel->find($id);
         } else {
             $laporan = $laporanModel->getLatestLaporanByUserId(session()->get('user_id'));
         }
-        
+
         if (!$laporan) {
             return redirect()->back()->with('error', 'Laporan tidak ditemukan. Silakan simpan laporan terlebih dahulu.');
         }
 
         $data = json_decode($laporan['data_laporan'], true);
-        
+
         // Get user name from laporan record
-        $userName = $laporan['user_name'] ?? session()->get('user_name');
-        
+        $userName = $laporan['user_name'] ?? session()->get('name');
+
         $html = view('laporan/pdf_kaprodi', [
             'laporan' => $laporan,
             'data' => $data,
@@ -335,96 +321,93 @@ class LaporanController extends BaseController
         $options = new Options();
         $options->set('isHtml5ParserEnabled', true);
         $options->set('isRemoteEnabled', true);
-        
+
         $dompdf = new Dompdf($options);
         $dompdf->loadHtml($html);
         $dompdf->setPaper('A4', 'portrait');
         $dompdf->render();
-        
+
         $dompdf->stream('Laporan_Kaprodi_' . date('Y-m-d') . '.pdf', ['Attachment' => true]);
     }
-    
+
     public function riwayatDosen()
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Check if user is dosen or admin
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if (!in_array($userRole, ['admin', 'dosen'])) {
             return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini');
         }
-        
+
         // Get user data
         $userModel = new UserModel();
         $user = $userModel->find(session()->get('user_id'));
-        
+
         // Get laporan - Admin sees all, Dosen sees only their own
         $db = \Config\Database::connect();
         $builder = $db->table('laporan_dosen');
         $builder->select('*'); // Explicitly select all columns including id
-        
+
         if ($userRole === 'admin') {
             // Admin: Get ALL laporan from all dosen
             $laporan = $builder->orderBy('created_at', 'DESC')
-                              ->get()
-                              ->getResultArray();
+                ->get()
+                ->getResultArray();
         } else {
             // Dosen: Get only their own laporan
             $userId = session()->get('user_id');
             $laporan = $builder->where('user_id', $userId)
-                              ->orderBy('created_at', 'DESC')
-                              ->get()
-                              ->getResultArray();
+                ->orderBy('created_at', 'DESC')
+                ->get()
+                ->getResultArray();
         }
-        
+
         // Debug log
         if (!empty($laporan)) {
             log_message('debug', 'Riwayat Dosen - First item keys: ' . implode(', ', array_keys($laporan[0])));
         }
-        
+
         // Get list of all dosen for filter (admin only)
         $dosenList = [];
         if ($userRole === 'admin') {
             $dosenList = $userModel->where('role', 'dosen')->findAll();
         }
-        
+
         // Debug: log the result
         log_message('debug', 'Riwayat Dosen - User Role: ' . $userRole);
         log_message('debug', 'Riwayat Dosen - Laporan count: ' . count($laporan));
-        
+
         // Debug mode - show debug page
         if ($this->request->getGet('debug') === '1') {
             echo "<h2>DEBUG MODE - Riwayat Dosen</h2>";
             echo "<pre>";
             echo "Session Data:\n";
             echo "  User ID: " . session()->get('user_id') . "\n";
-            echo "  User Name: " . session()->get('user_name') . "\n";
-            echo "  User Role: " . session()->get('user_role') . "\n";
+            echo "  User Name: " . session()->get('name') . "\n";
+            echo "  User Role: " . session()->get('role') . "\n";
             echo "  Logged In: " . (session()->get('logged_in') ? 'Yes' : 'No') . "\n\n";
-            
+
             echo "Query Result:\n";
             echo "  Laporan Type: " . gettype($laporan) . "\n";
             echo "  Laporan Count: " . count($laporan) . "\n";
             echo "  Is Array: " . (is_array($laporan) ? 'Yes' : 'No') . "\n";
             echo "  Is Empty: " . (empty($laporan) ? 'Yes' : 'No') . "\n\n";
-            
+
             echo "Laporan Data:\n";
             print_r($laporan);
-            
+
             echo "</pre>";
             exit;
         }
-        
+
         $data = [
             'title' => 'Riwayat Laporan Dosen',
             'page' => 'riwayat_laporan',
-            'user_name' => session()->get('user_name'),
             'user_id' => session()->get('user_id'),
-            'user_role' => session()->get('user_role'),
-            'profile_photo' => $user['profile_photo'] ?? null,
             'laporan' => $laporan,
             'stats' => [
                 'targetSkor2028' => 80,
@@ -448,62 +431,128 @@ class LaporanController extends BaseController
                 'indonesiaRank' => [87, 75, 65, 58, 52, 50]
             ]
         ];
-        
+
         return view('laporan/riwayat_dosen', $data);
     }
-    
+
+    public function debugKaprodi()
+    {
+        // Debug method to check laporan_kaprodi data
+        $db = \Config\Database::connect();
+
+        echo "<h2>Checking laporan_kaprodi table</h2>";
+
+        // Get all laporan
+        $query = $db->query("SELECT * FROM laporan_kaprodi ORDER BY created_at DESC LIMIT 5");
+        $results = $query->getResultArray();
+
+        echo "<p>Total records found: " . count($results) . "</p>";
+
+        if (!empty($results)) {
+            echo "<h3>Sample Data:</h3>";
+            foreach ($results as $row) {
+                echo "<div style='border: 1px solid #ccc; padding: 10px; margin: 10px 0;'>";
+                echo "<strong>ID:</strong> " . ($row['id'] ?? 'NULL') . "<br>";
+                echo "<strong>User ID:</strong> " . ($row['user_id'] ?? 'NULL') . "<br>";
+                echo "<strong>Prodi ID:</strong> " . ($row['prodi_id'] ?? 'NULL') . "<br>";
+                echo "<strong>Prodi Name:</strong> " . ($row['prodi_name'] ?? 'NULL') . "<br>";
+                echo "<strong>Kaprodi Name:</strong> " . ($row['kaprodi_name'] ?? 'NULL') . "<br>";
+                echo "<strong>Jurusan:</strong> " . ($row['jurusan'] ?? 'NULL') . "<br>";
+                echo "<strong>Tanggal Laporan:</strong> " . ($row['tanggal_laporan'] ?? 'NULL') . "<br>";
+                echo "<strong>Created At:</strong> " . ($row['created_at'] ?? 'NULL') . "<br>";
+
+                // Check data_laporan JSON
+                if (!empty($row['data_laporan'])) {
+                    $data = json_decode($row['data_laporan'], true);
+                    echo "<strong>Data Laporan (JSON):</strong><br>";
+                    echo "<pre style='background: #f5f5f5; padding: 10px; overflow: auto; max-height: 200px;'>";
+                    echo "prodi_name: " . ($data['prodi_name'] ?? 'NOT SET') . "\n";
+                    echo "kaprodi_name: " . ($data['kaprodi_name'] ?? 'NOT SET') . "\n";
+                    echo "jurusan: " . ($data['jurusan'] ?? 'NOT SET') . "\n";
+                    echo "</pre>";
+                }
+                echo "</div>";
+            }
+        } else {
+            echo "<p style='color: red;'>No records found in laporan_kaprodi table!</p>";
+        }
+
+        // Check table structure
+        echo "<h3>Table Structure:</h3>";
+        $query = $db->query("DESCRIBE laporan_kaprodi");
+        $columns = $query->getResultArray();
+        echo "<table border='1' cellpadding='5'>";
+        echo "<tr><th>Field</th><th>Type</th><th>Null</th><th>Key</th><th>Default</th></tr>";
+        foreach ($columns as $col) {
+            echo "<tr>";
+            echo "<td>" . $col['Field'] . "</td>";
+            echo "<td>" . $col['Type'] . "</td>";
+            echo "<td>" . $col['Null'] . "</td>";
+            echo "<td>" . $col['Key'] . "</td>";
+            echo "<td>" . ($col['Default'] ?? 'NULL') . "</td>";
+            echo "</tr>";
+        }
+        echo "</table>";
+    }
+
     public function riwayatKaprodi()
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Check if user is kaprodi or admin
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if (!in_array($userRole, ['admin', 'kaprodi'])) {
             return redirect()->to('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini');
         }
-        
+
         // Get user data
         $userModel = new UserModel();
         $user = $userModel->find(session()->get('user_id'));
-        
-        // Get laporan - Admin sees all, Kaprodi sees only their own
-        $db = \Config\Database::connect();
-        $builder = $db->table('laporan_kaprodi');
-        
+
+        // Get laporan using model
+        $laporanModel = new LaporanKaprodiModel();
+
         if ($userRole === 'admin') {
             // Admin: Get ALL laporan from all kaprodi
-            $laporan = $builder->orderBy('created_at', 'DESC')
-                              ->get()
-                              ->getResultArray();
+            $laporan = $laporanModel->orderBy('created_at', 'DESC')->findAll();
         } else {
             // Kaprodi: Get only their own laporan
             $userId = session()->get('user_id');
-            $laporan = $builder->where('user_id', $userId)
-                              ->orderBy('created_at', 'DESC')
-                              ->get()
-                              ->getResultArray();
+            $laporan = $laporanModel->getLaporanByUserId($userId);
         }
-        
+
+        // Enrich laporan with kaprodi names from users table
+        if (!empty($laporan)) {
+            foreach ($laporan as &$item) {
+                if (!empty($item['user_id'])) {
+                    $kaprodiUser = $userModel->find($item['user_id']);
+                    if ($kaprodiUser && empty($item['kaprodi_name'])) {
+                        $item['kaprodi_name'] = $kaprodiUser['name'];
+                    }
+                }
+            }
+        }
+
         // Get list of all kaprodi for filter (admin only)
         $kaprodiList = [];
         if ($userRole === 'admin') {
             $kaprodiList = $userModel->where('role', 'kaprodi')->findAll();
         }
-        
+
         // Debug: log the result
         log_message('debug', 'Riwayat Kaprodi - User Role: ' . $userRole);
         log_message('debug', 'Riwayat Kaprodi - Laporan count: ' . count($laporan));
-        
+        if (!empty($laporan)) {
+            log_message('debug', 'Riwayat Kaprodi - First item keys: ' . implode(', ', array_keys($laporan[0])));
+        }
+
         $data = [
             'title' => 'Riwayat Laporan Kaprodi',
             'page' => 'riwayat_laporan_kaprodi',
-            'user_name' => session()->get('user_name'),
             'user_id' => session()->get('user_id'),
-            'user_role' => session()->get('user_role'),
-            'profile_photo' => $user['profile_photo'] ?? null,
             'laporan' => $laporan,
             'stats' => [
                 'targetSkor2028' => 80,
@@ -527,140 +576,140 @@ class LaporanController extends BaseController
                 'indonesiaRank' => [87, 75, 65, 58, 52, 50]
             ]
         ];
-        
+
         return view('laporan/riwayat_kaprodi', $data);
     }
-    
+
     public function editDosen($id)
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Get laporan using direct database query
         $db = \Config\Database::connect();
         $builder = $db->table('laporan_dosen');
         $laporan = $builder->where('id', $id)->get()->getRowArray();
-        
+
         if (!$laporan) {
             return redirect()->to('/laporan/riwayat-dosen')->with('error', 'Laporan tidak ditemukan');
         }
-        
+
         // Check authorization
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if ($userRole !== 'admin' && $laporan['user_id'] != session()->get('user_id')) {
             return redirect()->to('/laporan/riwayat-dosen')->with('error', 'Anda tidak memiliki akses untuk mengedit laporan ini');
         }
-        
+
         // Store edit data in session
         session()->setFlashdata('edit_laporan_id', $id);
         session()->setFlashdata('edit_laporan_data', $laporan['data_laporan']);
-        
+
         // Redirect to form laporan
         return redirect()->to('/laporan');
     }
-    
+
     public function deleteDosen($id)
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Get laporan using direct database query
         $db = \Config\Database::connect();
         $builder = $db->table('laporan_dosen');
         $laporan = $builder->where('id', $id)->get()->getRowArray();
-        
+
         log_message('debug', 'Delete Dosen - ID: ' . $id);
         log_message('debug', 'Delete Dosen - Laporan found: ' . ($laporan ? 'Yes' : 'No'));
-        
+
         if (!$laporan) {
             return redirect()->to('/laporan/riwayat-dosen')->with('error', 'Laporan tidak ditemukan');
         }
-        
+
         // Check authorization
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if ($userRole !== 'admin' && $laporan['user_id'] != session()->get('user_id')) {
             return redirect()->to('/laporan/riwayat-dosen')->with('error', 'Anda tidak memiliki akses untuk menghapus laporan ini');
         }
-        
+
         // Delete laporan using direct query
         $deleted = $builder->where('id', $id)->delete();
-        
+
         if ($deleted) {
             return redirect()->to('/laporan/riwayat-dosen')->with('success', 'Laporan berhasil dihapus');
         } else {
             return redirect()->to('/laporan/riwayat-dosen')->with('error', 'Gagal menghapus laporan');
         }
     }
-    
+
     public function editKaprodi($id)
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Get laporan using direct database query
         $db = \Config\Database::connect();
         $builder = $db->table('laporan_kaprodi');
         $laporan = $builder->where('id', $id)->get()->getRowArray();
-        
+
         if (!$laporan) {
             return redirect()->to('/laporan/riwayat-kaprodi')->with('error', 'Laporan tidak ditemukan');
         }
-        
+
         // Check authorization
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if ($userRole !== 'admin' && $laporan['user_id'] != session()->get('user_id')) {
             return redirect()->to('/laporan/riwayat-kaprodi')->with('error', 'Anda tidak memiliki akses untuk mengedit laporan ini');
         }
-        
+
         // Store edit data in session
         session()->setFlashdata('edit_laporan_kaprodi_id', $id);
         session()->setFlashdata('edit_laporan_kaprodi_data', $laporan['data_laporan']);
-        
+
         // Redirect to form laporan
         return redirect()->to('/laporan/kaprodi');
     }
-    
+
     public function deleteKaprodi($id)
     {
         // Check if user is logged in
         if (!session()->get('logged_in')) {
             return redirect()->to('/login');
         }
-        
+
         // Get laporan using direct database query
         $db = \Config\Database::connect();
         $builder = $db->table('laporan_kaprodi');
         $laporan = $builder->where('id', $id)->get()->getRowArray();
-        
+
         log_message('debug', 'Delete Kaprodi - ID: ' . $id);
         log_message('debug', 'Delete Kaprodi - Laporan found: ' . ($laporan ? 'Yes' : 'No'));
-        
+
         if (!$laporan) {
             return redirect()->to('/laporan/riwayat-kaprodi')->with('error', 'Laporan tidak ditemukan');
         }
-        
+
         // Check authorization
-        $userRole = session()->get('user_role');
+        $userRole = session()->get('role');
         if ($userRole !== 'admin' && $laporan['user_id'] != session()->get('user_id')) {
             return redirect()->to('/laporan/riwayat-kaprodi')->with('error', 'Anda tidak memiliki akses untuk menghapus laporan ini');
         }
-        
+
         // Delete laporan using direct query
         $deleted = $builder->where('id', $id)->delete();
-        
+
         if ($deleted) {
             return redirect()->to('/laporan/riwayat-kaprodi')->with('success', 'Laporan berhasil dihapus');
         } else {
             return redirect()->to('/laporan/riwayat-kaprodi')->with('error', 'Gagal menghapus laporan');
         }
     }
-    
+
     private function getLaporanData()
     {
         // Data laporan UI GreenMetric

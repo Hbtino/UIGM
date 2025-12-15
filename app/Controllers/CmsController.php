@@ -178,7 +178,21 @@ class CmsController extends BaseController
             return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
         }
 
-        return view('cms/news/create', ['title' => 'Tambah Berita']);
+        $session = session();
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
+        $data = [
+            'title' => 'Tambah Berita',
+            'page' => 'cms-news',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('cms/news/create', $data);
     }
 
     public function storeNews()
@@ -220,12 +234,27 @@ class CmsController extends BaseController
             return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
         }
 
+        $session = session();
+
         $news = $this->newsModel->find($id);
         if (!$news) {
             return redirect()->to('/news-admin')->with('error', 'Berita tidak ditemukan.');
         }
 
-        return view('cms/news/edit', ['title' => 'Edit Berita', 'news' => $news]);
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($session->get('user_id'));
+
+        $data = [
+            'title' => 'Edit Berita',
+            'news' => $news,
+            'page' => 'cms-news',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null
+        ];
+
+        return view('cms/news/edit', $data);
     }
 
     public function updateNews($id)
@@ -658,5 +687,190 @@ class CmsController extends BaseController
         $this->contentModel->updateBySection($section, $data);
 
         return redirect()->to('/dashboard-contents')->with('success', 'Konten ' . ucfirst(str_replace('_', ' ', $section)) . ' berhasil diperbarui.');
+    }
+
+    // INFORMASI CONTENT MANAGEMENT
+    public function informasiContents()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find(session()->get('user_id'));
+
+        // Get informasi content
+        $informasiContent = $this->landingContentModel->getBySection('informasi');
+
+        $data = [
+            'title' => 'Kelola Konten Informasi',
+            'page' => 'cms-informasi',
+            'user_name' => session()->get('name'),
+            'user_role' => session()->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            'content' => $informasiContent
+        ];
+
+        return view('cms/informasi/index', $data);
+    }
+
+    public function updateInformasiContent()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $mapEmbed = $this->request->getPost('map_embed');
+
+        // Debug: Log map embed
+        log_message('debug', 'Map Embed Length: ' . strlen($mapEmbed));
+        log_message('debug', 'Map Embed Preview: ' . substr($mapEmbed, 0, 100));
+
+        $data = [
+            'title' => $this->request->getPost('title'),
+            'subtitle' => $this->request->getPost('subtitle'),
+            'content' => $this->request->getPost('content'),
+            'address' => $this->request->getPost('address'),
+            'phone' => $this->request->getPost('phone'),
+            'email' => $this->request->getPost('email'),
+            'map_embed' => $mapEmbed,
+            'map_latitude' => $this->request->getPost('map_latitude'),
+            'map_longitude' => $this->request->getPost('map_longitude'),
+            'is_active' => 1,
+            'order' => 5
+        ];
+
+        $result = $this->landingContentModel->updateBySection('informasi', $data);
+
+        // Debug: Check if update successful
+        log_message('debug', 'Update Result: ' . ($result ? 'SUCCESS' : 'FAILED'));
+
+        return redirect()->to('/informasi-contents')->with('success', 'Konten informasi berhasil diperbarui. Map embed length: ' . strlen($mapEmbed));
+    }
+
+    // SYNC DASHBOARD TO LANDING PAGE
+    public function syncDashboardToLanding()
+    {
+        if (session()->get('role') !== 'admin') {
+            return $this->response->setJSON(['success' => false, 'message' => 'Akses ditolak']);
+        }
+
+        try {
+            // Get dashboard info_box content
+            $dashboardContent = $this->contentModel->getBySection('info_box');
+
+            if ($dashboardContent) {
+                // Update landing page informasi section with dashboard content
+                $landingData = [
+                    'title' => $dashboardContent['title'],
+                    'content' => $dashboardContent['content'],
+                    'is_active' => 1
+                ];
+
+                $this->landingContentModel->updateBySection('informasi', $landingData);
+
+                return $this->response->setJSON([
+                    'success' => true,
+                    'message' => 'Konten berhasil disinkronisasi dari dashboard ke landing page'
+                ]);
+            } else {
+                return $this->response->setJSON([
+                    'success' => false,
+                    'message' => 'Konten dashboard tidak ditemukan'
+                ]);
+            }
+        } catch (\Exception $e) {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    // LANDING PAGE STATISTICS MANAGEMENT
+    public function landingStatistics()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $landingStatModel = new \App\Models\LandingStatisticModel();
+
+        $data = array_merge($this->getSidebarData('landing-statistics'), [
+            'title' => 'Kelola Statistik Landing Page',
+            'statistics' => $landingStatModel->getAllGrouped()
+        ]);
+
+        return view('cms/landing_statistics/index', $data);
+    }
+
+    public function updateLandingStatistic()
+    {
+        if (session()->get('role') !== 'admin') {
+            return $this->response->setJSON(['success' => false, 'message' => 'Akses ditolak']);
+        }
+
+        $landingStatModel = new \App\Models\LandingStatisticModel();
+
+        $id = $this->request->getPost('id');
+        $value = $this->request->getPost('value');
+
+        $result = $landingStatModel->update($id, ['value' => $value]);
+
+        if ($result) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Statistik berhasil diupdate'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengupdate statistik'
+            ]);
+        }
+    }
+
+    // LANDING PAGE CHARTS MANAGEMENT
+    public function landingCharts()
+    {
+        if (session()->get('role') !== 'admin') {
+            return redirect()->to('/dashboard')->with('error', 'Akses ditolak.');
+        }
+
+        $landingChartModel = new \App\Models\LandingChartModel();
+
+        $data = array_merge($this->getSidebarData('landing-charts'), [
+            'title' => 'Kelola Grafik Landing Page',
+            'charts' => $landingChartModel->getAllGrouped()
+        ]);
+
+        return view('cms/landing_charts/index', $data);
+    }
+
+    public function updateLandingChart()
+    {
+        if (session()->get('role') !== 'admin') {
+            return $this->response->setJSON(['success' => false, 'message' => 'Akses ditolak']);
+        }
+
+        $landingChartModel = new \App\Models\LandingChartModel();
+
+        $id = $this->request->getPost('id');
+        $rankValue = $this->request->getPost('rank_value');
+
+        $result = $landingChartModel->update($id, ['rank_value' => $rankValue]);
+
+        if ($result) {
+            return $this->response->setJSON([
+                'success' => true,
+                'message' => 'Data grafik berhasil diupdate'
+            ]);
+        } else {
+            return $this->response->setJSON([
+                'success' => false,
+                'message' => 'Gagal mengupdate data grafik'
+            ]);
+        }
     }
 }

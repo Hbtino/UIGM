@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 Test JavaScript Dasar</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+        .test-box {
+            background: white;
+            border: 2px solid #007bff;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .success { border-color: #28a745; background: #d4edda; }
+        .error { border-color: #dc3545; background: #f8d7da; }
+        .warning { border-color: #ffc107; background: #fff3cd; }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #0056b3; }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            background: #f8f9fa;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Test JavaScript Dasar - Diagnosis Masalah</h1>
+    
+    <div class="test-box">
+        <h3>📋 Instruksi Test</h3>
+        <ol>
+            <li><strong>Buka F12 Developer Tools</strong> (tekan F12)</li>
+            <li><strong>Pilih tab "Console"</strong></li>
+            <li><strong>Lihat apakah ada pesan JavaScript</strong></li>
+            <li><strong>Klik tombol-tombol di bawah</strong></li>
+            <li><strong>Catat hasil setiap test</strong></li>
+        </ol>
+    </div>
+
+    <div class="test-box" id="test1">
+        <h3>🚀 Test 1: JavaScript Dasar</h3>
+        <p>Test apakah JavaScript berfungsi sama sekali</p>
+        <button onclick="test1()">Klik untuk Test 1</button>
+        <div class="result" id="result1">Belum ditest</div>
+    </div>
+
+    <div class="test-box" id="test2">
+        <h3>🔧 Test 2: Console Log</h3>
+        <p>Test apakah console.log berfungsi</p>
+        <button onclick="test2()">Klik untuk Test 2</button>
+        <div class="result" id="result2">Belum ditest</div>
+    </div>
+
+    <div class="test-box" id="test3">
+        <h3>📡 Test 3: Fetch API</h3>
+        <p>Test apakah AJAX/Fetch berfungsi</p>
+        <button onclick="test3()">Klik untuk Test 3</button>
+        <div class="result" id="result3">Belum ditest</div>
+    </div>
+
+    <div class="test-box" id="test4">
+        <h3>⏰ Test 4: Timer Functions</h3>
+        <p>Test apakah setTimeout berfungsi</p>
+        <button onclick="test4()">Klik untuk Test 4</button>
+        <div class="result" id="result4">Belum ditest</div>
+    </div>
+
+    <div class="test-box warning">
+        <h3>📊 Hasil Diagnosis</h3>
+        <div id="diagnosis">
+            <p><strong>Silakan lakukan semua test di atas, lalu lihat hasil di console F12.</strong></p>
+            <p>Jika tidak ada output di console sama sekali, kemungkinan:</p>
+            <ul>
+                <li>JavaScript disabled di browser</li>
+                <li>Browser extension mengblokir</li>
+                <li>Browser bermasalah</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Test otomatis saat halaman dimuat
+        console.log('🚀 AUTOMATIC TEST: Halaman test JavaScript dimuat!');
+        console.log('📅 Waktu:', new Date().toISOString());
+        console.log('🌐 URL:', window.location.href);
+        console.log('🔍 User Agent:', navigator.userAgent);
+        
+        // Alert otomatis
+        alert('🎯 AUTOMATIC ALERT: Jika Anda melihat alert ini, JavaScript dasar berfungsi!');
+
+        function test1() {
+            console.log('✅ TEST 1: JavaScript function berfungsi!');
+            
+            try {
+                document.getElementById('result1').innerHTML = '✅ <strong>BERHASIL:</strong> JavaScript function berfungsi!';
+                document.getElementById('test1').className = 'test-box success';
+                alert('Test 1 BERHASIL: JavaScript function berfungsi!');
+            } catch (error) {
+                console.error('❌ TEST 1 ERROR:', error);
+                document.getElementById('result1').innerHTML = '❌ <strong>GAGAL:</strong> ' + error.message;
+                document.getElementById('test1').className = 'test-box error';
+            }
+        }
+
+        function test2() {
+            console.log('✅ TEST 2: Console.log berfungsi!');
+            console.log('📊 TEST 2: Data test:', {
+                timestamp: new Date(),
+                random: Math.random(),
+                test: 'console logging'
+            });
+            
+            try {
+                document.getElementById('result2').innerHTML = '✅ <strong>BERHASIL:</strong> Console.log berfungsi! Lihat F12 Console.';
+                document.getElementById('test2').className = 'test-box success';
+                
+                // Test console methods lainnya
+                console.warn('⚠️ TEST 2: Console.warn berfungsi!');
+                console.error('🔴 TEST 2: Console.error berfungsi!');
+                console.info('ℹ️ TEST 2: Console.info berfungsi!');
+                
+            } catch (error) {
+                console.error('❌ TEST 2 ERROR:', error);
+                document.getElementById('result2').innerHTML = '❌ <strong>GAGAL:</strong> ' + error.message;
+                document.getElementById('test2').className = 'test-box error';
+            }
+        }
+
+        function test3() {
+            console.log('🔄 TEST 3: Testing Fetch API...');
+            
+            try {
+                // Test fetch ke URL yang pasti ada
+                fetch('https://httpbin.org/json')
+                    .then(response => {
+                        console.log('📡 TEST 3: Fetch response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('📊 TEST 3: Fetch data received:', data);
+                        document.getElementById('result3').innerHTML = '✅ <strong>BERHASIL:</strong> Fetch API berfungsi! Lihat F12 Console.';
+                        document.getElementById('test3').className = 'test-box success';
+                    })
+                    .catch(error => {
+                        console.error('❌ TEST 3 FETCH ERROR:', error);
+                        document.getElementById('result3').innerHTML = '❌ <strong>GAGAL:</strong> Fetch error: ' + error.message;
+                        document.getElementById('test3').className = 'test-box error';
+                    });
+                    
+                // Update UI immediately
+                document.getElementById('result3').innerHTML = '🔄 <strong>SEDANG PROSES:</strong> Testing Fetch API...';
+                
+            } catch (error) {
+                console.error('❌ TEST 3 ERROR:', error);
+                document.getElementById('result3').innerHTML = '❌ <strong>GAGAL:</strong> ' + error.message;
+                document.getElementById('test3').className = 'test-box error';
+            }
+        }
+
+        function test4() {
+            console.log('⏰ TEST 4: Testing setTimeout...');
+            
+            try {
+                document.getElementById('result4').innerHTML = '🔄 <strong>SEDANG PROSES:</strong> Menunggu 3 detik...';
+                
+                setTimeout(function() {
+                    console.log('✅ TEST 4: setTimeout berfungsi setelah 3 detik!');
+                    document.getElementById('result4').innerHTML = '✅ <strong>BERHASIL:</strong> setTimeout berfungsi! Lihat F12 Console.';
+                    document.getElementById('test4').className = 'test-box success';
+                    alert('Test 4 BERHASIL: setTimeout berfungsi setelah 3 detik!');
+                }, 3000);
+                
+            } catch (error) {
+                console.error('❌ TEST 4 ERROR:', error);
+                document.getElementById('result4').innerHTML = '❌ <strong>GAGAL:</strong> ' + error.message;
+                document.getElementById('test4').className = 'test-box error';
+            }
+        }
+
+        // Test interval untuk monitoring
+        let testCounter = 0;
+        setInterval(function() {
+            testCounter++;
+            console.log(`🔄 INTERVAL TEST ${testCounter}: JavaScript masih berjalan (${new Date().toLocaleTimeString()})`);
+        }, 10000); // Setiap 10 detik
+
+        // Test error handling
+        window.addEventListener('error', function(e) {
+            console.error('🚨 GLOBAL ERROR DETECTED:', e.error);
+            console.error('🚨 ERROR MESSAGE:', e.message);
+            console.error('🚨 ERROR FILE:', e.filename);
+            console.error('🚨 ERROR LINE:', e.lineno);
+        });
+
+        // Test unhandled promise rejection
+        window.addEventListener('unhandledrejection', function(e) {
+            console.error('🚨 UNHANDLED PROMISE REJECTION:', e.reason);
+        });
+
+        console.log('🎯 SEMUA TEST FUNCTION SIAP! Silakan klik tombol-tombol di atas.');
+    </script>
+</body>
+</html>

@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 26, 2025 at 03:36 PM
--- Server version: 10.4.32-MariaDB
--- PHP Version: 8.2.12
+-- Waktu pembuatan: 09 Des 2025 pada 03.13
+-- Versi server: 10.4.32-MariaDB
+-- Versi PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `activities`
+-- Struktur dari tabel `activities`
 --
 
 CREATE TABLE `activities` (
@@ -41,7 +41,7 @@ CREATE TABLE `activities` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `capaiankinerja`
+-- Struktur dari tabel `capaiankinerja`
 --
 
 CREATE TABLE `capaiankinerja` (
@@ -58,7 +58,7 @@ CREATE TABLE `capaiankinerja` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `dashboard_content`
+-- Struktur dari tabel `dashboard_content`
 --
 
 CREATE TABLE `dashboard_content` (
@@ -74,7 +74,7 @@ CREATE TABLE `dashboard_content` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `dashboard_content`
+-- Dumping data untuk tabel `dashboard_content`
 --
 
 INSERT INTO `dashboard_content` (`id`, `section`, `key`, `value`, `type`, `description`, `is_active`, `created_at`, `updated_at`) VALUES
@@ -113,7 +113,85 @@ INSERT INTO `dashboard_content` (`id`, `section`, `key`, `value`, `type`, `descr
 -- --------------------------------------------------------
 
 --
--- Table structure for table `education_research`
+-- Struktur dari tabel `dashboard_contents`
+--
+
+CREATE TABLE `dashboard_contents` (
+  `id` int(11) NOT NULL,
+  `section` varchar(50) NOT NULL COMMENT 'Section identifier: info_box, stat_card_1, stat_card_2, stat_card_3, stat_card_4, chart_title, chart_description',
+  `title` varchar(255) DEFAULT NULL,
+  `subtitle` varchar(255) DEFAULT NULL,
+  `content` text DEFAULT NULL,
+  `value` varchar(100) DEFAULT NULL COMMENT 'For stat cards numeric value',
+  `icon` varchar(50) DEFAULT NULL COMMENT 'Font Awesome icon class',
+  `color` varchar(20) DEFAULT NULL COMMENT 'Color theme: blue, green, orange, purple',
+  `trend_text` varchar(100) DEFAULT NULL COMMENT 'Trend indicator text',
+  `trend_type` varchar(20) DEFAULT NULL COMMENT 'Trend type: up, down, target',
+  `order` int(11) DEFAULT 0,
+  `is_active` tinyint(1) DEFAULT 1,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `dashboard_contents`
+--
+
+INSERT INTO `dashboard_contents` (`id`, `section`, `title`, `subtitle`, `content`, `value`, `icon`, `color`, `trend_text`, `trend_type`, `order`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'info_box', 'Tentang Dashboard Kampus Berkelanjutan', 'UI GreenMetric Polban 2024-2028', 'Dashboard ini menampilkan capaian 6 kriteria utama kampus berkelanjutan berdasarkan UI GreenMetric World University Rankings. Rencana Strategis Transformasi Menuju Kampus Berkelanjutan (TMKB) Politeknik Negeri Bandung periode 2024-2028 disusun untuk mendukung pencapaian Sustainable Development Goals (SDGs) yang ditetapkan oleh PBB.', '', 'fa-info-circle', '#149823ff', '', '', 1, 1, '2025-11-28 04:17:31', '2025-12-08 04:06:28'),
+(2, 'stat_card_1', 'Target Skor 2028', NULL, NULL, '80', 'fa-chart-line', 'blue', 'Target: 80%', 'target', 2, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(3, 'stat_card_2', 'Target Ranking Dunia', NULL, NULL, '176', 'fa-trophy', 'green', 'dari #896', 'up', 3, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(4, 'stat_card_3', 'Target Ranking Indonesia', NULL, NULL, '26', 'fa-flag', 'orange', 'dari #87', 'up', 4, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(5, 'stat_card_4', 'Kriteria Keberlanjutan', NULL, NULL, '6', 'fa-leaf', 'purple', '6 Kriteria SDGs', 'target', 5, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(6, 'chart_title', 'Capaian Kriteria Kampus Berkelanjutan (2023-2028)', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 6, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(7, 'chart_description', NULL, 'Proyeksi pencapaian berdasarkan UI GreenMetric World University Ranking', NULL, NULL, NULL, NULL, NULL, NULL, 7, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(8, 'top_bar_title', 'Dashboard Kampus Berkelanjutan', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 8, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49'),
+(9, 'top_bar_subtitle', 'Renstra TMKB Polban 2024-2028 | UI GreenMetric', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 9, 1, '2025-11-28 04:17:31', '2025-11-28 07:23:49');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `dashboard_statistics`
+--
+
+CREATE TABLE `dashboard_statistics` (
+  `id` int(11) NOT NULL,
+  `key` varchar(100) NOT NULL COMMENT 'Statistic key identifier',
+  `label` varchar(255) NOT NULL COMMENT 'Display label',
+  `value` varchar(255) DEFAULT NULL COMMENT 'Static value or formula',
+  `type` enum('static','calculated','target') DEFAULT 'static' COMMENT 'Value type',
+  `category` varchar(50) DEFAULT NULL COMMENT 'Category: target, current, campus_info, user_stats',
+  `description` text DEFAULT NULL COMMENT 'Description of the statistic',
+  `is_active` tinyint(1) DEFAULT 1,
+  `order` int(11) DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `dashboard_statistics`
+--
+
+INSERT INTO `dashboard_statistics` (`id`, `key`, `label`, `value`, `type`, `category`, `description`, `is_active`, `order`, `created_at`, `updated_at`) VALUES
+(1, 'target_skor_2028', 'Target Skor 2028', '75', 'target', 'target', 'Target skor UI GreenMetric tahun 2028', 1, 1, '2025-11-28 07:50:17', '2025-11-28 01:24:41'),
+(2, 'target_ranking_dunia', 'Target Ranking Dunia', '180', 'target', 'target', 'Target ranking dunia tahun 2028', 1, 2, '2025-11-28 07:50:17', '2025-11-28 01:24:56'),
+(3, 'target_ranking_indonesia', 'Target Ranking Indonesia', '26', 'target', 'target', 'Target ranking Indonesia tahun 2028', 1, 3, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(4, 'ranking_dunia_sekarang', 'Ranking Dunia Saat Ini', '896', 'static', 'current', 'Ranking dunia saat ini', 1, 4, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(5, 'ranking_indonesia_sekarang', 'Ranking Indonesia Saat Ini', '87', 'static', 'current', 'Ranking Indonesia saat ini', 1, 5, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(6, 'jumlah_mahasiswa', 'Jumlah Mahasiswa', '6605', 'static', 'campus_info', 'Total mahasiswa aktif', 1, 6, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(7, 'jumlah_dosen', 'Jumlah Dosen', '482', 'static', 'campus_info', 'Total dosen aktif', 1, 7, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(8, 'jumlah_jurusan', 'Jumlah Jurusan', '10', 'static', 'campus_info', 'Total jurusan', 1, 8, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(9, 'jumlah_prodi', 'Jumlah Program Studi', '39', 'static', 'campus_info', 'Total program studi', 1, 9, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(10, 'luas_kampus', 'Luas Kampus (m²)', '246269', 'static', 'campus_info', 'Luas total kampus dalam meter persegi', 1, 10, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(11, 'luas_bangunan', 'Luas Bangunan (m²)', '93435', 'static', 'campus_info', 'Luas total bangunan dalam meter persegi', 1, 11, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(12, 'jumlah_bangunan', 'Jumlah Bangunan', '86', 'static', 'campus_info', 'Total bangunan di kampus', 1, 12, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(13, 'jumlah_kelas', 'Jumlah Kelas', '105', 'static', 'campus_info', 'Total ruang kelas', 1, 13, '2025-11-28 07:50:17', '2025-11-28 07:50:17'),
+(14, 'jumlah_laboratorium', 'Jumlah Laboratorium', '119', 'static', 'campus_info', 'Total laboratorium', 1, 14, '2025-11-28 07:50:17', '2025-11-28 07:50:17');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `education_research`
 --
 
 CREATE TABLE `education_research` (
@@ -143,7 +221,7 @@ CREATE TABLE `education_research` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `education_research_revisions`
+-- Struktur dari tabel `education_research_revisions`
 --
 
 CREATE TABLE `education_research_revisions` (
@@ -164,7 +242,7 @@ CREATE TABLE `education_research_revisions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `energy_climate`
+-- Struktur dari tabel `energy_climate`
 --
 
 CREATE TABLE `energy_climate` (
@@ -199,7 +277,7 @@ CREATE TABLE `energy_climate` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `energy_climate_revisions`
+-- Struktur dari tabel `energy_climate_revisions`
 --
 
 CREATE TABLE `energy_climate_revisions` (
@@ -220,7 +298,7 @@ CREATE TABLE `energy_climate_revisions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `landing_contents`
+-- Struktur dari tabel `landing_contents`
 --
 
 CREATE TABLE `landing_contents` (
@@ -229,6 +307,12 @@ CREATE TABLE `landing_contents` (
   `title` varchar(255) NOT NULL COMMENT 'Judul section',
   `subtitle` varchar(255) DEFAULT NULL COMMENT 'Subtitle section',
   `content` text NOT NULL COMMENT 'Konten section',
+  `address` text DEFAULT NULL,
+  `phone` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `map_embed` text DEFAULT NULL,
+  `map_latitude` decimal(10,8) DEFAULT NULL,
+  `map_longitude` decimal(11,8) DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL COMMENT 'Gambar section',
   `button_text` varchar(100) DEFAULT NULL COMMENT 'Text tombol (jika ada)',
   `button_url` varchar(255) DEFAULT NULL COMMENT 'URL tombol (jika ada)',
@@ -239,20 +323,86 @@ CREATE TABLE `landing_contents` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `landing_contents`
+-- Dumping data untuk tabel `landing_contents`
 --
 
-INSERT INTO `landing_contents` (`id`, `section`, `title`, `subtitle`, `content`, `image`, `button_text`, `button_url`, `order`, `is_active`, `created_at`, `updated_at`) VALUES
-(1, 'deskripsi', 'Tentang Kampus Berkelanjutan', 'Komitmen Kami untuk Lingkungan', '<p>Politeknik Negeri Bandung berkomitmen untuk menjadi kampus berkelanjutan yang peduli terhadap lingkungan. Kami mengintegrasikan prinsip-prinsip keberlanjutan dalam setiap aspek operasional kampus.</p><p>Melalui berbagai program dan inisiatif, kami berupaya mengurangi dampak lingkungan, meningkatkan efisiensi energi, dan menciptakan lingkungan kampus yang hijau dan sehat.</p>', '1764141549_255cfdaeed32c059c614.png', 'Pelajari Lebih Lanjut', '#program', 0, 1, '2025-11-24 14:01:36', '2025-11-26 07:19:26'),
-(2, 'program', 'Program Kampus Berkelanjutan', 'Inisiatif Kami', '<ul><li><strong>Pengelolaan Energi:</strong> Penggunaan energi terbarukan dan efisiensi energi</li><li><strong>Manajemen Air:</strong> Konservasi air dan pengolahan air limbah</li><li><strong>Pengelolaan Limbah:</strong> Reduce, reuse, recycle</li><li><strong>Transportasi Hijau:</strong> Promosi transportasi ramah lingkungan</li><li><strong>Ruang Terbuka Hijau:</strong> Peningkatan area hijau kampus</li><li><strong>Pendidikan Lingkungan:</strong> Integrasi dalam kurikulum</li></ul>', NULL, 'Lihat Detail Program', '/dashboard', 2, 1, '2025-11-24 14:01:36', NULL),
-(3, 'kontak', 'Hubungi Kami', 'Tim Kampus Berkelanjutan', '<p><strong>Email:</strong> greenmetric@polban.ac.id</p><p><strong>Telepon:</strong> (022) 1234567</p><p><strong>Alamat:</strong> Jl. Gegerkalong Hilir, Bandung 40559</p><p><strong>Jam Operasional:</strong> Senin - Jumat, 08:00 - 16:00 WIB</p>', NULL, 'Kirim Pesan', 'mailto:greenmetric@polban.ac.id', 4, 1, '2025-11-24 14:01:36', NULL),
-(4, 'berita', 'Berita Terkini', 'Update Kampus Berkelanjutan', '<p>Ikuti perkembangan terbaru</p>', NULL, 'Lihat Semua Berita', '/news-admin', 3, 1, '2025-11-24 15:03:59', NULL),
-(5, 'berita', 'Berita Terkini', 'Update Kampus Berkelanjutan', '<p>Ikuti perkembangan terbaru program kampus berkelanjutan kami</p>', NULL, 'Lihat Semua Berita', '/news-admin', 3, 1, '2025-11-24 15:14:39', NULL);
+INSERT INTO `landing_contents` (`id`, `section`, `title`, `subtitle`, `content`, `address`, `phone`, `email`, `map_embed`, `map_latitude`, `map_longitude`, `image`, `button_text`, `button_url`, `order`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'deskripsi', 'Tentang Kampus Berkelanjutan', 'Komitmen Kami untuk Lingkungan', '<p>Politeknik Negeri Bandung berkomitmen untuk menjadi kampus berkelanjutan yang peduli terhadap lingkungan. Kami mengintegrasikan prinsip-prinsip keberlanjutan dalam setiap aspek operasional kampus.</p><p>Melalui berbagai program dan inisiatif, kami berupaya mengurangi dampak lingkungan, meningkatkan efisiensi energi, dan menciptakan lingkungan kampus yang hijau dan sehat.</p>', NULL, NULL, NULL, NULL, NULL, NULL, '1764141549_255cfdaeed32c059c614.png', 'Pelajari Lebih Lanjut', '#program', 0, 1, '2025-11-24 14:01:36', '2025-11-26 07:19:26'),
+(2, 'program', 'Program Kampus Berkelanjutan', 'Inisiatif Kami', '<ul><li><strong>Pengelolaan Energi:</strong> Penggunaan energi terbarukan dan efisiensi energi</li><li><strong>Manajemen Air:</strong> Konservasi air dan pengolahan air limbah</li><li><strong>Pengelolaan Limbah:</strong> Reduce, reuse, recycle</li><li><strong>Transportasi Hijau:</strong> Promosi transportasi ramah lingkungan</li><li><strong>Ruang Terbuka Hijau:</strong> Peningkatan area hijau kampus</li><li><strong>Pendidikan Lingkungan:</strong> Integrasi dalam kurikulum</li></ul>', NULL, NULL, NULL, NULL, NULL, NULL, '1764177214_4a48e3191e032a7bdc1e.png', 'Lihat Detail Program', '/dashboard', 0, 1, '2025-11-24 14:01:36', '2025-11-26 17:13:34'),
+(4, 'berita', 'Berita Terkini', 'Update Kampus Berkelanjutan', '<p>Ikuti perkembangan terbaru</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Lihat Semua Berita', '/news-admin', 3, 1, '2025-11-24 15:03:59', NULL),
+(5, 'berita', 'Berita Terkini', 'Update Kampus Berkelanjutan', '<p>Ikuti perkembangan terbaru program kampus berkelanjutan kami</p>', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'Lihat Semua Berita', '/news-admin', 3, 1, '2025-11-24 15:14:39', NULL),
+(14, 'informasi', 'Informasi Kontak', 'Hubungi Kami', 'Untuk informasi lebih lanjut tentang program GreenMetric dan Kampus Berkelanjutan Polban, silakan hubungi kami melalui kontak di bawah ini.', 'Jl. Gegerkalong Hilir, Ds. Ciwaruga, Parongpong, Kabupaten Bandung Barat, Jawa Barat 40559', '(022) 2013789', 'info@polban.ac.id', '<iframe src=\"https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.153471450742!2d107.57119757367113!3d-6.8722073931265095!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e420abc30acf%3A0x10569255865460a5!2sPoliteknik%20Negeri%20Bandung!5e0!3m2!1sid!2sid!4v1765174748543!5m2!1sid!2sid\" width=\"600\" height=\"450\" style=\"border:0;\" allowfullscreen=\"\" loading=\"lazy\" referrerpolicy=\"no-referrer-when-downgrade\"></iframe>', -6.87153700, 107.57406000, NULL, NULL, NULL, 5, 1, '2025-12-08 06:19:34', '2025-12-08 06:19:34');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `laporan_dosen`
+-- Struktur dari tabel `landing_statistics`
+--
+
+CREATE TABLE `landing_statistics` (
+  `id` int(11) UNSIGNED NOT NULL,
+  `section` varchar(100) NOT NULL COMMENT 'Section identifier: info_box, profil_kampus, fasilitas, ranking',
+  `key_name` varchar(100) NOT NULL COMMENT 'Key untuk data statistik',
+  `label` varchar(255) NOT NULL COMMENT 'Label yang ditampilkan',
+  `value` text NOT NULL COMMENT 'Nilai statistik',
+  `icon` varchar(100) DEFAULT NULL COMMENT 'Icon class (fas fa-xxx)',
+  `color` varchar(50) DEFAULT NULL COMMENT 'Warna untuk styling',
+  `order_position` int(11) DEFAULT 0 COMMENT 'Urutan tampilan',
+  `is_active` tinyint(1) DEFAULT 1 COMMENT 'Status aktif/nonaktif',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `landing_statistics`
+--
+
+INSERT INTO `landing_statistics` (`id`, `section`, `key_name`, `label`, `value`, `icon`, `color`, `order_position`, `is_active`, `created_at`, `updated_at`) VALUES
+(1, 'info_box', 'target_skor', 'Target Skor 2028', '80%', 'fa-chart-line', '#6366f1', 1, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(2, 'info_box', 'target_skor_subtitle', 'Target: 80%', 'Target: 80%', NULL, '#6366f1', 2, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(3, 'info_box', 'ranking_dunia', 'Target Ranking Dunia', '#176', 'fa-trophy', '#10b981', 3, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(4, 'info_box', 'ranking_dunia_progress', '↑ dari #896', '↑ dari #896', NULL, '#10b981', 4, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(5, 'info_box', 'ranking_indonesia', 'Target Ranking Indonesia', '#26', 'fa-flag', '#ec4899', 5, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(6, 'info_box', 'ranking_indonesia_progress', '↑ dari #87', '↑ dari #87', NULL, '#ec4899', 6, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(7, 'info_box', 'kriteria_sdgs', 'Kriteria Keberlanjutan', '6', 'fa-leaf', '#06b6d4', 7, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(8, 'info_box', 'kriteria_sdgs_subtitle', '6 Kriteria SDGs', '6 Kriteria SDGs', NULL, '#06b6d4', 8, 1, '2025-12-08 14:40:56', '2025-12-08 14:40:56'),
+(9, 'profil_kampus', 'mahasiswa', 'Mahasiswa', '6605', 'fa-user-graduate', '#1e3a8a', 1, 1, '2025-12-08 14:41:09', '2025-12-08 14:41:09'),
+(10, 'profil_kampus', 'dosen', 'Dosen', '482', 'fa-chalkboard-teacher', '#1e3a8a', 2, 1, '2025-12-08 14:41:09', '2025-12-08 14:41:09'),
+(11, 'profil_kampus', 'jurusan', 'Jurusan', '10', 'fa-building', '#1e3a8a', 3, 1, '2025-12-08 14:41:09', '2025-12-08 14:41:09'),
+(12, 'profil_kampus', 'program_studi', 'Program Studi', '39', 'fa-graduation-cap', '#1e3a8a', 4, 1, '2025-12-08 14:41:09', '2025-12-08 14:41:09'),
+(13, 'fasilitas', 'luas_kampus', 'Luas Kampus', '246269', 'fa-map', '#1e3a8a', 1, 1, '2025-12-08 14:41:22', '2025-12-08 14:41:22'),
+(14, 'fasilitas', 'luas_kampus_unit', 'Unit Luas Kampus', 'm²', NULL, NULL, 2, 1, '2025-12-08 14:41:22', '2025-12-08 14:41:22'),
+(15, 'fasilitas', 'luas_bangunan', 'Luas Bangunan', '93435', 'fa-building', '#1e3a8a', 3, 1, '2025-12-08 14:41:22', '2025-12-08 14:41:22'),
+(16, 'fasilitas', 'luas_bangunan_unit', 'Unit Luas Bangunan', 'm²', NULL, NULL, 4, 1, '2025-12-08 14:41:22', '2025-12-08 14:41:22'),
+(17, 'fasilitas', 'jumlah_bangunan', 'Jumlah Bangunan', '86', 'fa-city', '#1e3a8a', 5, 1, '2025-12-08 14:41:22', '2025-12-08 14:41:22'),
+(18, 'fasilitas', 'laboratorium', 'Laboratorium', '119', 'fa-flask', '#1e3a8a', 6, 1, '2025-12-08 14:41:22', '2025-12-08 14:41:22'),
+(21, 'ranking_dunia', '2023', '2023', '896', NULL, NULL, 1, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(22, 'ranking_dunia', '2024', '2024', '705', NULL, NULL, 2, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(23, 'ranking_dunia', '2024_progress', 'Progress 2024', '191', NULL, '#10b981', 3, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(24, 'ranking_dunia', '2025', '2025', '561', NULL, NULL, 4, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(25, 'ranking_dunia', '2025_progress', 'Progress 2025', '144', NULL, '#10b981', 5, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(26, 'ranking_dunia', '2026', '2026', '374', NULL, NULL, 6, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(27, 'ranking_dunia', '2026_progress', 'Progress 2026', '187', NULL, '#10b981', 7, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(28, 'ranking_dunia', '2027', '2027', '228', NULL, NULL, 8, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(29, 'ranking_dunia', '2027_progress', 'Progress 2027', '146', NULL, '#10b981', 9, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(30, 'ranking_dunia', '2028', '2028', '176', NULL, NULL, 10, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(31, 'ranking_dunia', '2028_progress', 'Progress 2028', '52', NULL, '#10b981', 11, 1, '2025-12-08 14:41:42', '2025-12-08 14:41:42'),
+(32, 'ranking_indonesia', '2023', '2023', '87', NULL, NULL, 1, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(33, 'ranking_indonesia', '2024', '2024', '70', NULL, NULL, 2, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(34, 'ranking_indonesia', '2024_progress', 'Progress 2024', '17', NULL, '#10b981', 3, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(35, 'ranking_indonesia', '2025', '2025', '53', NULL, NULL, 4, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(36, 'ranking_indonesia', '2025_progress', 'Progress 2025', '17', NULL, '#10b981', 5, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(37, 'ranking_indonesia', '2026', '2026', '39', NULL, NULL, 6, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(38, 'ranking_indonesia', '2026_progress', 'Progress 2026', '14', NULL, '#10b981', 7, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(39, 'ranking_indonesia', '2027', '2027', '29', NULL, NULL, 8, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(40, 'ranking_indonesia', '2027_progress', 'Progress 2027', '10', NULL, '#10b981', 9, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(41, 'ranking_indonesia', '2028', '2028', '26', NULL, NULL, 10, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52'),
+(42, 'ranking_indonesia', '2028_progress', 'Progress 2028', '3', NULL, '#10b981', 11, 1, '2025-12-08 14:41:52', '2025-12-08 14:41:52');
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `laporan_dosen`
 --
 
 CREATE TABLE `laporan_dosen` (
@@ -267,7 +417,7 @@ CREATE TABLE `laporan_dosen` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `laporan_dosen`
+-- Dumping data untuk tabel `laporan_dosen`
 --
 
 INSERT INTO `laporan_dosen` (`id`, `user_id`, `user_name`, `jurusan`, `program_studi`, `data_laporan`, `created_at`, `updated_at`) VALUES
@@ -280,7 +430,7 @@ INSERT INTO `laporan_dosen` (`id`, `user_id`, `user_name`, `jurusan`, `program_s
 -- --------------------------------------------------------
 
 --
--- Table structure for table `laporan_kaprodi`
+-- Struktur dari tabel `laporan_kaprodi`
 --
 
 CREATE TABLE `laporan_kaprodi` (
@@ -300,7 +450,7 @@ CREATE TABLE `laporan_kaprodi` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `menus`
+-- Struktur dari tabel `menus`
 --
 
 CREATE TABLE `menus` (
@@ -318,7 +468,7 @@ CREATE TABLE `menus` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `menus`
+-- Dumping data untuk tabel `menus`
 --
 
 INSERT INTO `menus` (`id`, `parent_id`, `title`, `url`, `icon`, `order`, `is_active`, `roles`, `menu_type`, `created_at`, `updated_at`) VALUES
@@ -334,7 +484,7 @@ INSERT INTO `menus` (`id`, `parent_id`, `title`, `url`, `icon`, `order`, `is_act
 (11, NULL, 'Pengaturan', '/settings', 'fas fa-cog', 5, 1, '[\"admin\"]', 'dashboard', '2025-11-21 07:51:19', NULL),
 (14, NULL, 'Deskripsi', '#deskripsi', 'fas fa-tachometer-alt', 101, 1, '[\"admin\",\"reviewer\",\"kaprodi\",\"dosen\"]', 'landing', '2025-11-24 09:49:32', '2025-11-24 08:49:11'),
 (16, NULL, 'Berita', '#berita', NULL, 103, 1, '[\"admin\",\"reviewer\",\"kaprodi\",\"dosen\"]', 'landing', '2025-11-24 09:51:17', NULL),
-(17, NULL, 'Kontak', '#kontak', NULL, 104, 1, '[\"admin\",\"reviewer\",\"kaprodi\",\"dosen\"]', 'landing', '2025-11-24 09:55:30', NULL),
+(17, NULL, 'Informasi', '#informasi', NULL, 104, 1, '[\"admin\",\"reviewer\",\"kaprodi\",\"dosen\"]', 'landing', '2025-11-24 09:55:30', '2025-12-08 10:26:35'),
 (24, NULL, 'Manajemen Menu', '/menus', 'fas fa-bars', 105, 1, '[\"admin\"]', 'Dashboard', '2025-11-26 12:25:57', NULL),
 (25, NULL, 'Manajemen Berita', '/news-admin', 'fas fa-newspaper', 106, 1, '[\"admin\"]', 'Dashboard', '2025-11-26 12:25:57', NULL),
 (26, NULL, 'Konten Landing Page', '/landing-contents', 'fas fa-file-alt', 107, 1, '[\"admin\"]', 'Dashboard', '2025-11-26 12:25:57', NULL);
@@ -342,7 +492,7 @@ INSERT INTO `menus` (`id`, `parent_id`, `title`, `url`, `icon`, `order`, `is_act
 -- --------------------------------------------------------
 
 --
--- Table structure for table `migrations`
+-- Struktur dari tabel `migrations`
 --
 
 CREATE TABLE `migrations` (
@@ -356,7 +506,7 @@ CREATE TABLE `migrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `migrations`
+-- Dumping data untuk tabel `migrations`
 --
 
 INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`, `batch`) VALUES
@@ -390,7 +540,7 @@ INSERT INTO `migrations` (`id`, `version`, `class`, `group`, `namespace`, `time`
 -- --------------------------------------------------------
 
 --
--- Table structure for table `news`
+-- Struktur dari tabel `news`
 --
 
 CREATE TABLE `news` (
@@ -410,18 +560,18 @@ CREATE TABLE `news` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `news`
+-- Dumping data untuk tabel `news`
 --
 
 INSERT INTO `news` (`id`, `title`, `slug`, `excerpt`, `content`, `image`, `category`, `is_published`, `published_at`, `views`, `created_by`, `created_at`, `updated_at`) VALUES
-(1, 'Polban Raih Peringkat UI GreenMetric 2024', 'polban-raih-peringkat-ui-greenmetric-2024', 'Politeknik Negeri Bandung berhasil meraih peringkat yang membanggakan dalam UI GreenMetric World University Rankings 2024, menunjukkan komitmen kampus terhadap keberlanjutan lingkungan.', '<p>Politeknik Negeri Bandung (Polban) kembali menunjukkan komitmennya terhadap keberlanjutan lingkungan dengan meraih peringkat yang membanggakan dalam UI GreenMetric World University Rankings 2024.</p>\r\n\r\n<p>Pencapaian ini merupakan hasil dari berbagai program dan inisiatif kampus hijau yang telah dilaksanakan secara konsisten, termasuk pengelolaan energi, air, limbah, dan transportasi yang ramah lingkungan.</p>\r\n\r\n<p>\"Kami sangat bangga dengan pencapaian ini. Ini adalah bukti nyata dari dedikasi seluruh civitas akademika Polban dalam mewujudkan kampus yang berkelanjutan,\" ujar Direktur Polban.</p>\r\n\r\n<p>Program-program unggulan yang berkontribusi terhadap pencapaian ini antara lain:</p>\r\n<ul>\r\n<li>Penggunaan energi terbarukan di seluruh gedung kampus</li>\r\n<li>Sistem pengelolaan air dan limbah yang efisien</li>\r\n<li>Program transportasi ramah lingkungan</li>\r\n<li>Peningkatan area hijau dan ruang terbuka</li>\r\n<li>Integrasi pendidikan keberlanjutan dalam kurikulum</li>\r\n</ul>\r\n\r\n<p>Polban akan terus berkomitmen untuk meningkatkan kualitas lingkungan kampus dan berkontribusi terhadap pencapaian Sustainable Development Goals (SDGs).</p>', 'news-greenmetric-2024.jpg', 'Prestasi', 1, '2025-11-19 08:41:26', 249, 1, '2025-11-19 08:41:26', NULL),
-(2, 'Launching Sistem Monitoring Capaian SDGs Polban', 'launching-sistem-monitoring-capaian-sdgs-polban', 'Polban meluncurkan sistem monitoring capaian SDGs berbasis digital untuk memudahkan tracking dan pelaporan data keberlanjutan kampus secara real-time.', '<p>Dalam upaya meningkatkan transparansi dan efisiensi pengelolaan data keberlanjutan, Politeknik Negeri Bandung resmi meluncurkan Sistem Monitoring Capaian SDGs berbasis digital.</p>\r\n\r\n<p>Sistem ini dikembangkan oleh tim internal Polban dan dirancang khusus untuk memudahkan proses pengumpulan, verifikasi, dan pelaporan data terkait kriteria UI GreenMetric.</p>\r\n\r\n<h3>Fitur Unggulan Sistem:</h3>\r\n<ul>\r\n<li>Dashboard real-time untuk monitoring capaian</li>\r\n<li>Sistem verifikasi data multi-level</li>\r\n<li>Upload dan manajemen dokumen pendukung</li>\r\n<li>Perhitungan otomatis persentase capaian</li>\r\n<li>Laporan komprehensif untuk berbagai stakeholder</li>\r\n</ul>\r\n\r\n<p>\"Sistem ini akan sangat membantu kami dalam mengelola data keberlanjutan kampus secara lebih efektif dan efisien,\" kata Ketua Tim UI GreenMetric Polban.</p>\r\n\r\n<p>Dengan sistem ini, diharapkan Polban dapat terus meningkatkan kualitas data dan pelaporan untuk UI GreenMetric World University Rankings di tahun-tahun mendatang.</p>', '1764130870_82d960cc6bac6841dd2b.png', 'Teknologi', 1, '2025-11-20 08:41:26', 198, 1, '2025-11-20 08:41:26', '2025-11-26 04:21:10'),
-(3, 'Workshop Kampus Berkelanjutan untuk Civitas Akademika', 'workshop-kampus-berkelanjutan-untuk-civitas-akademika', 'Polban mengadakan workshop tentang kampus berkelanjutan yang diikuti oleh dosen, tendik, dan mahasiswa untuk meningkatkan awareness terhadap isu lingkungan. seperti itu', '<p>Politeknik Negeri Bandung menggelar Workshop Kampus Berkelanjutan yang dihadiri oleh lebih dari 200 peserta dari kalangan dosen, tenaga kependidikan, dan mahasiswa.</p>\r\n\r\n<p>Workshop ini bertujuan untuk meningkatkan pemahaman dan kesadaran seluruh civitas akademika tentang pentingnya keberlanjutan lingkungan di kampus.</p>\r\n\r\n<h3>Materi Workshop:</h3>\r\n<ol>\r\n<li><strong>Pengenalan UI GreenMetric</strong> - Kriteria dan indikator penilaian</li>\r\n<li><strong>Pengelolaan Energi</strong> - Efisiensi dan energi terbarukan</li>\r\n<li><strong>Manajemen Air dan Limbah</strong> - Best practices pengelolaan</li>\r\n<li><strong>Transportasi Ramah Lingkungan</strong> - Strategi pengurangan emisi</li>\r\n<li><strong>Green Building</strong> - Konsep bangunan hijau</li>\r\n<li><strong>Pendidikan Keberlanjutan</strong> - Integrasi dalam pembelajaran</li>\r\n</ol>\r\n\r\n<p>Narasumber workshop adalah para ahli dari berbagai universitas terkemuka dan praktisi di bidang keberlanjutan lingkungan.</p>\r\n\r\n<p>\"Workshop ini sangat bermanfaat untuk meningkatkan kapasitas kami dalam mendukung program kampus berkelanjutan,\" ujar salah satu peserta.</p>\r\n\r\n<p>Ke depannya, Polban akan terus mengadakan kegiatan serupa secara berkala untuk memastikan seluruh civitas akademika memiliki pemahaman yang sama tentang pentingnya keberlanjutan.</p>', '1764130346_3edeaa5ac01dcd19fef9.png', 'Kegiatan', 1, '2025-11-24 12:41:05', 168, 1, '2025-11-21 08:41:26', '2025-11-26 04:12:26');
+(1, 'Polban Raih Peringkat UI GreenMetric 2024', 'polban-raih-peringkat-ui-greenmetric-2024', 'Politeknik Negeri Bandung berhasil meraih peringkat yang membanggakan dalam UI GreenMetric World University Rankings 2024, menunjukkan komitmen kampus terhadap keberlanjutan lingkungan.', '<p>Politeknik Negeri Bandung (Polban) kembali menunjukkan komitmennya terhadap keberlanjutan lingkungan dengan meraih peringkat yang membanggakan dalam UI GreenMetric World University Rankings 2024.</p>\r\n\r\n<p>Pencapaian ini merupakan hasil dari berbagai program dan inisiatif kampus hijau yang telah dilaksanakan secara konsisten, termasuk pengelolaan energi, air, limbah, dan transportasi yang ramah lingkungan.</p>\r\n\r\n<p>\"Kami sangat bangga dengan pencapaian ini. Ini adalah bukti nyata dari dedikasi seluruh civitas akademika Polban dalam mewujudkan kampus yang berkelanjutan,\" ujar Direktur Polban.</p>\r\n\r\n<p>Program-program unggulan yang berkontribusi terhadap pencapaian ini antara lain:</p>\r\n<ul>\r\n<li>Penggunaan energi terbarukan di seluruh gedung kampus</li>\r\n<li>Sistem pengelolaan air dan limbah yang efisien</li>\r\n<li>Program transportasi ramah lingkungan</li>\r\n<li>Peningkatan area hijau dan ruang terbuka</li>\r\n<li>Integrasi pendidikan keberlanjutan dalam kurikulum</li>\r\n</ul>\r\n\r\n<p>Polban akan terus berkomitmen untuk meningkatkan kualitas lingkungan kampus dan berkontribusi terhadap pencapaian Sustainable Development Goals (SDGs).</p>', 'news-greenmetric-2024.jpg', 'Prestasi', 1, '2025-11-19 08:41:26', 250, 1, '2025-11-19 08:41:26', NULL),
+(2, 'Launching Sistem Monitoring Capaian SDGs Polban', 'launching-sistem-monitoring-capaian-sdgs-polban', 'Polban meluncurkan sistem monitoring capaian SDGs berbasis digital untuk memudahkan tracking dan pelaporan data keberlanjutan kampus secara real-time.', '<p>Dalam upaya meningkatkan transparansi dan efisiensi pengelolaan data keberlanjutan, Politeknik Negeri Bandung resmi meluncurkan Sistem Monitoring Capaian SDGs berbasis digital.</p>\r\n\r\n<p>Sistem ini dikembangkan oleh tim internal Polban dan dirancang khusus untuk memudahkan proses pengumpulan, verifikasi, dan pelaporan data terkait kriteria UI GreenMetric.</p>\r\n\r\n<h3>Fitur Unggulan Sistem:</h3>\r\n<ul>\r\n<li>Dashboard real-time untuk monitoring capaian</li>\r\n<li>Sistem verifikasi data multi-level</li>\r\n<li>Upload dan manajemen dokumen pendukung</li>\r\n<li>Perhitungan otomatis persentase capaian</li>\r\n<li>Laporan komprehensif untuk berbagai stakeholder</li>\r\n</ul>\r\n\r\n<p>\"Sistem ini akan sangat membantu kami dalam mengelola data keberlanjutan kampus secara lebih efektif dan efisien,\" kata Ketua Tim UI GreenMetric Polban.</p>\r\n\r\n<p>Dengan sistem ini, diharapkan Polban dapat terus meningkatkan kualitas data dan pelaporan untuk UI GreenMetric World University Rankings di tahun-tahun mendatang.</p>', '1764130870_82d960cc6bac6841dd2b.png', 'Teknologi', 1, '2025-11-20 08:41:26', 200, 1, '2025-11-20 08:41:26', '2025-11-26 04:21:10'),
+(3, 'Workshop Kampus Berkelanjutan untuk Civitas Akademika', 'workshop-kampus-berkelanjutan-untuk-civitas-akademika', 'Polban mengadakan workshop tentang kampus berkelanjutan yang diikuti oleh dosen, tendik, dan mahasiswa untuk meningkatkan awareness terhadap isu lingkungan. seperti itu', '<p>Politeknik Negeri Bandung menggelar Workshop Kampus Berkelanjutan yang dihadiri oleh lebih dari 200 peserta dari kalangan dosen, tenaga kependidikan, dan mahasiswa.</p>\r\n\r\n<p>Workshop ini bertujuan untuk meningkatkan pemahaman dan kesadaran seluruh civitas akademika tentang pentingnya keberlanjutan lingkungan di kampus.</p>\r\n\r\n<h3>Materi Workshop:</h3>\r\n<ol>\r\n<li><strong>Pengenalan UI GreenMetric</strong> - Kriteria dan indikator penilaian</li>\r\n<li><strong>Pengelolaan Energi</strong> - Efisiensi dan energi terbarukan</li>\r\n<li><strong>Manajemen Air dan Limbah</strong> - Best practices pengelolaan</li>\r\n<li><strong>Transportasi Ramah Lingkungan</strong> - Strategi pengurangan emisi</li>\r\n<li><strong>Green Building</strong> - Konsep bangunan hijau</li>\r\n<li><strong>Pendidikan Keberlanjutan</strong> - Integrasi dalam pembelajaran</li>\r\n</ol>\r\n\r\n<p>Narasumber workshop adalah para ahli dari berbagai universitas terkemuka dan praktisi di bidang keberlanjutan lingkungan.</p>\r\n\r\n<p>\"Workshop ini sangat bermanfaat untuk meningkatkan kapasitas kami dalam mendukung program kampus berkelanjutan,\" ujar salah satu peserta.</p>\r\n\r\n<p>Ke depannya, Polban akan terus mengadakan kegiatan serupa secara berkala untuk memastikan seluruh civitas akademika memiliki pemahaman yang sama tentang pentingnya keberlanjutan.</p>', '1764130346_3edeaa5ac01dcd19fef9.png', 'Kegiatan', 1, '2025-11-24 12:41:05', 170, 1, '2025-11-21 08:41:26', '2025-11-26 04:12:26');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `password_change_requests`
+-- Struktur dari tabel `password_change_requests`
 --
 
 CREATE TABLE `password_change_requests` (
@@ -436,17 +586,16 @@ CREATE TABLE `password_change_requests` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `password_change_requests`
+-- Dumping data untuk tabel `password_change_requests`
 --
 
 INSERT INTO `password_change_requests` (`id`, `user_id`, `new_password`, `status`, `requested_at`, `processed_at`, `processed_by`, `notes`) VALUES
-(1, 16, '$2y$10$ZopkCY6PvzmtXi1dWABrouXJ.yt7H1cPYC/dooV2S7M1cn4jA7bjK', 'approved', '2025-11-18 05:38:47', '2025-11-18 06:12:20', 2, NULL),
-(2, 21, '$2y$10$efZuIhJXSZBGNKwQLiHAh.8zEYnnj5EdD8Rq1tRPmjhx3YsUf2eM6', 'approved', '2025-11-18 05:49:22', '2025-11-18 06:12:14', 2, NULL);
+(1, 16, '$2y$10$ZopkCY6PvzmtXi1dWABrouXJ.yt7H1cPYC/dooV2S7M1cn4jA7bjK', 'approved', '2025-11-18 05:38:47', '2025-11-18 06:12:20', 2, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `performance`
+-- Struktur dari tabel `performance`
 --
 
 CREATE TABLE `performance` (
@@ -464,7 +613,7 @@ CREATE TABLE `performance` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `setting_infrastructure`
+-- Struktur dari tabel `setting_infrastructure`
 --
 
 CREATE TABLE `setting_infrastructure` (
@@ -496,7 +645,7 @@ CREATE TABLE `setting_infrastructure` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `setting_infrastructure_revisions`
+-- Struktur dari tabel `setting_infrastructure_revisions`
 --
 
 CREATE TABLE `setting_infrastructure_revisions` (
@@ -517,7 +666,7 @@ CREATE TABLE `setting_infrastructure_revisions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transportation`
+-- Struktur dari tabel `transportation`
 --
 
 CREATE TABLE `transportation` (
@@ -551,7 +700,7 @@ CREATE TABLE `transportation` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `transportation_revisions`
+-- Struktur dari tabel `transportation_revisions`
 --
 
 CREATE TABLE `transportation_revisions` (
@@ -572,7 +721,7 @@ CREATE TABLE `transportation_revisions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `users`
+-- Struktur dari tabel `users`
 --
 
 CREATE TABLE `users` (
@@ -595,26 +744,23 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
+-- Dumping data untuk tabel `users`
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `remember_token`, `role`, `jurusan`, `profile_photo`, `approval_status`, `approved_by`, `approved_at`, `rejection_reason`, `created_at`, `updated_at`, `remember_token_expires`, `remember_token_active`) VALUES
-(2, 'nabil muhammad', 'sayang@gmail.com', '$2y$10$fkPEK.Sxr1uMyzKWdqvN/eskBKb2gTgsRTF15jYAQBM38Zp.7Vlei', 'd259b07c3744caae136765134720e485074c25bcf4f05b6bec5dd1b68b85c1eb', 'admin', '', 'profile_2_1763448614.png', 'approved', 5, '2025-11-14 06:23:29', NULL, '2025-10-23 05:40:20', '2025-11-26 15:54:42', '2025-12-26 08:54:23', 0),
+(2, 'nabil muhammad', 'sayang@gmail.com', '$2y$10$fkPEK.Sxr1uMyzKWdqvN/eskBKb2gTgsRTF15jYAQBM38Zp.7Vlei', NULL, 'admin', '', 'profile_2_1763448614.png', 'approved', 5, '2025-11-14 06:23:29', NULL, '2025-10-23 05:40:20', '2025-11-28 09:50:24', NULL, 0),
 (5, 'Habib', 'habibtino83@gmail.com', '$2y$10$BmxKvSE/XGW3UT/EPO/Yy.zhIxu4XvZFjdVRnM1jDHyEdhRgaWpXe', NULL, 'admin', NULL, NULL, 'approved', 5, '2025-11-14 06:23:32', NULL, '2025-10-23 06:43:57', '2025-11-14 06:23:32', NULL, 1),
-(15, 'Dosen', 'dosen@gmail.com', '$2y$10$rDI3OSEGaBUsGP.G2.s1gup/J1SoxrkwFwYGuPimJkZsGvyE2DBfu', NULL, 'dosen', NULL, NULL, 'approved', 5, '2025-11-14 06:23:36', NULL, '2025-10-24 12:05:24', '2025-11-14 06:23:36', NULL, 1),
+(15, 'Dosen', 'dosen@gmail.com', '$2y$10$rDI3OSEGaBUsGP.G2.s1gup/J1SoxrkwFwYGuPimJkZsGvyE2DBfu', NULL, 'dosen', NULL, NULL, 'approved', 5, '2025-11-14 06:23:36', NULL, '2025-10-24 12:05:24', '2025-11-28 16:22:00', NULL, 0),
 (16, 'Kaprodi', 'kaprodi@gmail.com', '$2y$10$ZopkCY6PvzmtXi1dWABrouXJ.yt7H1cPYC/dooV2S7M1cn4jA7bjK', NULL, 'kaprodi', 'Jurusan Teknik Mesin', 'profile_16_1763448570.png', 'approved', 5, '2025-11-14 06:23:39', NULL, '2025-10-24 12:06:53', '2025-11-18 06:49:30', NULL, 1),
 (19, 'SMK TI Garuda Nusantara', 'Sekola@gmail.com', '$2y$10$zpuf7CJCghrHbrsEmxY4BuBC/4qzgHlGtHXiJnuHwbh7zKo8a7eTW', NULL, 'admin', NULL, NULL, 'approved', 5, '2025-11-14 06:23:43', NULL, '2025-11-11 08:07:21', '2025-11-14 06:23:43', NULL, 1),
 (20, 'yani', 'polban@gmail.com', '$2y$10$P03mR7C/kf0VXDvtunbVe.uWSMa.sLBS2xiOtTErITmcm7vNJmpr2', NULL, 'admin', NULL, NULL, 'approved', 5, '2025-11-14 06:23:45', NULL, '2025-11-12 08:02:00', '2025-11-14 06:23:45', NULL, 1),
-(21, 'Lutungkasarung', 'Mabarepep@gmail.com', '$2y$10$efZuIhJXSZBGNKwQLiHAh.8zEYnnj5EdD8Rq1tRPmjhx3YsUf2eM6', NULL, 'mahasiswa', 'Jurusan Teknik Sipil', NULL, 'approved', 5, '2025-11-14 06:23:24', NULL, '2025-11-13 08:41:27', '2025-11-18 06:12:14', NULL, 1),
 (23, 'Ahmad Hidayat', 'Madsky@gmail.com', '$2y$10$O4wFWrzKq9JL.bRxFkK2N.z5lHebKPzEmCVz76EwFl.RHNPSKZ9.C', NULL, 'dosen', 'Jurusan Teknik Elektro', NULL, 'approved', 5, '2025-11-14 08:59:35', NULL, '2025-11-14 08:59:11', '2025-11-19 08:29:16', NULL, 1),
-(25, 'Grace', 'grace@gmail.com', '$2y$10$NEFWGTlyz8vJYtnfj1QOw.LbSSOQ1KZr6zEGj4OoysnDiF.f/BJzO', NULL, 'mahasiswa', 'Jurusan Teknik Komputer dan Informatika', NULL, 'approved', 2, '2025-11-19 02:51:34', NULL, '2025-11-19 02:50:07', '2025-11-19 08:29:03', NULL, 1),
-(26, 'kiranti', 'kiran@gmail.com', '$2y$10$mjnejZpBZRsEPrbsKOM2V.iWuI8K5YbAH1TrFyMTuoO/gRg0OWfX2', NULL, 'mahasiswa', NULL, NULL, 'approved', 2, '2025-11-21 08:52:16', NULL, '2025-11-20 06:53:04', '2025-11-21 08:52:16', NULL, 1),
-(27, 'mobil brem brem', 'mobil@gmail.com', '$2y$10$yg7fyrgaZemCLpnYDYI9/uWyspCFkNxDSVP6KU8zg/PvEF7SHUZde', NULL, 'mahasiswa', NULL, NULL, 'approved', 2, '2025-11-21 08:52:13', NULL, '2025-11-20 07:21:41', '2025-11-21 08:52:13', NULL, 1);
+(28, 'payung jepang', 'jepang@gmail.com', '$2y$10$TFNx0tRviDFznZsreLVVC.WjNvEbqXGteDScKDaB.LfMKpCuiRHFi', NULL, 'dosen', 'Jurusan Teknik Komputer dan Informatika', NULL, 'approved', 2, '2025-11-26 17:02:42', NULL, '2025-11-26 15:55:55', '2025-11-27 01:20:51', NULL, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `waste_management`
+-- Struktur dari tabel `waste_management`
 --
 
 CREATE TABLE `waste_management` (
@@ -644,7 +790,7 @@ CREATE TABLE `waste_management` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `waste_management_revisions`
+-- Struktur dari tabel `waste_management_revisions`
 --
 
 CREATE TABLE `waste_management_revisions` (
@@ -665,7 +811,7 @@ CREATE TABLE `waste_management_revisions` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `water_management`
+-- Struktur dari tabel `water_management`
 --
 
 CREATE TABLE `water_management` (
@@ -695,7 +841,7 @@ CREATE TABLE `water_management` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `water_management_revisions`
+-- Struktur dari tabel `water_management_revisions`
 --
 
 CREATE TABLE `water_management_revisions` (
@@ -718,21 +864,21 @@ CREATE TABLE `water_management_revisions` (
 --
 
 --
--- Indexes for table `activities`
+-- Indeks untuk tabel `activities`
 --
 ALTER TABLE `activities`
   ADD PRIMARY KEY (`id`),
   ADD KEY `activities_user_id_foreign` (`user_id`);
 
 --
--- Indexes for table `capaiankinerja`
+-- Indeks untuk tabel `capaiankinerja`
 --
 ALTER TABLE `capaiankinerja`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`);
 
 --
--- Indexes for table `dashboard_content`
+-- Indeks untuk tabel `dashboard_content`
 --
 ALTER TABLE `dashboard_content`
   ADD PRIMARY KEY (`id`),
@@ -740,7 +886,21 @@ ALTER TABLE `dashboard_content`
   ADD KEY `key` (`key`);
 
 --
--- Indexes for table `education_research`
+-- Indeks untuk tabel `dashboard_contents`
+--
+ALTER TABLE `dashboard_contents`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `section` (`section`);
+
+--
+-- Indeks untuk tabel `dashboard_statistics`
+--
+ALTER TABLE `dashboard_statistics`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `key` (`key`);
+
+--
+-- Indeks untuk tabel `education_research`
 --
 ALTER TABLE `education_research`
   ADD PRIMARY KEY (`id`),
@@ -748,7 +908,7 @@ ALTER TABLE `education_research`
   ADD KEY `status_verifikasi` (`status_verifikasi`);
 
 --
--- Indexes for table `education_research_revisions`
+-- Indeks untuk tabel `education_research_revisions`
 --
 ALTER TABLE `education_research_revisions`
   ADD PRIMARY KEY (`id`),
@@ -756,7 +916,7 @@ ALTER TABLE `education_research_revisions`
   ADD KEY `status` (`status`);
 
 --
--- Indexes for table `energy_climate`
+-- Indeks untuk tabel `energy_climate`
 --
 ALTER TABLE `energy_climate`
   ADD PRIMARY KEY (`id`),
@@ -764,7 +924,7 @@ ALTER TABLE `energy_climate`
   ADD KEY `status_verifikasi` (`status_verifikasi`);
 
 --
--- Indexes for table `energy_climate_revisions`
+-- Indeks untuk tabel `energy_climate_revisions`
 --
 ALTER TABLE `energy_climate_revisions`
   ADD PRIMARY KEY (`id`),
@@ -772,7 +932,7 @@ ALTER TABLE `energy_climate_revisions`
   ADD KEY `status` (`status`);
 
 --
--- Indexes for table `landing_contents`
+-- Indeks untuk tabel `landing_contents`
 --
 ALTER TABLE `landing_contents`
   ADD PRIMARY KEY (`id`),
@@ -780,21 +940,28 @@ ALTER TABLE `landing_contents`
   ADD KEY `is_active` (`is_active`);
 
 --
--- Indexes for table `laporan_dosen`
+-- Indeks untuk tabel `landing_statistics`
+--
+ALTER TABLE `landing_statistics`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `unique_section_key` (`section`,`key_name`);
+
+--
+-- Indeks untuk tabel `laporan_dosen`
 --
 ALTER TABLE `laporan_dosen`
   ADD PRIMARY KEY (`id`),
   ADD KEY `laporan_dosen_user_id_foreign` (`user_id`);
 
 --
--- Indexes for table `laporan_kaprodi`
+-- Indeks untuk tabel `laporan_kaprodi`
 --
 ALTER TABLE `laporan_kaprodi`
   ADD PRIMARY KEY (`id`),
   ADD KEY `laporan_kaprodi_user_id_foreign` (`user_id`);
 
 --
--- Indexes for table `menus`
+-- Indeks untuk tabel `menus`
 --
 ALTER TABLE `menus`
   ADD PRIMARY KEY (`id`),
@@ -803,13 +970,13 @@ ALTER TABLE `menus`
   ADD KEY `is_active` (`is_active`);
 
 --
--- Indexes for table `migrations`
+-- Indeks untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `news`
+-- Indeks untuk tabel `news`
 --
 ALTER TABLE `news`
   ADD PRIMARY KEY (`id`),
@@ -819,14 +986,14 @@ ALTER TABLE `news`
   ADD KEY `created_by` (`created_by`);
 
 --
--- Indexes for table `password_change_requests`
+-- Indeks untuk tabel `password_change_requests`
 --
 ALTER TABLE `password_change_requests`
   ADD PRIMARY KEY (`id`),
   ADD KEY `password_change_requests_user_id_foreign` (`user_id`);
 
 --
--- Indexes for table `performance`
+-- Indeks untuk tabel `performance`
 --
 ALTER TABLE `performance`
   ADD PRIMARY KEY (`id`),
@@ -834,42 +1001,42 @@ ALTER TABLE `performance`
   ADD KEY `performance_activity_id_foreign` (`activity_id`);
 
 --
--- Indexes for table `setting_infrastructure`
+-- Indeks untuk tabel `setting_infrastructure`
 --
 ALTER TABLE `setting_infrastructure`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `tahun` (`tahun`);
 
 --
--- Indexes for table `setting_infrastructure_revisions`
+-- Indeks untuk tabel `setting_infrastructure_revisions`
 --
 ALTER TABLE `setting_infrastructure_revisions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `setting_infrastructure_id` (`setting_infrastructure_id`);
 
 --
--- Indexes for table `transportation`
+-- Indeks untuk tabel `transportation`
 --
 ALTER TABLE `transportation`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `tahun` (`tahun`);
 
 --
--- Indexes for table `transportation_revisions`
+-- Indeks untuk tabel `transportation_revisions`
 --
 ALTER TABLE `transportation_revisions`
   ADD PRIMARY KEY (`id`),
   ADD KEY `transportation_id` (`transportation_id`);
 
 --
--- Indexes for table `users`
+-- Indeks untuk tabel `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- Indexes for table `waste_management`
+-- Indeks untuk tabel `waste_management`
 --
 ALTER TABLE `waste_management`
   ADD PRIMARY KEY (`id`),
@@ -877,7 +1044,7 @@ ALTER TABLE `waste_management`
   ADD KEY `status_verifikasi` (`status_verifikasi`);
 
 --
--- Indexes for table `waste_management_revisions`
+-- Indeks untuk tabel `waste_management_revisions`
 --
 ALTER TABLE `waste_management_revisions`
   ADD PRIMARY KEY (`id`),
@@ -885,7 +1052,7 @@ ALTER TABLE `waste_management_revisions`
   ADD KEY `status` (`status`);
 
 --
--- Indexes for table `water_management`
+-- Indeks untuk tabel `water_management`
 --
 ALTER TABLE `water_management`
   ADD PRIMARY KEY (`id`),
@@ -893,7 +1060,7 @@ ALTER TABLE `water_management`
   ADD KEY `status_verifikasi` (`status_verifikasi`);
 
 --
--- Indexes for table `water_management_revisions`
+-- Indeks untuk tabel `water_management_revisions`
 --
 ALTER TABLE `water_management_revisions`
   ADD PRIMARY KEY (`id`),
@@ -901,189 +1068,207 @@ ALTER TABLE `water_management_revisions`
   ADD KEY `status` (`status`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT untuk tabel yang dibuang
 --
 
 --
--- AUTO_INCREMENT for table `activities`
+-- AUTO_INCREMENT untuk tabel `activities`
 --
 ALTER TABLE `activities`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `capaiankinerja`
+-- AUTO_INCREMENT untuk tabel `capaiankinerja`
 --
 ALTER TABLE `capaiankinerja`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `dashboard_content`
+-- AUTO_INCREMENT untuk tabel `dashboard_content`
 --
 ALTER TABLE `dashboard_content`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=32;
 
 --
--- AUTO_INCREMENT for table `education_research`
+-- AUTO_INCREMENT untuk tabel `dashboard_contents`
+--
+ALTER TABLE `dashboard_contents`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT untuk tabel `dashboard_statistics`
+--
+ALTER TABLE `dashboard_statistics`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT untuk tabel `education_research`
 --
 ALTER TABLE `education_research`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `education_research_revisions`
+-- AUTO_INCREMENT untuk tabel `education_research_revisions`
 --
 ALTER TABLE `education_research_revisions`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `energy_climate`
+-- AUTO_INCREMENT untuk tabel `energy_climate`
 --
 ALTER TABLE `energy_climate`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `energy_climate_revisions`
+-- AUTO_INCREMENT untuk tabel `energy_climate_revisions`
 --
 ALTER TABLE `energy_climate_revisions`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `landing_contents`
+-- AUTO_INCREMENT untuk tabel `landing_contents`
 --
 ALTER TABLE `landing_contents`
-  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
--- AUTO_INCREMENT for table `laporan_dosen`
+-- AUTO_INCREMENT untuk tabel `landing_statistics`
+--
+ALTER TABLE `landing_statistics`
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+
+--
+-- AUTO_INCREMENT untuk tabel `laporan_dosen`
 --
 ALTER TABLE `laporan_dosen`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT for table `laporan_kaprodi`
+-- AUTO_INCREMENT untuk tabel `laporan_kaprodi`
 --
 ALTER TABLE `laporan_kaprodi`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `menus`
+-- AUTO_INCREMENT untuk tabel `menus`
 --
 ALTER TABLE `menus`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
--- AUTO_INCREMENT for table `migrations`
+-- AUTO_INCREMENT untuk tabel `migrations`
 --
 ALTER TABLE `migrations`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
--- AUTO_INCREMENT for table `news`
+-- AUTO_INCREMENT untuk tabel `news`
 --
 ALTER TABLE `news`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `password_change_requests`
+-- AUTO_INCREMENT untuk tabel `password_change_requests`
 --
 ALTER TABLE `password_change_requests`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `performance`
+-- AUTO_INCREMENT untuk tabel `performance`
 --
 ALTER TABLE `performance`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `setting_infrastructure`
+-- AUTO_INCREMENT untuk tabel `setting_infrastructure`
 --
 ALTER TABLE `setting_infrastructure`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `setting_infrastructure_revisions`
+-- AUTO_INCREMENT untuk tabel `setting_infrastructure_revisions`
 --
 ALTER TABLE `setting_infrastructure_revisions`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `transportation`
+-- AUTO_INCREMENT untuk tabel `transportation`
 --
 ALTER TABLE `transportation`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `transportation_revisions`
+-- AUTO_INCREMENT untuk tabel `transportation_revisions`
 --
 ALTER TABLE `transportation_revisions`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT untuk tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
--- AUTO_INCREMENT for table `waste_management`
+-- AUTO_INCREMENT untuk tabel `waste_management`
 --
 ALTER TABLE `waste_management`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `waste_management_revisions`
+-- AUTO_INCREMENT untuk tabel `waste_management_revisions`
 --
 ALTER TABLE `waste_management_revisions`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `water_management`
+-- AUTO_INCREMENT untuk tabel `water_management`
 --
 ALTER TABLE `water_management`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `water_management_revisions`
+-- AUTO_INCREMENT untuk tabel `water_management_revisions`
 --
 ALTER TABLE `water_management_revisions`
   MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- Constraints for dumped tables
+-- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
 --
 
 --
--- Constraints for table `activities`
+-- Ketidakleluasaan untuk tabel `activities`
 --
 ALTER TABLE `activities`
   ADD CONSTRAINT `activities_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `capaiankinerja`
+-- Ketidakleluasaan untuk tabel `capaiankinerja`
 --
 ALTER TABLE `capaiankinerja`
   ADD CONSTRAINT `capaiankinerja_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
--- Constraints for table `laporan_dosen`
+-- Ketidakleluasaan untuk tabel `laporan_dosen`
 --
 ALTER TABLE `laporan_dosen`
   ADD CONSTRAINT `laporan_dosen_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `laporan_kaprodi`
+-- Ketidakleluasaan untuk tabel `laporan_kaprodi`
 --
 ALTER TABLE `laporan_kaprodi`
   ADD CONSTRAINT `laporan_kaprodi_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `password_change_requests`
+-- Ketidakleluasaan untuk tabel `password_change_requests`
 --
 ALTER TABLE `password_change_requests`
   ADD CONSTRAINT `password_change_requests_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `performance`
+-- Ketidakleluasaan untuk tabel `performance`
 --
 ALTER TABLE `performance`
   ADD CONSTRAINT `performance_activity_id_foreign` FOREIGN KEY (`activity_id`) REFERENCES `activities` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,

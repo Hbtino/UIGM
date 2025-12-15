@@ -18,7 +18,7 @@ if ($action === 'add') {
     $nama = $_POST['nama'] ?? '';
     $email = $_POST['email'] ?? '';
     $pass = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? 'mahasiswa';
+    $role = $_POST['role'] ?? 'user';
 
     if (empty($nama) || empty($email) || empty($pass)) {
         echo json_encode(["success" => false, "message" => "Data tidak lengkap"]);
@@ -35,7 +35,6 @@ if ($action === 'add') {
         echo json_encode(["success" => false, "message" => "Gagal menambah user (email mungkin sudah ada)"]);
     }
     $stmt->close();
-
 } elseif ($action === 'update') {
     $id = $_POST['id'] ?? '';
     $nama = $_POST['nama'] ?? '';
@@ -63,7 +62,6 @@ if ($action === 'add') {
         echo json_encode(["success" => false, "message" => "Gagal memperbarui user"]);
     }
     $stmt->close();
-
 } elseif ($action === 'delete') {
     $id = $_POST['id'] ?? '';
     if (empty($id)) {
@@ -80,7 +78,6 @@ if ($action === 'add') {
         echo json_encode(["success" => false, "message" => "Gagal menghapus user"]);
     }
     $stmt->close();
-
 } else {
     echo json_encode(["success" => false, "message" => "Aksi tidak valid"]);
 }
