@@ -217,7 +217,7 @@
         </nav>
         
         <div class="sidebar-footer">
-            <p>&copy; 2024 Politeknik Negeri Bandung<br>Renstra TMKB 2024-2028</p>
+            <p>&copy; 2024 Politeknik Negeri Bandung<br>Kampus Berkelanjutan</p>
         </div>
     </div>
 

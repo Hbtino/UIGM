@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #54a0ff 0%, #2f3542 100%); color: white;">
+                <div class="card-header" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); color: white;">
                     <h3 class="card-title">
                         <i class="fas fa-building mr-2"></i>
                         <?= $criteriaInfo['name'] ?? 'Setting & Infrastructure' ?>
@@ -20,9 +20,9 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="alert alert-info">
+                            <div class="alert" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-left: 4px solid #149823ff; color: #2e7d32;">
                                 <h5><i class="fas fa-info-circle"></i> Tentang Setting & Infrastructure</h5>
-                                <p class="mb-0"><?= $criteriaInfo['description'] ?? 'Kelola pengaturan dan infrastruktur kampus berkelanjutan' ?></p>
+                                <p class="mb-0"><?= $criteriaInfo['description'] ?? 'Pengaturan dan infrastruktur kampus berkelanjutan' ?></p>
                             </div>
 
                             <!-- Statistik Terkait -->
@@ -39,14 +39,14 @@
                                             <?php foreach ($relatedStats as $stat): ?>
                                                 <div class="col-md-6 mb-3">
                                                     <div class="info-box">
-                                                        <span class="info-box-icon bg-info">
+                                                        <span class="info-box-icon" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); color: white;">
                                                             <i class="<?= $stat['icon'] ?? 'fas fa-chart-line' ?>"></i>
                                                         </span>
                                                         <div class="info-box-content">
                                                             <span class="info-box-text"><?= esc($stat['label']) ?></span>
                                                             <span class="info-box-number"><?= esc($stat['value']) ?></span>
                                                             <div class="progress">
-                                                                <div class="progress-bar bg-info" style="width: 70%"></div>
+                                                                <div class="progress-bar" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); width: 70%"></div>
                                                             </div>
                                                             <span class="progress-description">
                                                                 Target: 80% pada 2028
@@ -62,7 +62,7 @@
                                 <div class="alert alert-warning">
                                     <h6><i class="fas fa-exclamation-triangle"></i> Belum Ada Data</h6>
                                     <p class="mb-0">Belum ada statistik yang terkait dengan Setting & Infrastructure. Silakan tambahkan melalui halaman manajemen statistik.</p>
-                                    <a href="<?= base_url('statistics/landing') ?>" class="btn btn-primary btn-sm mt-2">
+                                    <a href="<?= base_url('statistics/landing') ?>" class="btn btn-sm mt-2" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); border: none; color: white;">
                                         <i class="fas fa-plus"></i> Kelola Statistik
                                     </a>
                                 </div>
@@ -80,16 +80,16 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="d-grid gap-2">
-                                        <a href="<?= base_url('statistics/landing') ?>" class="btn btn-primary">
-                                            <i class="fas fa-chart-bar"></i> Kelola Statistik Landing
+                                        <a href="<?= base_url('setting-infrastructure/data') ?>" class="btn" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); border: none; color: white;">
+                                            <i class="fas fa-list"></i> Kelola Data Setting & Infrastructure
                                         </a>
-                                        <a href="<?= base_url('statistics') ?>" class="btn btn-info">
+                                        <a href="<?= base_url('statistics') ?>" class="btn" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%); border: none; color: white;">
                                             <i class="fas fa-chart-line"></i> Manajemen Statistik & Chart
                                         </a>
-                                        <a href="<?= base_url('dashboard') ?>" class="btn btn-success">
+                                        <a href="<?= base_url('dashboard') ?>" class="btn" style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); border: none; color: white;">
                                             <i class="fas fa-tachometer-alt"></i> Lihat Dashboard
                                         </a>
-                                        <button class="btn btn-warning" onclick="updateLandingStats()">
+                                        <button class="btn" style="background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); border: none; color: white;" onclick="updateLandingStats()">
                                             <i class="fas fa-sync"></i> Sync Data
                                         </button>
                                     </div>

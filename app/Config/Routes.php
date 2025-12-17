@@ -68,6 +68,7 @@ $routes->get('pengaturan', 'Dashboard::pengaturan');
 
 $routes->group('setting-infrastructure', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'SettingInfrastructureController::index');
+    $routes->get('data', 'SettingInfrastructureController::dataManagement');
     $routes->get('create', 'SettingInfrastructureController::create');
     $routes->post('store', 'SettingInfrastructureController::store');
     $routes->get('edit/(:num)', 'SettingInfrastructureController::edit/$1');
@@ -89,6 +90,7 @@ $routes->group('setting-infrastructure', ['filter' => 'auth'], function ($routes
 // 2. ENERGY & CLIMATE CHANGE
 $routes->group('energy-climate', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'EnergyClimateController::index');
+    $routes->get('data', 'EnergyClimateController::dataManagement');
     $routes->get('create', 'EnergyClimateController::create');
     $routes->post('store', 'EnergyClimateController::store');
     $routes->get('edit/(:num)', 'EnergyClimateController::edit/$1');
@@ -110,6 +112,7 @@ $routes->group('energy-climate', ['filter' => 'auth'], function ($routes) {
 // 3. WATER MANAGEMENT
 $routes->group('water-management', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'WaterManagementController::index');
+    $routes->get('data', 'WaterManagementController::dataManagement');
     $routes->get('create', 'WaterManagementController::create');
     $routes->post('store', 'WaterManagementController::store');
     $routes->get('edit/(:num)', 'WaterManagementController::edit/$1');
@@ -131,6 +134,7 @@ $routes->group('water-management', ['filter' => 'auth'], function ($routes) {
 // 4. WASTE MANAGEMENT
 $routes->group('waste-management', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'WasteManagementController::index');
+    $routes->get('data', 'WasteManagementController::dataManagement');
     $routes->get('create', 'WasteManagementController::create');
     $routes->post('store', 'WasteManagementController::store');
     $routes->get('edit/(:num)', 'WasteManagementController::edit/$1');
@@ -154,6 +158,7 @@ $routes->group('waste-management', ['filter' => 'auth'], function ($routes) {
 // 5. TRANSPORTATION
 $routes->group('transportation', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'TransportationController::index');
+    $routes->get('data', 'TransportationController::dataManagement');
     $routes->get('create', 'TransportationController::create');
     $routes->post('store', 'TransportationController::store');
     $routes->get('edit/(:num)', 'TransportationController::edit/$1');
@@ -175,6 +180,7 @@ $routes->group('transportation', ['filter' => 'auth'], function ($routes) {
 // 5. EDUCATION & RESEARCH
 $routes->group('education-research', ['filter' => 'auth'], function ($routes) {
     $routes->get('/', 'EducationResearchController::index');
+    $routes->get('data', 'EducationResearchController::dataManagement');
     $routes->get('create', 'EducationResearchController::create');
     $routes->post('store', 'EducationResearchController::store');
     $routes->get('edit/(:num)', 'EducationResearchController::edit/$1');

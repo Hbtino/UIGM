@@ -20,7 +20,48 @@ class TransportationController extends BaseController
         helper(['form', 'url']);
     }
     
+    /**
+     * Display overview page for Transportation criteria
+     */
     public function index()
+    {
+        $session = session();
+        if (!$session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $user = $this->userModel->find($session->get('user_id'));
+        
+        // Get related statistics for Transportation
+        $relatedStats = $this->getRelatedStats();
+        
+        $data = [
+            // Required data for sidebar layout
+            'title' => 'Transportation (TR)',
+            'page' => 'transportation',
+            'breadcrumb' => 'Home / Kriteria SDGs / Transportasi',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
+            'relatedStats' => $relatedStats,
+            'criteriaInfo' => [
+                'name' => 'Transportation (TR)',
+                'description' => 'Sistem transportasi berkelanjutan di kampus melalui penggunaan kendaraan ramah lingkungan, fasilitas sepeda, transportasi umum, dan kebijakan pembatasan kendaraan bermotor.',
+                'icon' => 'fas fa-bus',
+                'color' => '#149823ff'
+            ]
+        ];
+        
+        return view('criteria/transportation', $data);
+    }
+    
+    /**
+     * Display data management page for Transportation
+     */
+    public function dataManagement()
     {
         $session = session();
         if (!$session->get('logged_in')) {
@@ -34,13 +75,46 @@ class TransportationController extends BaseController
             'title' => 'Transportation - Data Capaian',
             'page' => 'transportation',
             'breadcrumb' => 'Home / Kriteria SDGs / Transportasi',
-            'data_tr' => $this->model->orderBy('tahun', 'DESC')->findAll(),
+            'Transportation' => $this->model->orderBy('tahun', 'DESC')->findAll(),
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role'),
             'profile_photo' => $user['profile_photo'] ?? null
         ];
         
         return view('kriteria/transportation/index', $data);
+    }
+    
+    /**
+     * Get related statistics for Transportation
+     */
+    private function getRelatedStats()
+    {
+        return [
+            [
+                'label' => 'Kendaraan Listrik',
+                'value' => '15 Unit',
+                'icon' => 'fas fa-car',
+                'progress' => 30
+            ],
+            [
+                'label' => 'Jalur Sepeda',
+                'value' => '2.5 km',
+                'icon' => 'fas fa-bicycle',
+                'progress' => 50
+            ],
+            [
+                'label' => 'Charging Station',
+                'value' => '8 Unit',
+                'icon' => 'fas fa-charging-station',
+                'progress' => 40
+            ],
+            [
+                'label' => 'Shuttle Bus',
+                'value' => '6 Unit',
+                'icon' => 'fas fa-bus',
+                'progress' => 75
+            ]
+        ];
     }
     
     public function create()

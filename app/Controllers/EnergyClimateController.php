@@ -20,9 +20,47 @@ class EnergyClimateController extends BaseController
     }
 
     /**
-     * Display list of all energy climate data
+     * Display overview page for Energy & Climate Change criteria
      */
     public function index()
+    {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
+        // Get related statistics for Energy & Climate Change
+        $relatedStats = $this->getRelatedStats();
+        
+        $data = [
+            // Required data for sidebar layout
+            'title' => 'Energy & Climate Change (EC)',
+            'page' => 'energy-climate',
+            'breadcrumb' => 'Home / Kriteria SDGs / Energi & Perubahan Iklim',
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
+            'relatedStats' => $relatedStats,
+            'criteriaInfo' => [
+                'name' => 'Energy & Climate Change (EC)',
+                'description' => 'Pengelolaan energi berkelanjutan dan mitigasi perubahan iklim melalui penggunaan energi terbarukan, efisiensi energi, dan pengurangan emisi karbon di lingkungan kampus.',
+                'icon' => 'fas fa-bolt',
+                'color' => '#149823ff'
+            ]
+        ];
+
+        return view('criteria/energy_climate', $data);
+    }
+    
+    /**
+     * Display data management page for Energy & Climate Change
+     */
+    public function dataManagement()
     {
         if (!$this->session->get('logged_in')) {
             return redirect()->to('/login');
@@ -43,6 +81,39 @@ class EnergyClimateController extends BaseController
         ];
 
         return view('kriteria/energy_climate/index', $data);
+    }
+    
+    /**
+     * Get related statistics for Energy & Climate Change
+     */
+    private function getRelatedStats()
+    {
+        return [
+            [
+                'label' => 'Total Konsumsi Listrik',
+                'value' => '2,450 kWh',
+                'icon' => 'fas fa-bolt',
+                'progress' => 65
+            ],
+            [
+                'label' => 'Energi Terbarukan',
+                'value' => '35%',
+                'icon' => 'fas fa-leaf',
+                'progress' => 35
+            ],
+            [
+                'label' => 'Emisi Karbon',
+                'value' => '1,250 ton CO2',
+                'icon' => 'fas fa-cloud',
+                'progress' => 45
+            ],
+            [
+                'label' => 'Panel Surya',
+                'value' => '125 Unit',
+                'icon' => 'fas fa-solar-panel',
+                'progress' => 55
+            ]
+        ];
     }
 
     /**

@@ -248,7 +248,7 @@
         </nav>
         
         <div class="sidebar-footer">
-            <p>&copy; 2024 Politeknik Negeri Bandung<br>Renstra TMKB 2024-2028</p>
+            <p>&copy; 2024 Politeknik Negeri Bandung<br>Kampus Berkelanjutan</p>
         </div>
     </div>
 
@@ -357,7 +357,7 @@
         <!-- Progress Target SDGs -->
         <div class="content-section">
             <h3><i class="fas fa-chart-bar"></i> Target Skor UI GreenMetric 2028</h3>
-            <p style="color: #666; margin-bottom: 20px;">Berikut adalah target pencapaian skor untuk setiap kriteria berdasarkan Renstra TMKB POLBAN 2024-2028:</p>
+            <p style="color: #666; margin-bottom: 20px;">Berikut adalah target pencapaian skor untuk setiap kriteria berdasarkan UI GreenMetric:</p>
             
             <div style="position: relative; height: 400px;">
                 <canvas id="targetChart"></canvas>

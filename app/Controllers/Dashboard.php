@@ -74,16 +74,20 @@ class Dashboard extends BaseController
         }
 
         $data = [
+            // Required data for sidebar layout
             'title' => 'Dashboard - Kampus Berkelanjutan Polban',
             'page' => 'dashboard',
+            'breadcrumb' => 'Dashboard',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Dashboard specific data
             'chartData' => $this->getChartData(), // Legacy chart data
             'stats' => $this->getStats(), // Legacy stats
             'sdgsData' => $this->getSDGsData(),
             'dashboard_content' => $dashboard_content,
-            'user_name' => $session->get('name'),
-            'user_role' => $session->get('role'),
             'user_email' => $session->get('email'),
-            'profile_photo' => $user['profile_photo'] ?? null,
             // New statistics system
             'realTimeStats' => $realTimeStats,
             'staticStats' => $staticStats,
@@ -102,7 +106,7 @@ class Dashboard extends BaseController
 
     private function getChartData()
     {
-        // Data dari Renstra TMKB Polban 2024-2028 (Tabel 7 & Gambar 6)
+        // Data target UI GreenMetric 2024-2028
         return [
             'labels' => ['2023', '2024', '2025', '2026', '2027', '2028'],
             'datasets' => [
