@@ -69,7 +69,7 @@ Sistem CRUD lengkap untuk chart batang dan chart garis di landing page telah ber
 
 ### Chart Data Editor:
 
-- ✅ Editor untuk chart batang (6 Kriteria SDGs)
+- ✅ Editor untuk chart batang (6 Kategori UIGM)
 - ✅ Editor untuk chart garis (Total Skor & Ranking)
 - ✅ Input fields per tahun dan per dataset
 - ✅ Simpan ke database dengan `updateChartData()`

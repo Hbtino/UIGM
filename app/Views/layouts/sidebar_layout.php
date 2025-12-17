@@ -498,9 +498,9 @@
                 </a>
             </div>
 
-            <!-- Kriteria SDGs -->
+            <!-- Kategori UIGM -->
             <div class="menu-section">
-                <div class="menu-section-title">Kriteria SDGs</div>
+                <div class="menu-section-title">Kategori UIGM</div>
                 <a href="<?= base_url('setting-infrastructure') ?>" class="menu-item <?= ($page ?? '') == 'setting-infrastructure' ? 'active' : '' ?>">
                     <i class="fas fa-building"></i>
                     <span>Pengaturan & Infrastruktur</span>
