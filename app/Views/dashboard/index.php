@@ -19,7 +19,7 @@
             </div>
             <div class="period-info">
                 <i class="fas fa-clock"></i>
-                <span>Periode: 2024-2028</span>
+                <span>Periode: 2023-2028</span>
             </div>
         </div>
     </div>
