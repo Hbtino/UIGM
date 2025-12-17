@@ -20,9 +20,47 @@ class WaterManagementController extends BaseController
     }
 
     /**
-     * Display list of all water management data
+     * Display overview page for Water Management criteria
      */
     public function index()
+    {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
+        // Get related statistics for Water Management
+        $relatedStats = $this->getRelatedStats();
+        
+        $data = [
+            // Required data for sidebar layout
+            'title' => 'Water Management (WR)',
+            'page' => 'water-management',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengelolaan Air',
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
+            'relatedStats' => $relatedStats,
+            'criteriaInfo' => [
+                'name' => 'Water Management (WR)',
+                'description' => 'Pengelolaan air berkelanjutan melalui konservasi air, pengolahan air limbah, sistem daur ulang air, dan teknologi hemat air untuk mendukung kampus berkelanjutan.',
+                'icon' => 'fas fa-tint',
+                'color' => '#149823ff'
+            ]
+        ];
+
+        return view('criteria/water_management', $data);
+    }
+    
+    /**
+     * Display data management page for Water Management
+     */
+    public function dataManagement()
     {
         if (!$this->session->get('logged_in')) {
             return redirect()->to('/login');
@@ -43,6 +81,39 @@ class WaterManagementController extends BaseController
         ];
 
         return view('kriteria/water_management/index', $data);
+    }
+    
+    /**
+     * Get related statistics for Water Management
+     */
+    private function getRelatedStats()
+    {
+        return [
+            [
+                'label' => 'Konsumsi Air',
+                'value' => '15,250 m³',
+                'icon' => 'fas fa-tint',
+                'progress' => 60
+            ],
+            [
+                'label' => 'Air Daur Ulang',
+                'value' => '40%',
+                'icon' => 'fas fa-recycle',
+                'progress' => 40
+            ],
+            [
+                'label' => 'Sistem Filtrasi',
+                'value' => '12 Unit',
+                'icon' => 'fas fa-filter',
+                'progress' => 75
+            ],
+            [
+                'label' => 'Rainwater Harvesting',
+                'value' => '8,500 L',
+                'icon' => 'fas fa-cloud-rain',
+                'progress' => 50
+            ]
+        ];
     }
 
     /**

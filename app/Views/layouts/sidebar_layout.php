@@ -32,10 +32,12 @@
             width: 280px;
             background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
             color: white;
-            overflow-y: auto;
+            overflow: hidden;
             z-index: 1000;
             transition: all 0.3s ease;
             box-shadow: 4px 0 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
         }
 
         .sidebar::-webkit-scrollbar {
@@ -52,10 +54,15 @@
         }
 
         .sidebar-header {
+            position: sticky;
+            top: 0;
+            z-index: 10;
             padding: 25px 20px;
             background: rgba(0, 0, 0, 0.2);
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 10px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
         }
 
         .sidebar-header .logo {
@@ -85,6 +92,8 @@
 
         .sidebar-menu {
             padding: 0;
+            flex: 1;
+            overflow-y: auto;
         }
 
         .menu-section {
@@ -617,7 +626,7 @@
                 </button>
                 <h1>Dashboard Kampus Berkelanjutan</h1>
                 <div class="breadcrumb">
-                    Renstra TMKB Polban 2024-2028 | UI GreenMetric
+                    UI GreenMetric
                 </div>
             </div>
             <div class="topbar-right">

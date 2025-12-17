@@ -20,9 +20,47 @@ class WasteManagementController extends BaseController
     }
 
     /**
-     * Display list of all waste management data
+     * Display overview page for Waste Management criteria
      */
     public function index()
+    {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
+        // Get related statistics for Waste Management
+        $relatedStats = $this->getRelatedStats();
+        
+        $data = [
+            // Required data for sidebar layout
+            'title' => 'Waste Management (WS)',
+            'page' => 'waste-management',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengelolaan Limbah',
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
+            'relatedStats' => $relatedStats,
+            'criteriaInfo' => [
+                'name' => 'Waste Management (WS)',
+                'description' => 'Pengelolaan limbah berkelanjutan melalui program reduce, reuse, recycle, pengolahan limbah organik dan anorganik, serta penerapan zero waste campus.',
+                'icon' => 'fas fa-recycle',
+                'color' => '#149823ff'
+            ]
+        ];
+
+        return view('criteria/waste_management', $data);
+    }
+    
+    /**
+     * Display data management page for Waste Management
+     */
+    public function dataManagement()
     {
         if (!$this->session->get('logged_in')) {
             return redirect()->to('/login');
@@ -43,6 +81,39 @@ class WasteManagementController extends BaseController
         ];
 
         return view('kriteria/waste_management/index', $data);
+    }
+    
+    /**
+     * Get related statistics for Waste Management
+     */
+    private function getRelatedStats()
+    {
+        return [
+            [
+                'label' => 'Total Limbah',
+                'value' => '2,850 kg',
+                'icon' => 'fas fa-trash',
+                'progress' => 45
+            ],
+            [
+                'label' => 'Limbah Daur Ulang',
+                'value' => '65%',
+                'icon' => 'fas fa-recycle',
+                'progress' => 65
+            ],
+            [
+                'label' => 'Kompos Organik',
+                'value' => '1,250 kg',
+                'icon' => 'fas fa-leaf',
+                'progress' => 70
+            ],
+            [
+                'label' => 'Tempat Sampah Terpilah',
+                'value' => '85 Unit',
+                'icon' => 'fas fa-dumpster',
+                'progress' => 80
+            ]
+        ];
     }
 
     /**

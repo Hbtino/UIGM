@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
-                <div class="card-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                <div class="card-header" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); color: white;">
                     <h3 class="card-title">
                         <i class="fas fa-bus mr-2"></i>
                         Transportation (TR)
@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="row">
                         <div class="col-md-8">
-                            <div class="alert alert-info">
+                            <div class="alert" style="background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%); border-left: 4px solid #149823ff; color: #2e7d32;">
                                 <h5><i class="fas fa-info-circle"></i> Tentang Transportation</h5>
                                 <p class="mb-0">Sistem transportasi berkelanjutan di kampus melalui penggunaan kendaraan ramah lingkungan, fasilitas sepeda, transportasi umum, dan kebijakan pembatasan kendaraan bermotor.</p>
                             </div>
@@ -37,14 +37,14 @@
                                     <div class="row">
                                         <div class="col-md-6 mb-3">
                                             <div class="info-box">
-                                                <span class="info-box-icon bg-primary">
+                                                <span class="info-box-icon" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); color: white;">
                                                     <i class="fas fa-car"></i>
                                                 </span>
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Kendaraan Listrik</span>
                                                     <span class="info-box-number">15 Unit</span>
                                                     <div class="progress">
-                                                        <div class="progress-bar bg-primary" style="width: 30%"></div>
+                                                        <div class="progress-bar" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); width: 30%"></div>
                                                     </div>
                                                     <span class="progress-description">
                                                         Target: 50 unit pada 2028
@@ -54,14 +54,14 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="info-box">
-                                                <span class="info-box-icon bg-success">
+                                                <span class="info-box-icon" style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); color: white;">
                                                     <i class="fas fa-bicycle"></i>
                                                 </span>
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Jalur Sepeda</span>
                                                     <span class="info-box-number">2.5 km</span>
                                                     <div class="progress">
-                                                        <div class="progress-bar bg-success" style="width: 50%"></div>
+                                                        <div class="progress-bar" style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); width: 50%"></div>
                                                     </div>
                                                     <span class="progress-description">
                                                         Target: 5 km pada 2028
@@ -71,14 +71,14 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="info-box">
-                                                <span class="info-box-icon bg-warning">
+                                                <span class="info-box-icon" style="background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); color: white;">
                                                     <i class="fas fa-charging-station"></i>
                                                 </span>
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Charging Station</span>
                                                     <span class="info-box-number">8 Unit</span>
                                                     <div class="progress">
-                                                        <div class="progress-bar bg-warning" style="width: 40%"></div>
+                                                        <div class="progress-bar" style="background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); width: 40%"></div>
                                                     </div>
                                                     <span class="progress-description">
                                                         Target: 20 unit pada 2028
@@ -88,14 +88,14 @@
                                         </div>
                                         <div class="col-md-6 mb-3">
                                             <div class="info-box">
-                                                <span class="info-box-icon bg-info">
+                                                <span class="info-box-icon" style="background: linear-gradient(135deg, #81C784 0%, #4CAF50 100%); color: white;">
                                                     <i class="fas fa-bus"></i>
                                                 </span>
                                                 <div class="info-box-content">
                                                     <span class="info-box-text">Shuttle Bus</span>
                                                     <span class="info-box-number">6 Unit</span>
                                                     <div class="progress">
-                                                        <div class="progress-bar bg-info" style="width: 75%"></div>
+                                                        <div class="progress-bar" style="background: linear-gradient(135deg, #81C784 0%, #4CAF50 100%); width: 75%"></div>
                                                     </div>
                                                     <span class="progress-description">
                                                         Target: 8 unit pada 2028
@@ -119,19 +119,19 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="d-grid gap-2">
-                                        <a href="<?= base_url('transportation') ?>" class="btn btn-primary">
+                                        <a href="<?= base_url('transportation/data') ?>" class="btn" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%); border: none; color: white;">
                                             <i class="fas fa-list"></i> Kelola Data Transportation
                                         </a>
-                                        <a href="<?= base_url('statistics/landing') ?>" class="btn btn-success">
+                                        <a href="<?= base_url('statistics/landing') ?>" class="btn" style="background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%); border: none; color: white;">
                                             <i class="fas fa-chart-bar"></i> Kelola Statistik Landing
                                         </a>
-                                        <a href="<?= base_url('statistics') ?>" class="btn btn-info">
+                                        <a href="<?= base_url('statistics') ?>" class="btn" style="background: linear-gradient(135deg, #66BB6A 0%, #43A047 100%); border: none; color: white;">
                                             <i class="fas fa-chart-line"></i> Manajemen Statistik & Chart
                                         </a>
-                                        <a href="<?= base_url('dashboard') ?>" class="btn btn-secondary">
+                                        <a href="<?= base_url('dashboard') ?>" class="btn" style="background: linear-gradient(135deg, #81C784 0%, #4CAF50 100%); border: none; color: white;">
                                             <i class="fas fa-tachometer-alt"></i> Lihat Dashboard
                                         </a>
-                                        <button class="btn btn-warning" onclick="updateLandingStats()">
+                                        <button class="btn" style="background: linear-gradient(135deg, #A5D6A7 0%, #66BB6A 100%); border: none; color: white;" onclick="updateLandingStats()">
                                             <i class="fas fa-sync"></i> Sync Data
                                         </button>
                                     </div>

@@ -20,9 +20,47 @@ class EducationResearchController extends BaseController
     }
 
     /**
-     * Display list of all education research data
+     * Display overview page for Education & Research criteria
      */
     public function index()
+    {
+        if (!$this->session->get('logged_in')) {
+            return redirect()->to('/login');
+        }
+        
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
+        // Get related statistics for Education & Research
+        $relatedStats = $this->getRelatedStats();
+        
+        $data = [
+            // Required data for sidebar layout
+            'title' => 'Education & Research (ED)',
+            'page' => 'education-research',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pendidikan & Penelitian',
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
+            'relatedStats' => $relatedStats,
+            'criteriaInfo' => [
+                'name' => 'Education & Research (ED)',
+                'description' => 'Program pendidikan dan penelitian berkelanjutan melalui kurikulum sustainability, penelitian lingkungan, publikasi ilmiah, dan kegiatan akademik yang mendukung kampus berkelanjutan.',
+                'icon' => 'fas fa-graduation-cap',
+                'color' => '#149823ff'
+            ]
+        ];
+
+        return view('criteria/education_research', $data);
+    }
+    
+    /**
+     * Display data management page for Education & Research
+     */
+    public function dataManagement()
     {
         if (!$this->session->get('logged_in')) {
             return redirect()->to('/login');
@@ -43,6 +81,39 @@ class EducationResearchController extends BaseController
         ];
 
         return view('kriteria/education_research/index', $data);
+    }
+    
+    /**
+     * Get related statistics for Education & Research
+     */
+    private function getRelatedStats()
+    {
+        return [
+            [
+                'label' => 'Mata Kuliah Sustainability',
+                'value' => '45 MK',
+                'icon' => 'fas fa-book',
+                'progress' => 75
+            ],
+            [
+                'label' => 'Penelitian Lingkungan',
+                'value' => '28 Penelitian',
+                'icon' => 'fas fa-flask',
+                'progress' => 60
+            ],
+            [
+                'label' => 'Publikasi Ilmiah',
+                'value' => '125 Paper',
+                'icon' => 'fas fa-newspaper',
+                'progress' => 65
+            ],
+            [
+                'label' => 'Mahasiswa Terlibat',
+                'value' => '2,450 Mahasiswa',
+                'icon' => 'fas fa-users',
+                'progress' => 80
+            ]
+        ];
     }
 
     /**

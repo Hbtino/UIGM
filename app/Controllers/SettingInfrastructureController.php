@@ -32,9 +32,20 @@ class SettingInfrastructureController extends BaseController
         // Ambil statistik yang terkait dengan Setting & Infrastructure
         $relatedStats = $this->getRelatedLandingStats();
 
-        $data = array_merge([
+        // Get user data for sidebar layout
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+
+        $data = [
+            // Required data for sidebar layout
             'title' => 'Setting & Infrastructure - Manajemen Data Landing Page',
             'page' => 'setting-infrastructure',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengaturan & Infrastruktur',
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
             'relatedStats' => $relatedStats,
             'criteriaInfo' => [
                 'name' => 'Setting & Infrastructure (SI)',
@@ -42,7 +53,7 @@ class SettingInfrastructureController extends BaseController
                 'icon' => 'fas fa-building',
                 'color' => '#54a0ff'
             ]
-        ], $this->getUserData('setting-infrastructure'));
+        ];
 
         return view('criteria/setting_infrastructure', $data);
     }
@@ -130,5 +141,42 @@ class SettingInfrastructureController extends BaseController
                 'message' => 'Terjadi kesalahan: ' . $e->getMessage()
             ]);
         }
+    }
+    
+    /**
+     * Display data management page for Setting & Infrastructure
+     */
+    public function dataManagement()
+    {
+        // Cek akses admin
+        $isLoggedIn = $this->session->get('isLoggedIn') || $this->session->get('logged_in');
+        $userRole = $this->session->get('role');
+
+        if (!$isLoggedIn) {
+            return redirect()->to('/login')->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+        // Get user data for profile photo
+        $userModel = new \App\Models\UserModel();
+        $user = $userModel->find($this->session->get('user_id'));
+        
+        // Get setting infrastructure data (you'll need to create this model)
+        // For now, we'll use empty data
+        $settingInfrastructure = [];
+
+        $data = [
+            // Required data for sidebar layout
+            'title' => 'Setting & Infrastructure - Data Capaian',
+            'page' => 'setting-infrastructure',
+            'breadcrumb' => 'Home / Kriteria SDGs / Pengaturan & Infrastruktur',
+            'user_name' => $this->session->get('name'),
+            'user_role' => $this->session->get('role'),
+            'profile_photo' => $user['profile_photo'] ?? null,
+            
+            // Page specific data
+            'settingInfrastructure' => $settingInfrastructure
+        ];
+
+        return view('kriteria/setting_infrastructure/index', $data);
     }
 }
