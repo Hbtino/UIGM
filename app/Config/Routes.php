@@ -512,6 +512,19 @@ $routes->group('settings', ['filter' => 'auth'], function ($routes) {
 });
 
 // ============================================
+// CRITERIA ROUTES (Public - No Auth Required)
+// ============================================
+
+$routes->group('kriteria', function ($routes) {
+    $routes->get('setting-infrastructure', 'CriteriaController::settingInfrastructure');
+    $routes->get('energy-climate', 'CriteriaController::energyClimate');
+    $routes->get('waste', 'CriteriaController::wasteManagement');
+    $routes->get('water', 'CriteriaController::waterManagement');
+    $routes->get('transportation', 'CriteriaController::transportation');
+    $routes->get('education-research', 'CriteriaController::educationResearch');
+});
+
+// ============================================
 // AJAX ROUTES FOR STATISTICS MANAGEMENT
 // ============================================
 

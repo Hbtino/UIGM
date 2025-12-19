@@ -561,10 +561,7 @@
                         <span>Manajemen User</span>
                     </a>
 
-                    <a href="<?= base_url('menus') ?>" class="menu-item <?= ($page ?? '') == 'cms-menus' ? 'active' : '' ?>">
-                        <i class="fas fa-bars"></i>
-                        <span>Manajemen Menu</span>
-                    </a>
+
 
                     <a href="<?= base_url('news-admin') ?>" class="menu-item <?= ($page ?? '') == 'cms-news' ? 'active' : '' ?>">
                         <i class="fas fa-newspaper"></i>

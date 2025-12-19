@@ -28,6 +28,7 @@ class UserController extends BaseController
         // Add user session data for sidebar
         $data = array_merge($data, $this->getSidebarData('users'));
         $data['title'] = 'Manajemen User - Kampus Berkelanjutan';
+        $data['breadcrumb'] = 'Manajemen User';
 
         return view('users/index', $data);
     }
@@ -119,13 +120,13 @@ class UserController extends BaseController
                 ->get()
                 ->getResultArray();
 
-            return view('users/edit', [
+            $data = array_merge($this->getSidebarData('users'), [
                 "validation" => $this->validator,
                 "user" => $userModel->find($id),
                 'prodi' => $prodi,
-                'title' => 'Edit User - Kampus Berkelanjutan',
-                'page' => 'users',
+                'title' => 'Edit User - Kampus Berkelanjutan'
             ]);
+            return view('users/edit', $data);
         }
 
         // Data yang akan diupdate
@@ -176,11 +177,10 @@ class UserController extends BaseController
             ->get()
             ->getResultArray();
 
-        $data = [
+        $data = array_merge($this->getSidebarData('users'), [
             'title' => 'Tambah User - Kampus Berkelanjutan',
-            'page' => 'users',
             'prodi' => $prodi
-        ];
+        ]);
 
         return view('users/create', $data);
     }
@@ -216,12 +216,12 @@ class UserController extends BaseController
                 ->get()
                 ->getResultArray();
 
-            return view('users/create', [
+            $data = array_merge($this->getSidebarData('users'), [
                 'validation' => $this->validator,
                 'title' => 'Tambah User - Kampus Berkelanjutan',
-                'page' => 'users',
                 'prodi' => $prodi
             ]);
+            return view('users/create', $data);
         }
 
         // Prepare data for insertion
@@ -253,11 +253,16 @@ class UserController extends BaseController
     protected function getSidebarData($page = '')
     {
         $session = session();
+        $userModel = new UserModel();
+        $user = $userModel->find($session->get('user_id'));
+        
         return [
             'page' => $page,
+            'breadcrumb' => ucfirst(str_replace('_', ' ', $page)),
             'user_name' => $session->get('name'),
             'user_role' => $session->get('role'),
-            'user_email' => $session->get('email')
+            'user_email' => $session->get('email'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
     }
 } // ✅ pastikan ini menutup class
