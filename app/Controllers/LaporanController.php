@@ -404,9 +404,8 @@ class LaporanController extends BaseController
             exit;
         }
 
-        $data = [
+        $data = array_merge($this->getSidebarData('riwayat_laporan'), [
             'title' => 'Riwayat Laporan Dosen',
-            'page' => 'riwayat_laporan',
             'user_id' => session()->get('user_id'),
             'laporan' => $laporan,
             'stats' => [
@@ -430,7 +429,7 @@ class LaporanController extends BaseController
                 'worldRank' => [896, 800, 700, 600, 550, 500],
                 'indonesiaRank' => [87, 75, 65, 58, 52, 50]
             ]
-        ];
+        ]);
 
         return view('laporan/riwayat_dosen', $data);
     }
@@ -549,9 +548,8 @@ class LaporanController extends BaseController
             log_message('debug', 'Riwayat Kaprodi - First item keys: ' . implode(', ', array_keys($laporan[0])));
         }
 
-        $data = [
+        $data = array_merge($this->getSidebarData('riwayat_laporan_kaprodi'), [
             'title' => 'Riwayat Laporan Kaprodi',
-            'page' => 'riwayat_laporan_kaprodi',
             'user_id' => session()->get('user_id'),
             'laporan' => $laporan,
             'stats' => [
@@ -575,7 +573,7 @@ class LaporanController extends BaseController
                 'worldRank' => [896, 800, 700, 600, 550, 500],
                 'indonesiaRank' => [87, 75, 65, 58, 52, 50]
             ]
-        ];
+        ]);
 
         return view('laporan/riwayat_kaprodi', $data);
     }
@@ -787,6 +785,26 @@ class LaporanController extends BaseController
                 'ranking_indonesia_2023' => 87,
                 'ranking_indonesia_current' => 65
             ]
+        ];
+    }
+
+    /**
+     * Get sidebar data for views
+     */
+    protected function getSidebarData($page = '')
+    {
+        $session = session();
+        $userModel = new UserModel();
+        $user = $userModel->find($session->get('user_id'));
+        
+        return [
+            'title' => 'Laporan - Kampus Berkelanjutan',
+            'page' => $page,
+            'breadcrumb' => 'Laporan',
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'user_email' => $session->get('email'),
+            'profile_photo' => $user['profile_photo'] ?? null
         ];
     }
 }

@@ -161,6 +161,92 @@
             background: rgba(255, 255, 255, 0.3);
         }
 
+        /* Dropdown Menu Styles */
+        .dropdown-menu-item {
+            position: relative;
+        }
+
+        .dropdown-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .dropdown-toggle i {
+            font-size: 12px;
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-menu-item.active .dropdown-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-submenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 250px;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            list-style: none;
+            padding: 10px 0;
+            margin: 0;
+        }
+
+        .dropdown-menu-item:hover .dropdown-submenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu-item:hover .dropdown-toggle i {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-submenu li {
+            margin: 0;
+        }
+
+        .dropdown-submenu li a {
+            color: #2c3e50 !important;
+            padding: 12px 20px;
+            display: block;
+            font-weight: 500;
+            font-size: 14px;
+            border-radius: 0;
+            transition: all 0.3s ease;
+        }
+
+        .dropdown-submenu li a:hover {
+            background: #f8f9fa !important;
+            color: #149823ff !important;
+            transform: translateX(5px);
+        }
+
+        .dropdown-submenu li a i {
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-submenu li a:hover i {
+            transform: scale(1.1);
+        }
+
+        .dropdown-submenu li:first-child a {
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .dropdown-submenu li:last-child a {
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+        }
+
         .btn-login {
 
             color: #149823ff;
@@ -506,6 +592,42 @@
                 transform: translateX(10px);
             }
 
+            /* Mobile Dropdown Styles */
+            .dropdown-submenu {
+                position: static;
+                background: rgba(255, 255, 255, 0.1);
+                box-shadow: none;
+                border-radius: 0;
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+                margin-left: 20px;
+                margin-top: 5px;
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            .dropdown-menu-item:hover .dropdown-submenu,
+            .dropdown-menu-item.active .dropdown-submenu {
+                max-height: 300px;
+                padding-top: 5px;
+                padding-bottom: 5px;
+            }
+
+            .dropdown-submenu li a {
+                color: rgba(255, 255, 255, 0.9) !important;
+                padding: 10px 15px;
+                font-size: 13px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .dropdown-submenu li a:hover {
+                background: rgba(255, 255, 255, 0.2) !important;
+                color: white !important;
+                transform: translateX(5px);
+            }
+
             .mobile-menu-toggle {
                 display: block;
             }
@@ -559,6 +681,34 @@
             .section-title {
                 font-size: 28px;
             }
+
+            /* Mobile dropdown improvements */
+            .dropdown-submenu {
+                min-width: 200px;
+                margin-left: 15px;
+            }
+
+            .dropdown-submenu li a {
+                padding: 8px 15px;
+                font-size: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .dropdown-submenu {
+                min-width: 180px;
+                margin-left: 10px;
+            }
+
+            .dropdown-submenu li a {
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .nav-menu li a {
+                padding: 12px 20px;
+                font-size: 14px;
+            }
         }
     </style>
 </head>
@@ -584,6 +734,17 @@
                     <li><a href="#deskripsi">Deskripsi</a></li>
                     <li><a href="#statistik">Statistik</a></li>
                     <li><a href="#program">Program</a></li>
+                    <li class="dropdown-menu-item">
+                        <a href="#" class="dropdown-toggle">Kriteria <i class="fas fa-chevron-down"></i></a>
+                        <ul class="dropdown-submenu">
+                            <li><a href="/kriteria/setting-infrastructure"><i class="fas fa-building" style="color: #667eea; margin-right: 8px;"></i>Setting & Infrastructure</a></li>
+                            <li><a href="/kriteria/energy-climate"><i class="fas fa-bolt" style="color: #f093fb; margin-right: 8px;"></i>Energy & Climate Change</a></li>
+                            <li><a href="/kriteria/waste"><i class="fas fa-recycle" style="color: #4facfe; margin-right: 8px;"></i>Waste</a></li>
+                            <li><a href="/kriteria/water"><i class="fas fa-tint" style="color: #00f2fe; margin-right: 8px;"></i>Water</a></li>
+                            <li><a href="/kriteria/transportation"><i class="fas fa-bus" style="color: #fa709a; margin-right: 8px;"></i>Transportation</a></li>
+                            <li><a href="/kriteria/education-research"><i class="fas fa-graduation-cap" style="color: #ffecd2; margin-right: 8px;"></i>Education & Research</a></li>
+                        </ul>
+                    </li>
                     <li><a href="#berita">Berita</a></li>
                     <li><a href="#informasi">Informasi</a></li>
                     <li><a href="/login" class="btn-login"><i class="fas fa-user"></i> Login</a></li>
@@ -1224,6 +1385,98 @@
                 if (link.getAttribute('href') === '#' + current) {
                     link.style.background = 'rgba(255, 255, 255, 0.2)';
                     link.style.borderRadius = '5px';
+                }
+            });
+        });
+
+        // Enhanced Dropdown functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownItems = document.querySelectorAll('.dropdown-menu-item');
+            let activeDropdown = null;
+            
+            dropdownItems.forEach(item => {
+                const toggle = item.querySelector('.dropdown-toggle');
+                const submenu = item.querySelector('.dropdown-submenu');
+                
+                if (toggle && submenu) {
+                    // Handle click events for mobile and desktop
+                    toggle.addEventListener('click', function(e) {
+                        e.preventDefault();
+                        
+                        // Close other dropdowns
+                        dropdownItems.forEach(otherItem => {
+                            if (otherItem !== item) {
+                                otherItem.classList.remove('active');
+                            }
+                        });
+                        
+                        // Toggle current dropdown
+                        const isActive = item.classList.contains('active');
+                        item.classList.toggle('active', !isActive);
+                        activeDropdown = !isActive ? item : null;
+                    });
+
+                    // Handle hover for desktop (enhance CSS hover)
+                    item.addEventListener('mouseenter', function() {
+                        if (window.innerWidth > 992) {
+                            // Close other dropdowns
+                            dropdownItems.forEach(otherItem => {
+                                if (otherItem !== item) {
+                                    otherItem.classList.remove('active');
+                                }
+                            });
+                            item.classList.add('active');
+                            activeDropdown = item;
+                        }
+                    });
+
+                    item.addEventListener('mouseleave', function() {
+                        if (window.innerWidth > 992) {
+                            setTimeout(() => {
+                                if (!item.matches(':hover')) {
+                                    item.classList.remove('active');
+                                    if (activeDropdown === item) {
+                                        activeDropdown = null;
+                                    }
+                                }
+                            }, 100);
+                        }
+                    });
+
+                    // Handle touch events for better mobile experience
+                    toggle.addEventListener('touchstart', function(e) {
+                        // Prevent double-tap zoom on mobile
+                        e.preventDefault();
+                    }, { passive: false });
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown-menu-item')) {
+                    dropdownItems.forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    activeDropdown = null;
+                }
+            });
+
+            // Close dropdown on escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && activeDropdown) {
+                    activeDropdown.classList.remove('active');
+                    activeDropdown = null;
+                }
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 992) {
+                    // Reset mobile states when switching to desktop
+                    dropdownItems.forEach(item => {
+                        item.classList.remove('active');
+                    });
+                    activeDropdown = null;
                 }
             });
         });
