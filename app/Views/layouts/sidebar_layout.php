@@ -499,43 +499,66 @@
             </div>
 
             <!-- Kategori UIGM -->
+            <?php
+            helper('permission');
+            $userRole = $user_role ?? '';
+            $userUnit = $user_unit ?? '';
+            ?>
             <div class="menu-section">
                 <div class="menu-section-title">Kategori UIGM</div>
-                <a href="<?= base_url('setting-infrastructure') ?>" class="menu-item <?= ($page ?? '') == 'setting-infrastructure' ? 'active' : '' ?>">
-                    <i class="fas fa-building"></i>
-                    <span>Pengaturan & Infrastruktur</span>
-                </a>
-                <a href="<?= base_url('energy-climate') ?>" class="menu-item <?= ($page ?? '') == 'energy-climate' ? 'active' : '' ?>">
-                    <i class="fas fa-bolt"></i>
-                    <span>Energi & Perubahan Iklim</span>
-                </a>
-                <a href="<?= base_url('water-management') ?>" class="menu-item <?= ($page ?? '') == 'water-management' ? 'active' : '' ?>">
-                    <i class="fas fa-tint"></i>
-                    <span>Pengelolaan Air</span>
-                </a>
-                <a href="<?= base_url('waste-management') ?>" class="menu-item <?= ($page ?? '') == 'waste-management' ? 'active' : '' ?>">
-                    <i class="fas fa-recycle"></i>
-                    <span>Pengelolaan Limbah</span>
-                </a>
-                <a href="<?= base_url('transportation') ?>" class="menu-item <?= ($page ?? '') == 'transportation' ? 'active' : '' ?>">
-                    <i class="fas fa-bus"></i>
-                    <span>Transportasi</span>
-                </a>
-                <a href="<?= base_url('education-research') ?>" class="menu-item <?= ($page ?? '') == 'education-research' ? 'active' : '' ?>">
-                    <i class="fas fa-graduation-cap"></i>
-                    <span>Pendidikan & Penelitian</span>
-                </a>
+
+                <?php if ($userRole === 'admin' || ($userRole === 'admin_unit' && in_array('setting_infrastructure', getUnitModules($userUnit)))): ?>
+                    <a href="<?= base_url('setting-infrastructure') ?>" class="menu-item <?= ($page ?? '') == 'setting-infrastructure' ? 'active' : '' ?>">
+                        <i class="fas fa-building"></i>
+                        <span>Pengaturan & Infrastruktur</span>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($userRole === 'admin' || ($userRole === 'admin_unit' && in_array('energy_climate', getUnitModules($userUnit)))): ?>
+                    <a href="<?= base_url('energy-climate') ?>" class="menu-item <?= ($page ?? '') == 'energy-climate' ? 'active' : '' ?>">
+                        <i class="fas fa-bolt"></i>
+                        <span>Energi & Perubahan Iklim</span>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($userRole === 'admin' || ($userRole === 'admin_unit' && in_array('water_management', getUnitModules($userUnit)))): ?>
+                    <a href="<?= base_url('water-management') ?>" class="menu-item <?= ($page ?? '') == 'water-management' ? 'active' : '' ?>">
+                        <i class="fas fa-tint"></i>
+                        <span>Pengelolaan Air</span>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($userRole === 'admin' || ($userRole === 'admin_unit' && in_array('waste_management', getUnitModules($userUnit)))): ?>
+                    <a href="<?= base_url('waste-management') ?>" class="menu-item <?= ($page ?? '') == 'waste-management' ? 'active' : '' ?>">
+                        <i class="fas fa-recycle"></i>
+                        <span>Pengelolaan Limbah</span>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($userRole === 'admin' || ($userRole === 'admin_unit' && in_array('transportation', getUnitModules($userUnit)))): ?>
+                    <a href="<?= base_url('transportation') ?>" class="menu-item <?= ($page ?? '') == 'transportation' ? 'active' : '' ?>">
+                        <i class="fas fa-bus"></i>
+                        <span>Transportasi</span>
+                    </a>
+                <?php endif; ?>
+
+                <?php if ($userRole === 'admin' || $userRole === 'dosen' || ($userRole === 'admin_unit' && in_array('education_research', getUnitModules($userUnit)))): ?>
+                    <a href="<?= base_url('education-research') ?>" class="menu-item <?= ($page ?? '') == 'education-research' ? 'active' : '' ?>">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Pendidikan & Penelitian</span>
+                    </a>
+                <?php endif; ?>
             </div>
 
             <!-- Sistem -->
             <div class="menu-section">
                 <div class="menu-section-title">Sistem</div>
 
-                <?php if (($user_role ?? '') === 'admin'): ?>
+                <!-- Admin Pusat - Full System Access -->
+                <?php if ($userRole === 'admin'): ?>
                     <a href="<?= base_url('users') ?>" class="menu-item <?= ($page ?? '') == 'users' ? 'active' : '' ?>" data-tooltip="Manajemen User">
                         <i class="fas fa-users"></i>
                         <span>Manajemen User</span>
-                        <!-- Badge pending users dihapus -->
                     </a>
 
                     <a href="<?= base_url('menus') ?>" class="menu-item <?= ($page ?? '') == 'cms-menus' ? 'active' : '' ?>">
@@ -568,46 +591,111 @@
                         <span>Statistik Dashboard</span>
                     </a>
 
-                    <!-- New Statistics & Charts Management Menu -->
                     <a href="<?= base_url('statistics') ?>" class="menu-item <?= ($page ?? '') == 'statistics' ? 'active' : '' ?>" data-tooltip="Manajemen Statistik & Chart">
                         <i class="fas fa-chart-line"></i>
                         <span>Manajemen Statistik & Chart</span>
                     </a>
+
+                    <a href="<?= base_url('flowchart') ?>" class="menu-item <?= ($page ?? '') == 'flowchart' ? 'active' : '' ?>" data-tooltip="Flowchart Sistem Role" target="_blank">
+                        <i class="fas fa-sitemap"></i>
+                        <span>Flowchart Sistem Role</span>
+                    </a>
+
+                    <a href="<?= base_url('uigm-periods') ?>" class="menu-item <?= ($page ?? '') == 'uigm-periods' ? 'active' : '' ?>">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>Tahun UIGM</span>
+                    </a>
+
+                    <a href="<?= base_url('approval-final') ?>" class="menu-item <?= ($page ?? '') == 'approval-final' ? 'active' : '' ?>">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Approval Final</span>
+                    </a>
                 <?php endif; ?>
 
-                <!-- Laporan Menu with Dropdown - No Separate Riwayat Items -->
-                <a href="#" class="menu-item has-submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'riwayat_laporan', 'riwayat_kaprodi', 'riwayat_laporan_kaprodi']) ? 'active open' : '' ?>" data-menu-id="laporan-menu">
-                    <i class="fas fa-file-alt"></i>
-                    <span>Laporan</span>
-                    <i class="fas fa-chevron-down dropdown-icon"></i>
-                </a>
-                <div class="submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'riwayat_laporan', 'riwayat_kaprodi', 'riwayat_laporan_kaprodi']) ? 'show' : '' ?>">
-                    <?php if (($user_role ?? '') === 'admin'): ?>
-                        <!-- Admin melihat kedua opsi laporan -->
-                        <a href="<?= base_url('laporan') ?>" class="submenu-item <?= ($page ?? '') == 'laporan' ? 'active' : '' ?>">
-                            <i class="fas fa-user-tie"></i> Laporan Dosen
-                        </a>
-                        <a href="<?= base_url('laporan/kaprodi') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_kaprodi' ? 'active' : '' ?>">
-                            <i class="fas fa-graduation-cap"></i> Laporan Kaprodi
-                        </a>
-                    <?php elseif (($user_role ?? '') === 'dosen'): ?>
-                        <!-- Dosen hanya melihat laporan dosen -->
-                        <a href="<?= base_url('laporan') ?>" class="submenu-item <?= ($page ?? '') == 'laporan' ? 'active' : '' ?>">
-                            <i class="fas fa-user-tie"></i> Laporan Dosen
-                        </a>
-                    <?php elseif (($user_role ?? '') === 'kaprodi'): ?>
-                        <!-- Kaprodi hanya melihat laporan kaprodi -->
-                        <a href="<?= base_url('laporan/kaprodi') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_kaprodi' ? 'active' : '' ?>">
-                            <i class="fas fa-graduation-cap"></i> Laporan Kaprodi
-                        </a>
-                    <?php endif; ?>
-                </div>
+                <!-- Admin Unit - Limited System Access -->
+                <?php if ($userRole === 'admin_unit'): ?>
+                    <a href="<?= base_url('upload-bukti') ?>" class="menu-item <?= ($page ?? '') == 'upload-bukti' ? 'active' : '' ?>">
+                        <i class="fas fa-upload"></i>
+                        <span>Upload Bukti</span>
+                    </a>
 
+                    <a href="<?= base_url('status-data') ?>" class="menu-item <?= ($page ?? '') == 'status-data' ? 'active' : '' ?>">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Status Data</span>
+                    </a>
+                <?php endif; ?>
+
+                <!-- Kaprodi - Review Access -->
+                <?php if ($userRole === 'kaprodi'): ?>
+                    <a href="<?= base_url('review-dosen') ?>" class="menu-item <?= ($page ?? '') == 'review-dosen' ? 'active' : '' ?>">
+                        <i class="fas fa-user-check"></i>
+                        <span>Review Data Dosen</span>
+                    </a>
+
+                    <a href="<?= base_url('statistik-prodi') ?>" class="menu-item <?= ($page ?? '') == 'statistik-prodi' ? 'active' : '' ?>">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Statistik Prodi</span>
+                    </a>
+                <?php endif; ?>
+
+                <!-- Dosen - Limited Access -->
+                <?php if ($userRole === 'dosen'): ?>
+                    <a href="<?= base_url('status-pengajuan') ?>" class="menu-item <?= ($page ?? '') == 'status-pengajuan' ? 'active' : '' ?>">
+                        <i class="fas fa-clock"></i>
+                        <span>Status Pengajuan</span>
+                    </a>
+
+                    <a href="<?= base_url('riwayat-data') ?>" class="menu-item <?= ($page ?? '') == 'riwayat-data' ? 'active' : '' ?>">
+                        <i class="fas fa-history"></i>
+                        <span>Riwayat Data</span>
+                    </a>
+                <?php endif; ?>
+
+                <!-- Laporan Menu - Role-based Access -->
+                <?php if (in_array($userRole, ['admin', 'dosen', 'kaprodi', 'admin_unit'])): ?>
+                    <a href="#" class="menu-item has-submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'laporan_unit', 'riwayat_laporan', 'riwayat_kaprodi', 'riwayat_laporan_kaprodi']) ? 'active open' : '' ?>" data-menu-id="laporan-menu">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Laporan</span>
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </a>
+                    <div class="submenu <?= in_array(($page ?? ''), ['laporan', 'laporan_kaprodi', 'laporan_unit', 'riwayat_laporan', 'riwayat_kaprodi', 'riwayat_laporan_kaprodi']) ? 'show' : '' ?>">
+                        <?php if ($userRole === 'admin'): ?>
+                            <!-- Admin melihat semua laporan -->
+                            <a href="<?= base_url('laporan') ?>" class="submenu-item <?= ($page ?? '') == 'laporan' ? 'active' : '' ?>">
+                                <i class="fas fa-user-tie"></i> Laporan Dosen
+                            </a>
+                            <a href="<?= base_url('laporan/kaprodi') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_kaprodi' ? 'active' : '' ?>">
+                                <i class="fas fa-graduation-cap"></i> Laporan Kaprodi
+                            </a>
+                            <a href="<?= base_url('laporan/global') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_global' ? 'active' : '' ?>">
+                                <i class="fas fa-globe"></i> Laporan Global
+                            </a>
+                        <?php elseif ($userRole === 'admin_unit'): ?>
+                            <!-- Admin Unit melihat laporan unit -->
+                            <a href="<?= base_url('laporan/unit') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_unit' ? 'active' : '' ?>">
+                                <i class="fas fa-building"></i> Laporan Unit
+                            </a>
+                        <?php elseif ($userRole === 'dosen'): ?>
+                            <!-- Dosen hanya melihat laporan dosen -->
+                            <a href="<?= base_url('laporan') ?>" class="submenu-item <?= ($page ?? '') == 'laporan' ? 'active' : '' ?>">
+                                <i class="fas fa-user-tie"></i> Laporan Dosen
+                            </a>
+                        <?php elseif ($userRole === 'kaprodi'): ?>
+                            <!-- Kaprodi hanya melihat laporan kaprodi -->
+                            <a href="<?= base_url('laporan/kaprodi') ?>" class="submenu-item <?= ($page ?? '') == 'laporan_kaprodi' ? 'active' : '' ?>">
+                                <i class="fas fa-graduation-cap"></i> Laporan Prodi
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Settings - Available for all roles -->
                 <a href="<?= base_url('settings') ?>" class="menu-item <?= ($page ?? '') == 'settings' ? 'active' : '' ?>">
                     <i class="fas fa-cog"></i>
                     <span>Pengaturan</span>
                 </a>
 
+                <!-- Logout - Available for all roles -->
                 <a href="<?= base_url('logout') ?>" class="menu-item">
                     <i class="fas fa-sign-out-alt"></i>
                     <span>Logout</span>

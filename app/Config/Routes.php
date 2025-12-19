@@ -19,6 +19,7 @@ $routes->get('/login', 'Auth::login');
 $routes->post('/login/process', 'Auth::loginProcess');
 $routes->get('/logout', 'Auth::logout');
 $routes->get('/dashboard', 'Dashboard::index');
+$routes->get('/admin-unit', 'AdminUnitDashboardController::index', ['filter' => 'auth']);
 $routes->get('/dashboard/user/info-sdgs', 'Dashboard::userInfoSdgs', ['filter' => 'auth']);
 $routes->get('/dashboard/user/kriteria', 'Dashboard::userKriteria', ['filter' => 'auth']);
 // Registration routes removed
@@ -48,6 +49,34 @@ $routes->get('laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth
 $routes->get('dashboard/laporan/kaprodi', 'LaporanController::kaprodi', ['filter' => 'auth']);
 // Edit & Delete routes (must be before other laporan routes)
 $routes->get('laporan/edit-dosen/(:num)', 'LaporanController::editDosen/$1', ['filter' => 'auth']);
+
+// Admin Unit Dashboard Routes - UIGM
+$routes->group('admin-unit-dashboard', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'AdminUnitDashboardController::index');
+    $routes->get('waste-management', 'AdminUnitDashboardController::wasteManagement');
+    $routes->post('store-waste-data', 'AdminUnitDashboardController::storeWasteData');
+    $routes->get('settings', 'AdminUnitDashboardController::settings');
+    $routes->get('logout', 'AdminUnitDashboardController::logout');
+});
+
+// User Dashboard Routes - UIGM
+$routes->group('user-dashboard', ['filter' => 'auth'], function ($routes) {
+    $routes->get('/', 'UserDashboardController::index');
+    $routes->get('waste-management', 'UserDashboardController::wasteManagement');
+    $routes->post('store-waste-data', 'UserDashboardController::storeWasteData');
+    $routes->get('settings', 'UserDashboardController::settings');
+    $routes->get('logout', 'UserDashboardController::logout');
+});
+
+// Unit Routes - untuk fitur unit lainnya
+$routes->group('unit', ['filter' => 'auth'], function ($routes) {
+    $routes->get('evidence-upload', 'UnitController::evidenceUpload');
+    $routes->post('evidence-upload', 'UnitController::storeEvidence');
+    $routes->get('add-data', 'UnitController::addData');
+    $routes->post('add-data', 'UnitController::storeData');
+    $routes->get('data-list', 'UnitController::dataList');
+    $routes->get('reports', 'UnitController::reports');
+});
 $routes->post('laporan/delete-dosen/(:num)', 'LaporanController::deleteDosen/$1', ['filter' => 'auth']);
 $routes->get('laporan/edit-kaprodi/(:num)', 'LaporanController::editKaprodi/$1', ['filter' => 'auth']);
 $routes->post('laporan/delete-kaprodi/(:num)', 'LaporanController::deleteKaprodi/$1', ['filter' => 'auth']);
@@ -416,10 +445,55 @@ $routes->group('statistics', ['filter' => 'auth'], function ($routes) {
 });
 
 // ============================================
+// PUBLIC FLOWCHART ROUTES (No Auth Required)
+// ============================================
+$routes->get('flowchart', 'FlowchartController::index');
+$routes->get('flowchart-test', 'FlowchartController::test');
+$routes->get('flowchart-simple', 'FlowchartController::simple');
+
+// ============================================
 // PUBLIC NEWS ROUTES (No Auth Required)
 // ============================================
 $routes->get('news', 'News::index');
 $routes->get('news/(:segment)', 'News::detail/$1');
+
+// PUBLIC PROGRAM ROUTES (No Auth Required)
+// ============================================
+$routes->get('program', 'Program::index');
+
+// ============================================
+// PERMISSION SYSTEM ROUTES (Admin Only)
+// ============================================
+
+// UIGM Period Management
+$routes->get('uigm-periods', 'UIGMPeriodController::index', ['filter' => 'admin']);
+$routes->get('uigm-periods/create', 'UIGMPeriodController::create', ['filter' => 'admin']);
+$routes->post('uigm-periods/store', 'UIGMPeriodController::store', ['filter' => 'admin']);
+$routes->get('uigm-periods/edit/(:num)', 'UIGMPeriodController::edit/$1', ['filter' => 'admin']);
+$routes->post('uigm-periods/update/(:num)', 'UIGMPeriodController::update/$1', ['filter' => 'admin']);
+$routes->get('uigm-periods/activate/(:num)', 'UIGMPeriodController::activate/$1', ['filter' => 'admin']);
+
+// Approval Final
+$routes->get('approval-final', 'ApprovalController::index', ['filter' => 'admin']);
+$routes->get('approval-final/review/(:segment)/(:num)', 'ApprovalController::review/$1/$2', ['filter' => 'admin']);
+$routes->post('approval-final/approve/(:segment)/(:num)', 'ApprovalController::approve/$1/$2', ['filter' => 'admin']);
+$routes->post('approval-final/reject/(:segment)/(:num)', 'ApprovalController::reject/$1/$2', ['filter' => 'admin']);
+$routes->post('approval-final/finalize/(:segment)', 'ApprovalController::finalize/$1', ['filter' => 'admin']);
+
+// Admin Unit Routes
+$routes->get('upload-bukti', 'AdminUnitController::uploadBukti', ['filter' => 'auth']);
+$routes->post('upload-bukti/store', 'AdminUnitController::storeUploadBukti', ['filter' => 'auth']);
+$routes->get('status-data', 'AdminUnitController::statusData', ['filter' => 'auth']);
+$routes->get('laporan/unit', 'AdminUnitController::laporanUnit', ['filter' => 'auth']);
+
+// Kaprodi Routes
+$routes->get('review-dosen', 'KaprodiController::reviewDosen', ['filter' => 'auth']);
+$routes->post('review-dosen/approve/(:num)', 'KaprodiController::approveDosen/$1', ['filter' => 'auth']);
+$routes->get('statistik-prodi', 'KaprodiController::statistikProdi', ['filter' => 'auth']);
+
+// Dosen Routes
+$routes->get('status-pengajuan', 'DosenController::statusPengajuan', ['filter' => 'auth']);
+$routes->get('riwayat-data', 'DosenController::riwayatData', ['filter' => 'auth']);
 
 // ============================================
 // SETTINGS ROUTES
@@ -436,3 +510,22 @@ $routes->group('settings', ['filter' => 'auth'], function ($routes) {
     $routes->post('process-password-request/(:num)', 'SettingsController::processPasswordRequest/$1');
     $routes->get('check-password-change-status', 'SettingsController::checkPasswordChangeStatus');
 });
+
+// ============================================
+// AJAX ROUTES FOR STATISTICS MANAGEMENT
+// ============================================
+
+// Landing Page Statistics AJAX
+$routes->post('ajax/statistics-by-year', 'Home::getStatisticsByYear');
+$routes->get('ajax/statistics-by-year', 'Home::getStatisticsByYear');
+
+// Dashboard Statistics AJAX
+$routes->get('ajax/dashboard-statistics', 'StatisticsController::getDashboardStatistics');
+$routes->post('ajax/update-dashboard-stat', 'StatisticsController::updateDashboardStat');
+$routes->post('ajax/delete-dashboard-stat', 'StatisticsController::deleteDashboardStat');
+
+// Charts & Indicators AJAX
+$routes->get('ajax/charts-indicators', 'StatisticsController::getChartsIndicators');
+$routes->post('ajax/update-chart', 'StatisticsController::updateChart');
+$routes->post('ajax/delete-chart', 'StatisticsController::deleteChart');
+$routes->post('ajax/sync-charts', 'StatisticsController::syncCharts');

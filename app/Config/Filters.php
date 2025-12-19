@@ -31,6 +31,7 @@ class Filters extends BaseFilters
         'auth'          => \App\Filters\AuthFilter::class,
         'admin'         => \App\Filters\AdminFilter::class,
         'reviewer'      => \App\Filters\ReviewerFilter::class,
+        'permission'    => \App\Filters\RolePermissionFilter::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
         'cors'          => Cors::class,

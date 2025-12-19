@@ -9,8 +9,17 @@ class UserController extends BaseController
     public function index()
     {
         $userModel = new UserModel();
-        $data['users'] = $userModel->findAll();
-        // Sistem approval dihapus
+
+        // Get users with prodi information
+        $db = \Config\Database::connect();
+        $users = $db->table('users u')
+            ->select('u.*, p.nama_prodi, p.jenjang')
+            ->join('prodi p', 'u.prodi_id = p.id', 'left')
+            ->orderBy('u.created_at', 'DESC')
+            ->get()
+            ->getResultArray();
+
+        $data['users'] = $users;
 
         // Get current user data including profile photo
         $currentUser = $userModel->find(session()->get('user_id'));
@@ -53,11 +62,18 @@ class UserController extends BaseController
             return redirect()->to('/users')->with('error', 'User tidak ditemukan');
         }
 
-        // Get current user data for profile photo
-        $currentUser = $userModel->find(session()->get('user_id'));
+        // Get prodi data for dropdown
+        $db = \Config\Database::connect();
+        $prodi = $db->table('prodi')
+            ->where('is_active', 1)
+            ->orderBy('jenjang', 'ASC')
+            ->orderBy('nama_prodi', 'ASC')
+            ->get()
+            ->getResultArray();
 
         $data = array_merge($this->getSidebarData('users'), [
             'user' => $user,
+            'prodi' => $prodi,
             'title' => 'Edit User - Kampus Berkelanjutan'
         ]);
 
@@ -75,6 +91,15 @@ class UserController extends BaseController
             'role' => 'required'
         ];
 
+        // Conditional validation based on role
+        $role = $this->request->getVar('role');
+        if ($role === 'admin_unit') {
+            $rules['unit'] = 'required';
+        }
+        if (in_array($role, ['kaprodi', 'dosen'])) {
+            $rules['prodi_id'] = 'required|is_natural_no_zero';
+        }
+
         // Validasi password jika diisi
         $newPassword = $this->request->getVar('new_password');
         $confirmPassword = $this->request->getVar('confirm_password');
@@ -85,15 +110,21 @@ class UserController extends BaseController
         }
 
         if (!$this->validate($rules)) {
-            // Get current user data for profile photo
-            $currentUser = $userModel->find(session()->get('user_id'));
+            // Get prodi data for dropdown
+            $db = \Config\Database::connect();
+            $prodi = $db->table('prodi')
+                ->where('is_active', 1)
+                ->orderBy('jenjang', 'ASC')
+                ->orderBy('nama_prodi', 'ASC')
+                ->get()
+                ->getResultArray();
 
             return view('users/edit', [
                 "validation" => $this->validator,
                 "user" => $userModel->find($id),
+                'prodi' => $prodi,
                 'title' => 'Edit User - Kampus Berkelanjutan',
                 'page' => 'users',
-
             ]);
         }
 
@@ -101,9 +132,21 @@ class UserController extends BaseController
         $data = [
             'name' => $this->request->getVar('name'),
             'email' => $this->request->getVar('email'),
-            'role' => $this->request->getVar('role'),
-            'jurusan' => $this->request->getVar('jurusan')
+            'role' => $role
         ];
+
+        // Reset conditional fields first
+        $data['unit'] = null;
+        $data['prodi_id'] = null;
+        $data['jurusan'] = null; // Keep for backward compatibility
+
+        // Add conditional fields based on role
+        if ($role === 'admin_unit') {
+            $data['unit'] = $this->request->getVar('unit');
+        }
+        if (in_array($role, ['kaprodi', 'dosen'])) {
+            $data['prodi_id'] = $this->request->getVar('prodi_id');
+        }
 
         // Tambahkan password jika diisi
         if (!empty($newPassword)) {
@@ -124,10 +167,19 @@ class UserController extends BaseController
         $userModel = new UserModel();
         $currentUser = $userModel->find(session()->get('user_id'));
 
+        // Get prodi data for dropdown
+        $db = \Config\Database::connect();
+        $prodi = $db->table('prodi')
+            ->where('is_active', 1)
+            ->orderBy('jenjang', 'ASC')
+            ->orderBy('nama_prodi', 'ASC')
+            ->get()
+            ->getResultArray();
+
         $data = [
             'title' => 'Tambah User - Kampus Berkelanjutan',
             'page' => 'users',
-
+            'prodi' => $prodi
         ];
 
         return view('users/create', $data);
@@ -145,27 +197,67 @@ class UserController extends BaseController
             'role' => 'required'
         ];
 
+        // Conditional validation based on role
+        $role = $this->request->getVar('role');
+        if ($role === 'admin_unit') {
+            $rules['unit'] = 'required';
+        }
+        if (in_array($role, ['kaprodi', 'dosen'])) {
+            $rules['prodi_id'] = 'required|is_natural_no_zero';
+        }
+
         if (!$this->validate($rules)) {
-            // Get current user data for profile photo
-            $currentUser = $userModel->find(session()->get('user_id'));
+            // Get prodi data for dropdown
+            $db = \Config\Database::connect();
+            $prodi = $db->table('prodi')
+                ->where('is_active', 1)
+                ->orderBy('jenjang', 'ASC')
+                ->orderBy('nama_prodi', 'ASC')
+                ->get()
+                ->getResultArray();
 
             return view('users/create', [
                 'validation' => $this->validator,
                 'title' => 'Tambah User - Kampus Berkelanjutan',
                 'page' => 'users',
-
+                'prodi' => $prodi
             ]);
         }
 
-        $userModel->insert([
+        // Prepare data for insertion
+        $data = [
             'name' => $this->request->getVar('name'),
             'email' => $this->request->getVar('email'),
             'password' => password_hash($this->request->getVar('password'), PASSWORD_BCRYPT),
-            'role' => $this->request->getVar('role'),
-            'jurusan' => $this->request->getVar('jurusan'),
-            'approval_status' => 'approved' // Otomatis disetujui ketika dibuat oleh admin
-        ]);
+            'role' => $role,
+            'approval_status' => 'approved', // Otomatis disetujui ketika dibuat oleh admin
+            'is_active' => 1
+        ];
+
+        // Add conditional fields based on role
+        if ($role === 'admin_unit') {
+            $data['unit'] = $this->request->getVar('unit');
+        }
+        if (in_array($role, ['kaprodi', 'dosen'])) {
+            $data['prodi_id'] = $this->request->getVar('prodi_id');
+        }
+
+        $userModel->insert($data);
 
         return redirect()->to('/users')->with('success', 'User berhasil ditambahkan dan langsung diaktifkan');
+    }
+
+    /**
+     * Get sidebar data for views
+     */
+    protected function getSidebarData($page = '')
+    {
+        $session = session();
+        return [
+            'page' => $page,
+            'user_name' => $session->get('name'),
+            'user_role' => $session->get('role'),
+            'user_email' => $session->get('email')
+        ];
     }
 } // ✅ pastikan ini menutup class

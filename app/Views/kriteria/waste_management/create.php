@@ -1,6 +1,7 @@
-<?= $this->extend('layouts/main') ?>
+<?= $this->extend('layouts/sidebar_layout') ?>
 <?= $this->section('content') ?>
-<div class="container-fluid">
+
+<div class="content-area">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800"><?= $title ?></h1>
         <a href="<?= base_url('waste-management') ?>" class="btn btn-secondary">
@@ -15,24 +16,22 @@
                     <li><?= $error ?></li>
                 <?php endforeach; ?>
             </ul>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
 
     <?php if (session()->getFlashdata('error')): ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <?= session()->getFlashdata('error') ?>
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
     <?php endif; ?>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 text-white" style="background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);">
-            <h6 class="m-0 font-weight-bold">Form Tambah Data</h6>
+            <h6 class="m-0 font-weight-bold">
+                <i class="fas fa-recycle me-2"></i>Form Tambah Data Waste Management
+            </h6>
         </div>
         <div class="card-body">
             <form action="<?= base_url('waste-management/store') ?>" method="post" enctype="multipart/form-data">
@@ -40,154 +39,237 @@
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="tahun">Tahun <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="tahun" name="tahun" 
-                                   value="<?= old('tahun') ?>" required min="2000" max="2100">
+                        <div class="form-group mb-3">
+                            <label for="tahun" class="form-label">Tahun <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="tahun" name="tahun"
+                                value="<?= old('tahun', date('Y')) ?>" required min="2000" max="2100">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="jenis_sampah" class="form-label">Jenis Sampah <span class="text-danger">*</span></label>
+                            <select class="form-select" id="jenis_sampah" name="jenis_sampah" required>
+                                <option value="">-- Pilih Jenis Sampah --</option>
+                                <option value="sampah_anorganik_bersih" <?= old('jenis_sampah') == 'sampah_anorganik_bersih' ? 'selected' : '' ?>>
+                                    Sampah Anorganik Bersih
+                                </option>
+                                <option value="sampah_anorganik_kotor" <?= old('jenis_sampah') == 'sampah_anorganik_kotor' ? 'selected' : '' ?>>
+                                    Sampah Anorganik Kotor
+                                </option>
+                                <option value="sampah_organik" <?= old('jenis_sampah') == 'sampah_organik' ? 'selected' : '' ?>>
+                                    Sampah Organik
+                                </option>
+                                <option value="limbah_air" <?= old('jenis_sampah') == 'limbah_air' ? 'selected' : '' ?>>
+                                    Limbah Air
+                                </option>
+                                <option value="limbah_b3" <?= old('jenis_sampah') == 'limbah_b3' ? 'selected' : '' ?>>
+                                    Limbah Berbahaya (B3)
+                                </option>
+                            </select>
                         </div>
                     </div>
                 </div>
 
-                <h5 class="mt-4 mb-3">Data Konsumsi Energi</h5>
+                <h5 class="mt-4 mb-3">
+                    <i class="fas fa-trash-alt me-2"></i>Data Sampah Berdasarkan Kategori
+                </h5>
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="total_konsumsi_listrik">Total Konsumsi Listrik (kWh) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" class="form-control" id="total_konsumsi_listrik" 
-                                   name="total_konsumsi_listrik" value="<?= old('total_konsumsi_listrik') ?>" required>
+                        <div class="form-group mb-3">
+                            <label for="total_sampah_anorganik_bersih" class="form-label">
+                                Sampah Anorganik Bersih (kg) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="total_sampah_anorganik_bersih"
+                                name="total_sampah_anorganik_bersih" value="<?= old('total_sampah_anorganik_bersih') ?>" required>
+                            <div class="form-text">Contoh: botol plastik, kaleng, kertas bersih</div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="konsumsi_energi_terbarukan">Konsumsi Energi Terbarukan (kWh) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" class="form-control" id="konsumsi_energi_terbarukan" 
-                                   name="konsumsi_energi_terbarukan" value="<?= old('konsumsi_energi_terbarukan') ?>" required>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label>Persentase Energi Terbarukan (Auto-calculated)</label>
-                            <input type="text" class="form-control bg-light" id="preview_persentase" readonly>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="total_listrik_per_orang">Total Listrik per Orang (kWh) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" class="form-control" id="total_listrik_per_orang" 
-                                   name="total_listrik_per_orang" value="<?= old('total_listrik_per_orang') ?>" required>
-                        </div>
-                    </div>
-                </div>
-
-                <h5 class="mt-4 mb-3">Infrastruktur & Fasilitas</h5>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="peralatan_hemat_energi">Jumlah Peralatan Hemat Energi <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="peralatan_hemat_energi" 
-                                   name="peralatan_hemat_energi" value="<?= old('peralatan_hemat_energi') ?>" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="bangunan_cerdas">Jumlah Bangunan Cerdas <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="bangunan_cerdas" 
-                                   name="bangunan_cerdas" value="<?= old('bangunan_cerdas') ?>" required>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="form-group">
-                            <label for="jumlah_energi_terbarukan">Jumlah Sumber Energi Terbarukan <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="jumlah_energi_terbarukan" 
-                                   name="jumlah_energi_terbarukan" value="<?= old('jumlah_energi_terbarukan') ?>" required>
+                        <div class="form-group mb-3">
+                            <label for="total_sampah_anorganik_kotor" class="form-label">
+                                Sampah Anorganik Kotor (kg) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="total_sampah_anorganik_kotor"
+                                name="total_sampah_anorganik_kotor" value="<?= old('total_sampah_anorganik_kotor') ?>" required>
+                            <div class="form-text">Contoh: plastik kotor, kemasan makanan bekas</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="bangunan_ramah_lingkungan">Jumlah Bangunan Ramah Lingkungan <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="bangunan_ramah_lingkungan" 
-                                   name="bangunan_ramah_lingkungan" value="<?= old('bangunan_ramah_lingkungan') ?>" required>
+                        <div class="form-group mb-3">
+                            <label for="total_sampah_organik" class="form-label">
+                                Sampah Organik (kg) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="total_sampah_organik"
+                                name="total_sampah_organik" value="<?= old('total_sampah_organik') ?>" required>
+                            <div class="form-text">Contoh: sisa makanan, daun, ranting</div>
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="form-group">
-                            <label for="jejak_karbon_per_orang">Jejak Karbon per Orang (ton CO2) <span class="text-danger">*</span></label>
-                            <input type="number" step="0.01" class="form-control" id="jejak_karbon_per_orang" 
-                                   name="jejak_karbon_per_orang" value="<?= old('jejak_karbon_per_orang') ?>" required>
+                        <div class="form-group mb-3">
+                            <label for="total_limbah_air" class="form-label">
+                                Limbah Air (liter) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="total_limbah_air"
+                                name="total_limbah_air" value="<?= old('total_limbah_air') ?>" required>
+                            <div class="form-text">Air limbah dari laboratorium, kantin, dll</div>
                         </div>
                     </div>
                 </div>
 
-                <h5 class="mt-4 mb-3">Program & Inisiatif</h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="total_limbah_b3" class="form-label">
+                                Limbah Berbahaya B3 (kg) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="total_limbah_b3"
+                                name="total_limbah_b3" value="<?= old('total_limbah_b3') ?>" required>
+                            <div class="form-text">Contoh: baterai, lampu, chemical lab</div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label class="form-label">Total Sampah Keseluruhan (Auto-calculated)</label>
+                            <input type="text" class="form-control bg-light" id="preview_total" readonly>
+                            <div class="form-text">Otomatis dihitung dari semua kategori di atas</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-3">
+                    <i class="fas fa-recycle me-2"></i>Program 3R (Reduce, Reuse, Recycle)
+                </h5>
                 <div class="row">
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="program_pengurangan_emisi" 
-                                       name="program_pengurangan_emisi" value="1" <?= old('program_pengurangan_emisi') ? 'checked' : '' ?>>
-                                <label class="custom-control-label" for="program_pengurangan_emisi">
-                                    Program Pengurangan Emisi
-                                </label>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label for="program_reduce" class="form-label">Program Reduce <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="program_reduce"
+                                name="program_reduce" value="<?= old('program_reduce') ?>" required>
+                            <div class="form-text">Jumlah program pengurangan sampah</div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="program_inovatif_energi" 
-                                       name="program_inovatif_energi" value="1" <?= old('program_inovatif_energi') ? 'checked' : '' ?>>
-                                <label class="custom-control-label" for="program_inovatif_energi">
-                                    Program Inovatif Energi
-                                </label>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label for="program_reuse" class="form-label">Program Reuse <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="program_reuse"
+                                name="program_reuse" value="<?= old('program_reuse') ?>" required>
+                            <div class="form-text">Jumlah program penggunaan ulang</div>
                         </div>
                     </div>
                     <div class="col-md-4">
-                        <div class="form-group">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="program_dampak_iklim" 
-                                       name="program_dampak_iklim" value="1" <?= old('program_dampak_iklim') ? 'checked' : '' ?>>
-                                <label class="custom-control-label" for="program_dampak_iklim">
-                                    Program Dampak Iklim
-                                </label>
-                            </div>
+                        <div class="form-group mb-3">
+                            <label for="program_recycle" class="form-label">Program Recycle <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control" id="program_recycle"
+                                name="program_recycle" value="<?= old('program_recycle') ?>" required>
+                            <div class="form-text">Jumlah program daur ulang</div>
+                        </div>
+                    </div>
+                </div>
+
+                <h5 class="mt-4 mb-3">
+                    <i class="fas fa-leaf me-2"></i>Fasilitas & Program Pengelolaan
+                </h5>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="tempat_sampah_terpilah" class="form-label">
+                                Tempat Sampah Terpilah (unit) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" class="form-control" id="tempat_sampah_terpilah"
+                                name="tempat_sampah_terpilah" value="<?= old('tempat_sampah_terpilah') ?>" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="kompos_organik" class="form-label">
+                                Kompos Organik (kg) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="kompos_organik"
+                                name="kompos_organik" value="<?= old('kompos_organik') ?>" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="daur_ulang_persentase" class="form-label">
+                                Persentase Daur Ulang (%) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="daur_ulang_persentase"
+                                name="daur_ulang_persentase" value="<?= old('daur_ulang_persentase') ?>" required min="0" max="100">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="zero_waste_program" class="form-label">
+                                Program Zero Waste <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="zero_waste_program" name="zero_waste_program" required>
+                                <option value="">-- Pilih Status --</option>
+                                <option value="1" <?= old('zero_waste_program') == '1' ? 'selected' : '' ?>>Ada</option>
+                                <option value="0" <?= old('zero_waste_program') == '0' ? 'selected' : '' ?>>Tidak Ada</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="bank_sampah" class="form-label">
+                                Bank Sampah <span class="text-danger">*</span>
+                            </label>
+                            <select class="form-select" id="bank_sampah" name="bank_sampah" required>
+                                <option value="">-- Pilih Status --</option>
+                                <option value="1" <?= old('bank_sampah') == '1' ? 'selected' : '' ?>>Ada</option>
+                                <option value="0" <?= old('bank_sampah') == '0' ? 'selected' : '' ?>>Tidak Ada</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group mb-3">
+                            <label for="capaian_persen" class="form-label">
+                                Capaian Persentase (%) <span class="text-danger">*</span>
+                            </label>
+                            <input type="number" step="0.01" class="form-control" id="capaian_persen"
+                                name="capaian_persen" value="<?= old('capaian_persen') ?>" required min="0" max="100">
+                        </div>
+                    </div>
+                </div>
+                <h5 class="mt-4 mb-3">
+                    <i class="fas fa-file-alt me-2"></i>Keterangan & Bukti Pendukung
+                </h5>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group mb-3">
+                            <label for="keterangan" class="form-label">Keterangan</label>
+                            <textarea class="form-control" id="keterangan" name="keterangan" rows="3"
+                                placeholder="Tambahkan keterangan atau catatan tambahan..."><?= old('keterangan') ?></textarea>
                         </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="form-group">
-                            <label>Capaian Persen (Auto-calculated)</label>
-                            <input type="text" class="form-control bg-light" id="preview_capaian" readonly>
+                        <div class="form-group mb-4">
+                            <label for="bukti_pendukung" class="form-label">Bukti Pendukung <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control" id="bukti_pendukung" name="bukti_pendukung" required>
+                            <div class="form-text">Format: PDF, JPG, PNG, XLSX, XLS. Maksimal: 2MB</div>
                         </div>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="keterangan">Keterangan</label>
-                    <textarea class="form-control" id="keterangan" name="keterangan" rows="3"><?= old('keterangan') ?></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="bukti_pendukung">Bukti Pendukung <span class="text-danger">*</span></label>
-                    <input type="file" class="form-control-file" id="bukti_pendukung" name="bukti_pendukung" required>
-                    <small class="form-text text-muted">Format: PDF, JPG, PNG, XLSX, XLS. Max: 2MB</small>
-                </div>
-
-                <div class="form-group">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-save"></i> Simpan
-                    </button>
+                <div class="d-flex justify-content-between">
                     <a href="<?= base_url('waste-management') ?>" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Batal
+                        <i class="fas fa-times me-2"></i>Batal
                     </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-save me-2"></i>Simpan Data
+                    </button>
                 </div>
             </form>
         </div>
@@ -195,34 +277,53 @@
 </div>
 
 <script>
-function calculatePercentages() {
-    const total = parseFloat(document.getElementById('total_konsumsi_listrik').value) || 0;
-    const terbarukan = parseFloat(document.getElementById('konsumsi_energi_terbarukan').value) || 0;
-    
-    let persentase = 0;
-    if (total > 0) {
-        persentase = (terbarukan / total) * 100;
+    // Auto-calculate total sampah
+    function calculateTotal() {
+        const anorganikBersih = parseFloat(document.getElementById('total_sampah_anorganik_bersih').value) || 0;
+        const anorganikKotor = parseFloat(document.getElementById('total_sampah_anorganik_kotor').value) || 0;
+        const organik = parseFloat(document.getElementById('total_sampah_organik').value) || 0;
+        const limbahAir = parseFloat(document.getElementById('total_limbah_air').value) || 0;
+        const limbahB3 = parseFloat(document.getElementById('total_limbah_b3').value) || 0;
+
+        const total = anorganikBersih + anorganikKotor + organik + (limbahAir * 0.001) + limbahB3; // Convert liter to kg
+        document.getElementById('preview_total').value = total.toFixed(2) + ' kg';
+
+        // Store total for backend
+        if (!document.getElementById('total_sampah_keseluruhan')) {
+            const hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.id = 'total_sampah_keseluruhan';
+            hiddenInput.name = 'total_sampah_keseluruhan';
+            document.querySelector('form').appendChild(hiddenInput);
+        }
+        document.getElementById('total_sampah_keseluruhan').value = total.toFixed(2);
     }
-    
-    document.getElementById('preview_persentase').value = persentase.toFixed(2) + '%';
-    
-    // Calculate capaian
-    const programEmisi = document.getElementById('program_pengurangan_emisi').checked ? 20 : 0;
-    const programInovatif = document.getElementById('program_inovatif_energi').checked ? 15 : 0;
-    const programIklim = document.getElementById('program_dampak_iklim').checked ? 15 : 0;
-    
-    const capaian = (persentase * 0.5) + programEmisi + programInovatif + programIklim;
-    document.getElementById('preview_capaian').value = capaian.toFixed(2) + '%';
-}
 
-document.getElementById('total_konsumsi_listrik').addEventListener('input', calculatePercentages);
-document.getElementById('konsumsi_energi_terbarukan').addEventListener('input', calculatePercentages);
-document.getElementById('program_pengurangan_emisi').addEventListener('change', calculatePercentages);
-document.getElementById('program_inovatif_energi').addEventListener('change', calculatePercentages);
-document.getElementById('program_dampak_iklim').addEventListener('change', calculatePercentages);
+    // Add event listeners for auto-calculation
+    document.getElementById('total_sampah_anorganik_bersih').addEventListener('input', calculateTotal);
+    document.getElementById('total_sampah_anorganik_kotor').addEventListener('input', calculateTotal);
+    document.getElementById('total_sampah_organik').addEventListener('input', calculateTotal);
+    document.getElementById('total_limbah_air').addEventListener('input', calculateTotal);
+    document.getElementById('total_limbah_b3').addEventListener('input', calculateTotal);
 
-// Initial calculation
-calculatePercentages();
+    // Initial calculation
+    calculateTotal();
+
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const jenissampah = document.getElementById('jenis_sampah').value;
+        if (!jenisampah) {
+            e.preventDefault();
+            alert('Silakan pilih jenis sampah terlebih dahulu!');
+            return false;
+        }
+
+        const total = parseFloat(document.getElementById('total_sampah_keseluruhan').value) || 0;
+        if (total <= 0) {
+            e.preventDefault();
+            alert('Total sampah harus lebih dari 0!');
+            return false;
+        }
+    });
 </script>
 <?= $this->endSection() ?>
-

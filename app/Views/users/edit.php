@@ -481,26 +481,54 @@
 
           <label for="role">Role</label>
           <select name="role" id="role">
-            <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
-            <option value="dosen" <?= $user['role'] === 'dosen' ? 'selected' : '' ?>>Dosen</option>
+            <option value="admin" <?= $user['role'] === 'admin' ? 'selected' : '' ?>>Admin Pusat</option>
+            <option value="admin_unit" <?= $user['role'] === 'admin_unit' ? 'selected' : '' ?>>Admin Unit</option>
             <option value="kaprodi" <?= $user['role'] === 'kaprodi' ? 'selected' : '' ?>>Kaprodi</option>
+            <option value="dosen" <?= $user['role'] === 'dosen' ? 'selected' : '' ?>>Dosen</option>
           </select>
           <?php if (isset($validation) && $validation->hasError('role')): ?>
             <div class="error"><?= $validation->getError('role') ?></div>
           <?php endif; ?>
 
-          <div id="jurusan-field" style="<?= in_array($user['role'], ['kaprodi', 'dosen']) ? '' : 'display:none;' ?>">
-            <label for="jurusan">Jurusan</label>
-            <select name="jurusan" id="jurusan">
-              <option value="">-- Pilih Jurusan --</option>
-              <option value="Jurusan Teknik Sipil" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Sipil' ? 'selected' : '' ?>>Jurusan Teknik Sipil</option>
-              <option value="Jurusan Teknik Mesin" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Mesin' ? 'selected' : '' ?>>Jurusan Teknik Mesin</option>
-              <option value="Jurusan Teknik Refrigerasi dan Tata Udara" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Refrigerasi dan Tata Udara' ? 'selected' : '' ?>>Jurusan Teknik Refrigerasi dan Tata Udara</option>
-              <option value="Jurusan Teknik Konversi Energi" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Konversi Energi' ? 'selected' : '' ?>>Jurusan Teknik Konversi Energi</option>
-              <option value="Jurusan Teknik Elektro" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Elektro' ? 'selected' : '' ?>>Jurusan Teknik Elektro</option>
-              <option value="Jurusan Teknik Kimia" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Kimia' ? 'selected' : '' ?>>Jurusan Teknik Kimia</option>
-              <option value="Jurusan Teknik Komputer dan Informatika" <?= isset($user['jurusan']) && $user['jurusan'] === 'Jurusan Teknik Komputer dan Informatika' ? 'selected' : '' ?>>Jurusan Teknik Komputer dan Informatika</option>
+          <!-- Field Unit - Conditional untuk Admin Unit -->
+          <div id="unit-field" style="<?= $user['role'] === 'admin_unit' ? '' : 'display:none;' ?>">
+            <label for="unit">Unit</label>
+            <select name="unit" id="unit">
+              <option value="">-- Pilih Unit --</option>
+              <option value="sarpras" <?= isset($user['unit']) && $user['unit'] === 'sarpras' ? 'selected' : '' ?>>Sarpras</option>
+              <option value="lppm" <?= isset($user['unit']) && $user['unit'] === 'lppm' ? 'selected' : '' ?>>LPPM</option>
+              <option value="umum" <?= isset($user['unit']) && $user['unit'] === 'umum' ? 'selected' : '' ?>>Umum</option>
             </select>
+            <?php if (isset($validation) && $validation->hasError('unit')): ?>
+              <div class="error"><?= $validation->getError('unit') ?></div>
+            <?php endif; ?>
+          </div>
+
+          <!-- Field Program Studi - Conditional untuk Kaprodi dan Dosen -->
+          <div id="prodi-field" style="<?= in_array($user['role'], ['kaprodi', 'dosen']) ? '' : 'display:none;' ?>">
+            <label for="prodi_id">Program Studi</label>
+            <select name="prodi_id" id="prodi_id">
+              <option value="">-- Pilih Program Studi --</option>
+              <?php if (isset($prodi) && is_array($prodi)): ?>
+                <?php
+                $currentJenjang = '';
+                foreach ($prodi as $p):
+                  if ($currentJenjang !== $p['jenjang']):
+                    if ($currentJenjang !== '') echo '</optgroup>';
+                    echo '<optgroup label="' . $p['jenjang'] . '">';
+                    $currentJenjang = $p['jenjang'];
+                  endif;
+                ?>
+                  <option value="<?= $p['id'] ?>" <?= isset($user['prodi_id']) && $user['prodi_id'] == $p['id'] ? 'selected' : '' ?>>
+                    <?= esc($p['nama_prodi']) ?>
+                  </option>
+                <?php endforeach; ?>
+                <?php if ($currentJenjang !== '') echo '</optgroup>'; ?>
+              <?php endif; ?>
+            </select>
+            <?php if (isset($validation) && $validation->hasError('prodi_id')): ?>
+              <div class="error"><?= $validation->getError('prodi_id') ?></div>
+            <?php endif; ?>
           </div>
 
           <div style="margin-top:20px;padding:15px;background:#f8f9fa;border-radius:8px;border-left:4px solid #f1c40f;max-width:500px;margin-left:auto;margin-right:auto;">
@@ -544,18 +572,30 @@
         </form>
 
         <script>
-          // Toggle jurusan field
+          // Toggle conditional fields based on role
           document.getElementById('role').addEventListener('change', function() {
-            const jurusanField = document.getElementById('jurusan-field');
-            const jurusanSelect = document.getElementById('jurusan');
+            const unitField = document.getElementById('unit-field');
+            const unitSelect = document.getElementById('unit');
+            const prodiField = document.getElementById('prodi-field');
+            const prodiSelect = document.getElementById('prodi_id');
 
-            if (this.value === 'kaprodi' || this.value === 'dosen') {
-              jurusanField.style.display = 'block';
-              jurusanSelect.required = true;
+            // Reset all fields
+            unitField.style.display = 'none';
+            prodiField.style.display = 'none';
+            unitSelect.required = false;
+            prodiSelect.required = false;
+
+            // Show appropriate fields based on role
+            if (this.value === 'admin_unit') {
+              unitField.style.display = 'block';
+              unitSelect.required = true;
+            } else if (this.value === 'kaprodi' || this.value === 'dosen') {
+              prodiField.style.display = 'block';
+              prodiSelect.required = true;
             } else {
-              jurusanField.style.display = 'none';
-              jurusanSelect.required = false;
-              jurusanSelect.value = '';
+              // Reset values when hiding fields
+              unitSelect.value = '';
+              prodiSelect.value = '';
             }
           });
 
