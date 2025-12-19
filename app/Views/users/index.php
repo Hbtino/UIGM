@@ -632,7 +632,8 @@
               <th>Nama</th>
               <th>Email</th>
               <th>Role</th>
-              <th>Jurusan</th>
+              <th>Unit/Prodi</th>
+              <th>Status</th>
               <th>Aksi</th>
             </tr>
           </thead>
@@ -643,17 +644,53 @@
                   <td><?= esc($u['id']) ?></td>
                   <td><?= esc($u['name']) ?></td>
                   <td><?= esc($u['email']) ?></td>
-                  <td><?= esc($u['role']) ?></td>
-                  <td><?= isset($u['jurusan']) && $u['jurusan'] ? esc($u['jurusan']) : '-' ?></td>
                   <td>
-                    <a href="<?= base_url('users/edit/' . $u['id']) ?>" class="btn btn-edit"><i class="fa fa-edit"></i></a>
-                    <a href="<?= base_url('users/delete/' . $u['id']) ?>" class="btn btn-delete" onclick="return confirm('Yakin ingin hapus user ini?')"><i class="fa fa-trash"></i></a>
+                    <?php
+                    $roleLabels = [
+                      'admin' => '<span style="background:#dc3545;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;">Admin Pusat</span>',
+                      'admin_unit' => '<span style="background:#17a2b8;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;">Admin Unit</span>',
+                      'kaprodi' => '<span style="background:#ffc107;color:black;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;">Kaprodi</span>',
+                      'dosen' => '<span style="background:#28a745;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;">Dosen</span>'
+                    ];
+                    echo $roleLabels[$u['role']] ?? esc($u['role']);
+                    ?>
+                  </td>
+                  <td>
+                    <?php if ($u['role'] === 'admin_unit' && !empty($u['unit'])): ?>
+                      <span style="color:#17a2b8;font-weight:600;"><?= strtoupper($u['unit']) ?></span>
+                    <?php elseif (in_array($u['role'], ['kaprodi', 'dosen']) && !empty($u['prodi_id'])): ?>
+                      <?php
+                      // Get prodi name from database
+                      $db = \Config\Database::connect();
+                      $prodi = $db->table('prodi')->where('id', $u['prodi_id'])->get()->getRowArray();
+                      if ($prodi) {
+                        echo '<span style="color:#28a745;font-weight:600;">' . esc($prodi['nama_prodi']) . '</span>';
+                      } else {
+                        echo '<span style="color:#6c757d;">-</span>';
+                      }
+                      ?>
+                    <?php else: ?>
+                      <span style="color:#6c757d;">-</span>
+                    <?php endif; ?>
+                  </td>
+                  <td>
+                    <?php if ($u['is_active']): ?>
+                      <span style="background:#28a745;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;">Aktif</span>
+                    <?php else: ?>
+                      <span style="background:#6c757d;color:white;padding:2px 8px;border-radius:12px;font-size:11px;font-weight:600;">Nonaktif</span>
+                    <?php endif; ?>
+                  </td>
+                  <td>
+                    <a href="<?= base_url('users/edit/' . $u['id']) ?>" class="btn btn-edit" title="Edit User"><i class="fa fa-edit"></i></a>
+                    <?php if ($u['id'] != session()->get('user_id')): ?>
+                      <a href="<?= base_url('users/delete/' . $u['id']) ?>" class="btn btn-delete" onclick="return confirm('Yakin ingin hapus user ini?')" title="Hapus User"><i class="fa fa-trash"></i></a>
+                    <?php endif; ?>
                   </td>
                 </tr>
               <?php endforeach; ?>
             <?php else: ?>
               <tr>
-                <td colspan="6" style="text-align:center;">Belum ada data user</td>
+                <td colspan="7" style="text-align:center;">Belum ada data user</td>
               </tr>
             <?php endif; ?>
           </tbody>

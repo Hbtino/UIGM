@@ -499,22 +499,42 @@
           <label>Role</label>
           <select name="role" id="role" required>
             <option value="">-- Pilih Role --</option>
-            <option value="admin">Admin</option>
-            <option value="dosen">Dosen</option>
+            <option value="admin">Admin Pusat</option>
+            <option value="admin_unit">Admin Unit</option>
             <option value="kaprodi">Kaprodi</option>
+            <option value="dosen">Dosen</option>
           </select>
 
-          <div id="jurusan-field" style="display:none;">
-            <label>Jurusan</label>
-            <select name="jurusan" id="jurusan">
-              <option value="">-- Pilih Jurusan --</option>
-              <option value="Jurusan Teknik Sipil">Jurusan Teknik Sipil</option>
-              <option value="Jurusan Teknik Mesin">Jurusan Teknik Mesin</option>
-              <option value="Jurusan Teknik Refrigerasi dan Tata Udara">Jurusan Teknik Refrigerasi dan Tata Udara</option>
-              <option value="Jurusan Teknik Konversi Energi">Jurusan Teknik Konversi Energi</option>
-              <option value="Jurusan Teknik Elektro">Jurusan Teknik Elektro</option>
-              <option value="Jurusan Teknik Kimia">Jurusan Teknik Kimia</option>
-              <option value="Jurusan Teknik Komputer dan Informatika">Jurusan Teknik Komputer dan Informatika</option>
+          <!-- Field Unit - Conditional untuk Admin Unit -->
+          <div id="unit-field" style="display:none;">
+            <label>Unit</label>
+            <select name="unit" id="unit">
+              <option value="">-- Pilih Unit --</option>
+              <option value="sarpras">Sarpras</option>
+              <option value="lppm">LPPM</option>
+              <option value="umum">Umum</option>
+            </select>
+          </div>
+
+          <!-- Field Program Studi - Conditional untuk Kaprodi dan Dosen -->
+          <div id="prodi-field" style="display:none;">
+            <label>Program Studi</label>
+            <select name="prodi_id" id="prodi_id">
+              <option value="">-- Pilih Program Studi --</option>
+              <?php if (isset($prodi) && is_array($prodi)): ?>
+                <?php
+                $currentJenjang = '';
+                foreach ($prodi as $p):
+                  if ($currentJenjang !== $p['jenjang']):
+                    if ($currentJenjang !== '') echo '</optgroup>';
+                    echo '<optgroup label="' . $p['jenjang'] . '">';
+                    $currentJenjang = $p['jenjang'];
+                  endif;
+                ?>
+                  <option value="<?= $p['id'] ?>"><?= esc($p['nama_prodi']) ?></option>
+                <?php endforeach; ?>
+                <?php if ($currentJenjang !== '') echo '</optgroup>'; ?>
+              <?php endif; ?>
             </select>
           </div>
 
@@ -526,16 +546,26 @@
 
         <script>
           document.getElementById('role').addEventListener('change', function() {
-            const jurusanField = document.getElementById('jurusan-field');
-            const jurusanSelect = document.getElementById('jurusan');
+            const unitField = document.getElementById('unit-field');
+            const unitSelect = document.getElementById('unit');
+            const prodiField = document.getElementById('prodi-field');
+            const prodiSelect = document.getElementById('prodi_id');
 
-            if (this.value === 'kaprodi' || this.value === 'dosen') {
-              jurusanField.style.display = 'block';
-              jurusanSelect.required = true;
-            } else {
-              jurusanField.style.display = 'none';
-              jurusanSelect.required = false;
-              jurusanSelect.value = '';
+            // Reset all fields
+            unitField.style.display = 'none';
+            prodiField.style.display = 'none';
+            unitSelect.required = false;
+            prodiSelect.required = false;
+            unitSelect.value = '';
+            prodiSelect.value = '';
+
+            // Show appropriate fields based on role
+            if (this.value === 'admin_unit') {
+              unitField.style.display = 'block';
+              unitSelect.required = true;
+            } else if (this.value === 'kaprodi' || this.value === 'dosen') {
+              prodiField.style.display = 'block';
+              prodiSelect.required = true;
             }
           });
         </script>

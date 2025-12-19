@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flowchart Test - UIGM Polban</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+        .mermaid {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">🎯 Flowchart Sistem Role Dashboard UIGM</h1>
+        <p class="text-center text-muted">Politeknik Negeri Bandung - Kampus Berkelanjutan</p>
+        
+        <div class="mermaid">
+flowchart TD
+    A[User Login] --> B{Authentication Success?}
+    B -->|No| C[Redirect to Login Page]
+    B -->|Yes| D[Get User Role]
+
+    D --> E{Role Check}
+
+    E -->|admin| F[Admin Pusat Dashboard]
+    E -->|admin_unit| G[Admin Unit Dashboard]
+    E -->|kaprodi| H[Kaprodi Dashboard]
+    E -->|dosen| I[Dosen Dashboard]
+    E -->|pimpinan| J[Pimpinan Dashboard]
+    E -->|user/staff| K[User Dashboard]
+
+    F --> F1[Kontrol & Monitoring<br/>Progress per Kategori<br/>Validasi Data<br/>Export Laporan]
+    G --> G1[Input & Update Data Unit<br/>Upload Bukti<br/>Submit Review]
+    H --> H1[Review Data Dosen<br/>Approve/Reject<br/>Rekap ED per Prodi]
+    I --> I1[Input Data Pribadi<br/>Checklist ED<br/>Auto-save<br/>Deadline Tracking]
+    J --> J1[Monitoring Read-only<br/>KPI Overview<br/>Download Laporan]
+    K --> K1[Dashboard Read-only<br/>Basic Information]
+        </div>
+
+        <div class="alert alert-info">
+            <h5>🔍 Keterangan Singkatan:</h5>
+            <p><strong>SI:</strong> Setting & Infrastructure | <strong>EC:</strong> Energy & Climate | <strong>WS:</strong> Waste | <strong>WR:</strong> Water | <strong>TR:</strong> Transportation | <strong>ED:</strong> Education & Research</p>
+        </div>
+
+        <div class="text-center mt-4">
+            <a href="/flowchart" class="btn btn-primary">📊 Lihat Flowchart Lengkap</a>
+            <a href="/dashboard" class="btn btn-success">🏠 Kembali ke Dashboard</a>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Mermaid
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            securityLevel: 'loose',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true
+            }
+        });
+
+        console.log('Mermaid initialized successfully!');
+    </script>
+</body>
+</html>

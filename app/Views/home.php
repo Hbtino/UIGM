@@ -871,19 +871,85 @@
     <!-- Section Program -->
     <section id="program" class="content-section">
         <div class="container">
-            <h2 class="section-title">Program</h2>
-            <div class="section-content">
-                <p>Bagian ini berisi informasi tentang program-program GreenMetric.</p>
+            <?php if (isset($contents['program'])): ?>
+                <h2 class="section-title"><?= esc($contents['program']['title'] ?? 'Program') ?></h2>
+                <div class="section-content">
+                    <?php if (!empty($contents['program']['subtitle'])): ?>
+                        <p class="lead text-center mb-5"><?= esc($contents['program']['subtitle']) ?></p>
+                    <?php endif; ?>
 
-                <!-- Placeholder untuk konten program -->
-                <div class="content-placeholder">
-                    <i class="fas fa-tasks"></i>
-                    <p>Konten Program akan ditambahkan di sini</p>
-                    <small class="text-muted">Anda dapat menambahkan daftar program, card, atau grid</small>
+                    <!-- Program Preview - Show only 3 main programs -->
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0" style="transition: transform 0.3s ease;">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        <i class="fas fa-building fa-3x" style="color: #149823;"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Setting & Infrastructure</h5>
+                                    <p class="card-text text-muted">Pengembangan infrastruktur kampus yang ramah lingkungan dan berkelanjutan.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0" style="transition: transform 0.3s ease;">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        <i class="fas fa-bolt fa-3x" style="color: #f39c12;"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Energy & Climate</h5>
+                                    <p class="card-text text-muted">Pengelolaan energi terbarukan dan mitigasi perubahan iklim.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card h-100 shadow-sm border-0" style="transition: transform 0.3s ease;">
+                                <div class="card-body text-center p-4">
+                                    <div class="mb-3">
+                                        <i class="fas fa-tint fa-3x" style="color: #3498db;"></i>
+                                    </div>
+                                    <h5 class="card-title fw-bold">Water Management</h5>
+                                    <p class="card-text text-muted">Sistem pengelolaan air yang efisien dan berkelanjutan.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Call to Action -->
+                    <div class="text-center">
+                        <p class="mb-4" style="color: #7f8c8d; font-size: 16px;">
+                            Dan masih banyak program berkelanjutan lainnya yang kami kembangkan
+                        </p>
+                        <a href="/program"
+                            class="btn btn-lg"
+                            style="background: linear-gradient(135deg, #149823ff, #0b5804ff); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; transition: all 0.3s ease;">
+                            <i class="fas fa-eye me-2"></i>
+                            Lihat Semua Program
+                        </a>
+                    </div>
                 </div>
-            </div>
+            <?php else: ?>
+                <h2 class="section-title">Program</h2>
+                <div class="section-content">
+                    <p class="text-center mb-4">Bagian ini berisi informasi tentang program-program GreenMetric.</p>
+
+                    <!-- Placeholder untuk konten program -->
+                    <div class="content-placeholder">
+                        <i class="fas fa-tasks"></i>
+                        <p>Konten Program belum diatur</p>
+                        <small class="text-muted">Silakan tambahkan konten melalui <a href="<?= base_url('landing-contents') ?>" class="text-decoration-none">CMS Landing Contents</a></small>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
     </section>
+
+    <style>
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+        }
+    </style>
 
     <!-- Section Berita -->
     <section id="berita" class="content-section">

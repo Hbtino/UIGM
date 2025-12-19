@@ -58,9 +58,9 @@
                                         <li>• Campus information</li>
                                         <li>• Real-time calculated stats</li>
                                     </ul>
-                                    <button class="btn btn-success" onclick="manageDashboardStats()">
+                                    <a href="<?= base_url('statistics/dashboard') ?>" class="btn btn-success">
                                         <i class="fas fa-cog"></i> Kelola Sekarang
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -78,9 +78,9 @@
                                         <li>• Multi-location display</li>
                                         <li>• Configurable styling</li>
                                     </ul>
-                                    <button class="btn btn-info" onclick="manageCharts()">
+                                    <a href="<?= base_url('statistics/charts') ?>" class="btn btn-info">
                                         <i class="fas fa-chart-bar"></i> Kelola Sekarang
-                                    </button>
+                                    </a>
                                 </div>
                             </div>
                         </div>
