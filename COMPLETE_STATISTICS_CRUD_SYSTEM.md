@@ -13,7 +13,7 @@ Sistem manajemen statistik dan chart yang lengkap dengan fitur CRUD untuk:
 
 ### 1. CRUD Landing Page Statistics
 
-- ✅ Info boxes (Target skor, ranking dunia, ranking indonesia, kriteria SDGs)
+- ✅ Info boxes (Target skor, ranking dunia, ranking indonesia, kategori UIGM)
 - ✅ Profil kampus (Mahasiswa, dosen, jurusan, program studi)
 - ✅ Fasilitas kampus (Luas kampus, luas bangunan, jumlah bangunan, lab)
 - ✅ Progress ranking (Data historis 2023-2028)
@@ -35,7 +35,7 @@ Sistem manajemen statistik dan chart yang lengkap dengan fitur CRUD untuk:
 
 ### 4. Sinkronisasi Database
 
-- ✅ Real-time data dari tabel kriteria SDGs
+- ✅ Real-time data dari tabel kategori UIGM
 - ✅ Auto-update chart data saat ada perubahan
 - ✅ Sync landing page dengan dashboard statistics
 - ✅ Bulk sync semua data
@@ -182,7 +182,7 @@ composer dump-autoload
 
 ### Bar Chart
 
-- Data per kriteria SDGs
+- Data per kategori UIGM
 - Perbandingan antar kategori
 - Jumlah data per periode
 
@@ -236,7 +236,7 @@ composer dump-autoload
 
 Chart dengan `sync_with_statistics=1` akan otomatis update data dari:
 
-- Tabel kriteria SDGs (setting_infrastructure, energy_climate, dll)
+- Tabel kategori UIGM (setting_infrastructure, energy_climate, dll)
 - Tabel users (untuk statistik user)
 - Tabel landing_statistics & dashboard_statistics
 

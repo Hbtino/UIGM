@@ -96,12 +96,12 @@
                                 </div>
                             </div>
 
-                            <!-- Info Kriteria -->
+                            <!-- Info Kategori -->
                             <div class="card">
                                 <div class="card-header">
                                     <h5 class="mb-0">
                                         <i class="fas fa-info mr-2"></i>
-                                        Informasi Kriteria
+                                        Informasi Kategori
                                     </h5>
                                 </div>
                                 <div class="card-body">

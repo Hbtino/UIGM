@@ -1,6 +1,30 @@
 <?= $this->extend('layouts/sidebar_layout') ?>
 
 <?= $this->section('content') ?>
+
+<!-- UIGM Year & Status Header -->
+<div class="uigm-header">
+    <div class="uigm-year-status">
+        <div class="year-info">
+            <h2 class="uigm-year">
+                <i class="fas fa-calendar-alt"></i>
+                UIGM 2025
+            </h2>
+            <p class="year-subtitle">UI GreenMetric World University Ranking</p>
+        </div>
+        <div class="status-info">
+            <div class="status-badge active">
+                <i class="fas fa-check-circle"></i>
+                <span>Status: Aktif</span>
+            </div>
+            <div class="period-info">
+                <i class="fas fa-clock"></i>
+                <span>Periode: 2023-2028</span>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Info Box -->
 <div class="info-box">
     <h4>
@@ -293,258 +317,357 @@
 
 <?= $this->section('styles') ?>
 <style>
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.stat-card {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    min-height: 120px;
-}
-
-.stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 4px;
-    height: 100%;
-    background: linear-gradient(180deg, var(--card-color-start), var(--card-color-end));
-}
-
-.stat-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.stat-card.blue {
-    --card-color-start: #667eea;
-    --card-color-end: #764ba2;
-}
-
-.stat-card.green {
-    --card-color-start: #11998e;
-    --card-color-end: #38ef7d;
-}
-
-.stat-card.orange {
-    --card-color-start: #f093fb;
-    --card-color-end: #f5576c;
-}
-
-.stat-card.purple {
-    --card-color-start: #4facfe;
-    --card-color-end: #00f2fe;
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24px;
-    color: white;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    flex-shrink: 0;
-}
-
-.stat-icon.blue {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-}
-
-.stat-icon.green {
-    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
-}
-
-.stat-icon.orange {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-}
-
-.stat-icon.purple {
-    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-}
-
-.stat-info {
-    flex: 1;
-}
-
-.stat-info h3 {
-    margin: 0;
-    font-size: 28px;
-    font-weight: 700;
-    color: #333;
-    line-height: 1;
-}
-
-.stat-info p {
-    margin: 6px 0 0;
-    color: #666;
-    font-size: 13px;
-    font-weight: 500;
-}
-
-.stat-info .trend {
-    display: inline-block;
-    margin-top: 5px;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 11px;
-    font-weight: 600;
-}
-
-.stat-info .trend.up {
-    background: rgba(76, 175, 80, 0.1);
-    color: #4CAF50;
-}
-
-.stat-info .trend.target {
-    background: rgba(33, 150, 243, 0.1);
-    color: #2196F3;
-}
-
-/* Chart Container */
-.chart-container {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    margin-bottom: 25px;
-}
-
-.chart-header {
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border-bottom: 2px solid #f0f0f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.chart-header-left h3 {
-    margin: 0;
-    color: #1e3c72;
-    font-size: 22px;
-    font-weight: 700;
-}
-
-.chart-header-left p {
-    margin: 8px 0 0;
-    color: #666;
-    font-size: 14px;
-}
-
-canvas {
-    max-height: 420px;
-}
-
-/* Info Box */
-.info-box {
-    background: linear-gradient(135deg, #1ac247ff 0%, #0b671bff 100%);
-    color: white;
-    padding: 25px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-}
-
-.info-box h4 {
-    margin: 0 0 10px;
-    font-size: 18px;
-    font-weight: 700;
-}
-
-.info-box p {
-    margin: 0;
-    opacity: 0.95;
-    line-height: 1.6;
-}
-
-/* Ranking Grid */
-.ranking-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.ranking-card {
-    background: white;
-    padding: 25px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-}
-
-.ranking-card h4 {
-    margin: 0 0 20px;
-    color: #1e3c72;
-    font-size: 18px;
-    font-weight: 700;
-    padding-bottom: 15px;
-    border-bottom: 2px solid #f0f0f0;
-}
-
-.ranking-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 1px solid #f5f5f5;
-}
-
-.ranking-item:last-child {
-    border-bottom: none;
-}
-
-.ranking-year {
-    font-weight: 600;
-    color: #666;
-}
-
-.ranking-value {
-    font-size: 20px;
-    font-weight: 700;
-    color: #1e3c72;
-}
-
-.ranking-change {
-    font-size: 12px;
-    color: #4CAF50;
-    margin-left: 8px;
-}
-
-/* Responsive */
-@media (max-width: 1400px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    /* UIGM Header Styles */
+    .uigm-header {
+        background: linear-gradient(135deg, #149823ff 0%, #0b5804ff 100%);
+        border-radius: 15px;
+        padding: 20px 25px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 20px rgba(20, 152, 35, 0.2);
+        color: white;
     }
-}
 
-@media (max-width: 992px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
+    .uigm-year-status {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 20px;
     }
-}
 
-@media (max-width: 768px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
+    .year-info .uigm-year {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        color: white;
     }
-}
+
+    .year-info .uigm-year i {
+        font-size: 24px;
+        color: #4CAF50;
+    }
+
+    .year-info .year-subtitle {
+        font-size: 14px;
+        margin: 5px 0 0 36px;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .status-info {
+        display: flex;
+        align-items: center;
+        gap: 20px;
+        flex-wrap: wrap;
+    }
+
+    .status-badge {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 8px 15px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .status-badge.active {
+        background: rgba(76, 175, 80, 0.2);
+        border-color: rgba(76, 175, 80, 0.3);
+    }
+
+    .status-badge i {
+        color: #4CAF50;
+        font-size: 16px;
+    }
+
+    .period-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+        opacity: 0.9;
+    }
+
+    .period-info i {
+        color: #4CAF50;
+    }
+
+    /* Responsive UIGM Header */
+    @media (max-width: 768px) {
+        .uigm-year-status {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .year-info .uigm-year {
+            font-size: 24px;
+        }
+
+        .status-info {
+            width: 100%;
+            justify-content: space-between;
+        }
+    }
+
+    /* Stats Grid */
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        transition: all 0.3s ease;
+        position: relative;
+        overflow: hidden;
+        min-height: 120px;
+    }
+
+    .stat-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, var(--card-color-start), var(--card-color-end));
+    }
+
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+
+    .stat-card.blue {
+        --card-color-start: #667eea;
+        --card-color-end: #764ba2;
+    }
+
+    .stat-card.green {
+        --card-color-start: #11998e;
+        --card-color-end: #38ef7d;
+    }
+
+    .stat-card.orange {
+        --card-color-start: #f093fb;
+        --card-color-end: #f5576c;
+    }
+
+    .stat-card.purple {
+        --card-color-start: #4facfe;
+        --card-color-end: #00f2fe;
+    }
+
+    .stat-icon {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        color: white;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        flex-shrink: 0;
+    }
+
+    .stat-icon.blue {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .stat-icon.green {
+        background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    }
+
+    .stat-icon.orange {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    }
+
+    .stat-icon.purple {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    }
+
+    .stat-info {
+        flex: 1;
+    }
+
+    .stat-info h3 {
+        margin: 0;
+        font-size: 28px;
+        font-weight: 700;
+        color: #333;
+        line-height: 1;
+    }
+
+    .stat-info p {
+        margin: 6px 0 0;
+        color: #666;
+        font-size: 13px;
+        font-weight: 500;
+    }
+
+    .stat-info .trend {
+        display: inline-block;
+        margin-top: 5px;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .stat-info .trend.up {
+        background: rgba(76, 175, 80, 0.1);
+        color: #4CAF50;
+    }
+
+    .stat-info .trend.target {
+        background: rgba(33, 150, 243, 0.1);
+        color: #2196F3;
+    }
+
+    /* Chart Container */
+    .chart-container {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        margin-bottom: 25px;
+    }
+
+    .chart-header {
+        margin-bottom: 25px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .chart-header-left h3 {
+        margin: 0;
+        color: #1e3c72;
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .chart-header-left p {
+        margin: 8px 0 0;
+        color: #666;
+        font-size: 14px;
+    }
+
+    canvas {
+        max-height: 420px;
+    }
+
+    /* Info Box */
+    .info-box {
+        background: linear-gradient(135deg, #1ac247ff 0%, #0b671bff 100%);
+        color: white;
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    .info-box h4 {
+        margin: 0 0 10px;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .info-box p {
+        margin: 0;
+        opacity: 0.95;
+        line-height: 1.6;
+    }
+
+    /* Ranking Grid */
+    .ranking-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+        margin-bottom: 25px;
+    }
+
+    .ranking-card {
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+
+    .ranking-card h4 {
+        margin: 0 0 20px;
+        color: #1e3c72;
+        font-size: 18px;
+        font-weight: 700;
+        padding-bottom: 15px;
+        border-bottom: 2px solid #f0f0f0;
+    }
+
+    .ranking-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .ranking-item:last-child {
+        border-bottom: none;
+    }
+
+    .ranking-year {
+        font-weight: 600;
+        color: #666;
+    }
+
+    .ranking-value {
+        font-size: 20px;
+        font-weight: 700;
+        color: #1e3c72;
+    }
+
+    .ranking-change {
+        font-size: 12px;
+        color: #4CAF50;
+        margin-left: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1400px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 992px) {
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
 </style>
 <?= $this->endSection() ?>
 
@@ -553,255 +676,255 @@ canvas {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-// Data dari controller
-const chartData = <?= json_encode($chartData) ?>;
+    // Data dari controller
+    const chartData = <?= json_encode($chartData) ?>;
 
-// Configure Chart.js defaults
-Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
-Chart.defaults.font.size = 12;
-Chart.defaults.color = '#666';
+    // Configure Chart.js defaults
+    Chart.defaults.font.family = "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif";
+    Chart.defaults.font.size = 12;
+    Chart.defaults.color = '#666';
 
-// Main Sustainability Chart - GROUPED BAR CHART SEPERTI SCREENSHOT
-const ctx = document.getElementById('sustainabilityChart').getContext('2d');
-const sustainabilityChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: chartData.labels,
-        datasets: chartData.datasets
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'bottom',
-                labels: {
-                    padding: 15,
-                    font: {
-                        size: 11
-                    },
-                    usePointStyle: true,
-                    pointStyle: 'rect',
-                    boxWidth: 12,
-                    boxHeight: 12
-                }
-            },
-            title: {
-                display: false
-            },
-            tooltip: {
-                backgroundColor: 'rgba(0, 0, 0, 0.8)',
-                padding: 12,
-                titleFont: {
-                    size: 13,
-                    weight: 'bold'
-                },
-                bodyFont: {
-                    size: 12
-                },
-                callbacks: {
-                    label: function(context) {
-                        return context.dataset.label + ': ' + context.parsed.y + '%';
-                    }
-                }
-            }
+    // Main Sustainability Chart - GROUPED BAR CHART SEPERTI SCREENSHOT
+    const ctx = document.getElementById('sustainabilityChart').getContext('2d');
+    const sustainabilityChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: chartData.labels,
+            datasets: chartData.datasets
         },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                    callback: function(value) {
-                        return value + '%';
-                    },
-                    stepSize: 10,
-                    font: {
-                        size: 11
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom',
+                    labels: {
+                        padding: 15,
+                        font: {
+                            size: 11
+                        },
+                        usePointStyle: true,
+                        pointStyle: 'rect',
+                        boxWidth: 12,
+                        boxHeight: 12
                     }
-                },
-                grid: {
-                    color: 'rgba(0, 0, 0, 0.06)',
-                    drawBorder: false
                 },
                 title: {
                     display: false
-                }
-            },
-            x: {
-                grid: {
-                    display: false,
-                    drawBorder: false
                 },
-                ticks: {
-                    font: {
-                        size: 11,
-                        weight: '600'
-                    }
-                }
-            }
-        },
-        interaction: {
-            intersect: false,
-            mode: 'index'
-        }
-    }
-});
-
-// Total Score Chart - LINE CHART WITH GRADIENT
-const ctx2 = document.getElementById('totalScoreChart').getContext('2d');
-
-// Create gradient
-const gradient = ctx2.createLinearGradient(0, 0, 0, 400);
-gradient.addColorStop(0, 'rgba(45, 122, 79, 0.3)');
-gradient.addColorStop(1, 'rgba(45, 122, 79, 0.05)');
-
-const totalScoreChart = new Chart(ctx2, {
-    type: 'line',
-    data: {
-        labels: chartData.labels,
-        datasets: [{
-            label: 'Total Skor (%)',
-            data: chartData.totalScore,
-            backgroundColor: gradient,
-            borderColor: '#2d7a4f',
-            borderWidth: 3,
-            fill: true,
-            tension: 0.4,
-            pointBackgroundColor: '#2d7a4f',
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointRadius: 6,
-            pointHoverRadius: 8,
-            pointHoverBackgroundColor: '#2d7a4f',
-            pointHoverBorderColor: '#fff',
-            pointHoverBorderWidth: 3
-        }]
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: true,
-        plugins: {
-            legend: {
-                display: true,
-                position: 'top',
-                labels: {
-                    usePointStyle: true,
-                    padding: 15,
-                    font: {
-                        size: 12,
-                        weight: '600'
-                    }
-                }
-            },
-            tooltip: {
-                backgroundColor: 'rgba(45, 122, 79, 0.95)',
-                padding: 12,
-                titleFont: {
-                    size: 13,
-                    weight: 'bold'
-                },
-                bodyFont: {
-                    size: 12
-                },
-                callbacks: {
-                    label: function(context) {
-                        return 'Total Skor: ' + context.parsed.y + '%';
+                tooltip: {
+                    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                    padding: 12,
+                    titleFont: {
+                        size: 13,
+                        weight: 'bold'
                     },
-                    afterLabel: function(context) {
-                        const index = context.dataIndex;
-                        const worldRank = chartData.worldRank[index];
-                        const idRank = chartData.indonesiaRank[index];
-                        return 'World Rank: #' + worldRank + '\nID Rank: #' + idRank;
-                    }
-                }
-            }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                max: 100,
-                ticks: {
-                    callback: function(value) {
-                        return value + '%';
+                    bodyFont: {
+                        size: 12
                     },
-                    stepSize: 10,
-                    font: {
-                        size: 11
+                    callbacks: {
+                        label: function(context) {
+                            return context.dataset.label + ': ' + context.parsed.y + '%';
+                        }
                     }
-                },
-                grid: {
-                    color: 'rgba(0, 0, 0, 0.06)',
-                    drawBorder: false
                 }
             },
-            x: {
-                grid: {
-                    display: false,
-                    drawBorder: false
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        },
+                        stepSize: 10,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.06)',
+                        drawBorder: false
+                    },
+                    title: {
+                        display: false
+                    }
                 },
-                ticks: {
-                    font: {
-                        size: 11,
-                        weight: '600'
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11,
+                            weight: '600'
+                        }
                     }
                 }
+            },
+            interaction: {
+                intersect: false,
+                mode: 'index'
             }
         }
-    }
-});
-
-// Auto refresh chart on window resize
-let resizeTimer;
-window.addEventListener('resize', function() {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(function() {
-        sustainabilityChart.resize();
-        totalScoreChart.resize();
-    }, 250);
-});
-
-// Print functionality
-function printDashboard() {
-    window.print();
-}
-
-// Export data to CSV
-function exportToCSV() {
-    let csv = 'Tahun,SI,EC,WS,WR,TR,ED,Total Score,World Rank,ID Rank\n';
-
-    for (let i = 0; i < chartData.labels.length; i++) {
-        csv += chartData.labels[i] + ',';
-        csv += chartData.datasets[0].data[i] + ',';
-        csv += chartData.datasets[1].data[i] + ',';
-        csv += chartData.datasets[2].data[i] + ',';
-        csv += chartData.datasets[3].data[i] + ',';
-        csv += chartData.datasets[4].data[i] + ',';
-        csv += chartData.datasets[5].data[i] + ',';
-        csv += chartData.totalScore[i] + ',';
-        csv += chartData.worldRank[i] + ',';
-        csv += chartData.indonesiaRank[i] + '\n';
-    }
-
-    const blob = new Blob([csv], {
-        type: 'text/csv'
     });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.setAttribute('hidden', '');
-    a.setAttribute('href', url);
-    a.setAttribute('download', 'data_kampus_berkelanjutan.csv');
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
 
-<?php if (isset($user_role) && $user_role == 'admin'): ?>
-    // Sistem registrasi dihapus - tidak perlu notifikasi approval
-    console.log('Dashboard admin dimuat - sistem registrasi dinonaktifkan');
-<?php else: ?>
-    // Tidak perlu sistem notifikasi untuk user non-admin
-    console.log('Dashboard user dimuat - tidak perlu notifikasi');
-<?php endif; ?>
+    // Total Score Chart - LINE CHART WITH GRADIENT
+    const ctx2 = document.getElementById('totalScoreChart').getContext('2d');
+
+    // Create gradient
+    const gradient = ctx2.createLinearGradient(0, 0, 0, 400);
+    gradient.addColorStop(0, 'rgba(45, 122, 79, 0.3)');
+    gradient.addColorStop(1, 'rgba(45, 122, 79, 0.05)');
+
+    const totalScoreChart = new Chart(ctx2, {
+        type: 'line',
+        data: {
+            labels: chartData.labels,
+            datasets: [{
+                label: 'Total Skor (%)',
+                data: chartData.totalScore,
+                backgroundColor: gradient,
+                borderColor: '#2d7a4f',
+                borderWidth: 3,
+                fill: true,
+                tension: 0.4,
+                pointBackgroundColor: '#2d7a4f',
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 6,
+                pointHoverRadius: 8,
+                pointHoverBackgroundColor: '#2d7a4f',
+                pointHoverBorderColor: '#fff',
+                pointHoverBorderWidth: 3
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 15,
+                        font: {
+                            size: 12,
+                            weight: '600'
+                        }
+                    }
+                },
+                tooltip: {
+                    backgroundColor: 'rgba(45, 122, 79, 0.95)',
+                    padding: 12,
+                    titleFont: {
+                        size: 13,
+                        weight: 'bold'
+                    },
+                    bodyFont: {
+                        size: 12
+                    },
+                    callbacks: {
+                        label: function(context) {
+                            return 'Total Skor: ' + context.parsed.y + '%';
+                        },
+                        afterLabel: function(context) {
+                            const index = context.dataIndex;
+                            const worldRank = chartData.worldRank[index];
+                            const idRank = chartData.indonesiaRank[index];
+                            return 'World Rank: #' + worldRank + '\nID Rank: #' + idRank;
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    max: 100,
+                    ticks: {
+                        callback: function(value) {
+                            return value + '%';
+                        },
+                        stepSize: 10,
+                        font: {
+                            size: 11
+                        }
+                    },
+                    grid: {
+                        color: 'rgba(0, 0, 0, 0.06)',
+                        drawBorder: false
+                    }
+                },
+                x: {
+                    grid: {
+                        display: false,
+                        drawBorder: false
+                    },
+                    ticks: {
+                        font: {
+                            size: 11,
+                            weight: '600'
+                        }
+                    }
+                }
+            }
+        }
+    });
+
+    // Auto refresh chart on window resize
+    let resizeTimer;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimer);
+        resizeTimer = setTimeout(function() {
+            sustainabilityChart.resize();
+            totalScoreChart.resize();
+        }, 250);
+    });
+
+    // Print functionality
+    function printDashboard() {
+        window.print();
+    }
+
+    // Export data to CSV
+    function exportToCSV() {
+        let csv = 'Tahun,SI,EC,WS,WR,TR,ED,Total Score,World Rank,ID Rank\n';
+
+        for (let i = 0; i < chartData.labels.length; i++) {
+            csv += chartData.labels[i] + ',';
+            csv += chartData.datasets[0].data[i] + ',';
+            csv += chartData.datasets[1].data[i] + ',';
+            csv += chartData.datasets[2].data[i] + ',';
+            csv += chartData.datasets[3].data[i] + ',';
+            csv += chartData.datasets[4].data[i] + ',';
+            csv += chartData.datasets[5].data[i] + ',';
+            csv += chartData.totalScore[i] + ',';
+            csv += chartData.worldRank[i] + ',';
+            csv += chartData.indonesiaRank[i] + '\n';
+        }
+
+        const blob = new Blob([csv], {
+            type: 'text/csv'
+        });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.setAttribute('hidden', '');
+        a.setAttribute('href', url);
+        a.setAttribute('download', 'data_kampus_berkelanjutan.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    }
+
+    <?php if (isset($user_role) && $user_role == 'admin'): ?>
+        // Sistem registrasi dihapus - tidak perlu notifikasi approval
+        console.log('Dashboard admin dimuat - sistem registrasi dinonaktifkan');
+    <?php else: ?>
+        // Tidak perlu sistem notifikasi untuk user non-admin
+        console.log('Dashboard user dimuat - tidak perlu notifikasi');
+    <?php endif; ?>
 </script>
 <?= $this->endSection() ?>
